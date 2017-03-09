@@ -1,3 +1,4 @@
 <Files index.html>
   AddType application/xhtml+xml .html
 </Files>
+AddType application/ovml+xml .ovml

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ovml
+  xmlns="http://vocab.nospoon.tv/ovml#"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <meta>
+    <!-- <link rel="glossary" href="/glossary.ovml" /> -->
+    <link title="IMDb" rel="info" href="http://www.imdb.com/title/tt6082800/" />
+  </meta>
+  <!--
+    video[@type]
+    short | feature | series | ad | personal | historical.
+    personal = ugc, home movies. historical = library, news
+
+    work[@type]
+    novel | screenplay | stageplay | teleplay | audioplay | memoir | biography | autobiography | poem | short-story
+
+    should these be combined?
+  -->
+  <!--
+    space-delimited?
+    type="series personal"><!-- series subtype = applies to all <video> children?
+  -->
+  <!-- video = work that can be played, work = can not be played ? -->
+  <!-- group is already in use in glossary. may be worth repurposing for this -->
+  <group xml:id="hughs-vlog" type="series">
+    <!-- All common properties here: -->
+    <title>Hugh’s Vlog</title>
+    <title xml:lang="ja">ヒューのヴログ</title>
+    <published>2016</published>
+    <entity id="hugh-guiney">
+      <name>
+        <family-name>Guiney</family-name>
+        <given-name>Hugh</given-name>
+      </name>
+      <name xml:lang="ja">
+        <family-name>ガイニー</family-name>
+        <given-name>ヒュー</given-name>
+      </name>
+    </entity>
+    <actor>
+      <starring>
+        <entity xlink:href="#hugh-guiney" />
+      </starring>
+    </actor>
+    <cinematographer>
+      <entity xlink:href="#hugh-guiney" />
+    </cinematographer>
+    <studio>
+      <entity>No Spoon Productions</entity>
+    </studio>
+    <presentation>
+      <frametype abbr="p">progressive</frametype>
+      <par x="1" y="1" />
+      <fps rate="30000" scale="1001" />
+    </presentation>
+
+    <group xml:id="season-1" type="series">
+      <!-- https://www.youtube.com/watch?v=o5MaYhQZONY -->
+      <video type="personal" xml:lang="en" xml:id="ep-0">
+        <title>Introduction</title>
+        <description>Embarking on a daily vlog series to chronicle the makings of my startup. Here’s the first installment! #HughsStartupVlog</description>
+        <runtime>PT9M51S</runtime>
+        <published>2016-05-18</published>
+        <!-- scope = release [fuzzy/global] | screening [specific/local] -->
+        <showing scope="release" type="internet" admission="public">
+          <uri>http://hugh.today/2016-05-18</uri>
+          <uri>https://www.youtube.com/watch?v=o5MaYhQZONY</uri>
+          <uri>https://www.facebook.com/HughsVlog/videos/1790005944567170/</uri>
+        </showing>
+        <!-- @todo: specify at root level somehow -->
+        <file xml:id="ep-0-1080p" label="ep-0" xlink:href="/path/to/ep-0-1080p.mp4">
+          <link rel="alternate" xlink:href="#xpointer(//file[@label='ep-0'])" /><!-- should also have not:parent but i'm not going to deal with that right now -->
+          <container>
+            <name>MPEG-4 Part 14</name>
+            <nickname>MP4</nickname>
+            <mime>video/mp4</mime>
+          </container>
+          <codec type="video">
+            <name>H.264/MPEG-4 Part 10 AVC</name>
+            <nickname>H.264</nickname>
+            <codecProfile>High</codecProfile>
+            <mime>avc1.6400xx</mime>
+          </codec>
+          <codec type="audio">
+            <name>AAC-LC</name>
+            <mime>aac</mime>
+          </codec>
+        </file>
+      </video>
+    </group><!--/#season-1-->
+
+    <group xml:id="season-3" type="series">
+      <!-- https://www.youtube.com/watch?v=aEmmNJHzjTw -->
+      <video type="personal" xml:lang="en" xml:id="ep-21">
+        <title>My First Paid Photography Gig! + Improv with Midnight Avenue</title>
+        <description type="xhtml">
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <p>Please consider donating to support Parkinson’s research: <a href="http://www.parkinson.org/">http://www.parkinson.org/</a></p>
+          </div>
+        </description>
+        <runtime>PT11M49S</runtime>
+        <published>2017-03-06</published>
+      </video>
+
+      <!-- https://www.youtube.com/watch?v=X-JXFh4A5AE -->
+      <video type="personal" xml:lang="en" xml:id="ep-22">
+        <title>Buying Soda &amp; Breaking My Blood Oath</title>
+        <runtime>PT3M57S</runtime>
+        <published>2017-03-07</published>
+      </video>
+    </group><!--/#season-3-->
+
+  </group>
+</ovml>

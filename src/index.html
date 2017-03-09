@@ -3,9 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <title>Hugh’s Vlog</title>
+  <!-- Load polyfills; note that "loader" will load these async -->
+  <script src="lib/webcomponentsjs/webcomponents-loader.js"></script>
+
+  <!-- Load a custom element definition via HTMLImports -->
+  <link rel="import" href="hughs-vlog.html" />
 </head>
 <body>
-<hughs-vlog></hughs-vlog>
-<script src="lib/index.js"></script>
+  <hughs-vlog></hughs-vlog>
+
+  <!-- Interact with the upgraded element -->
+  <script>
+    window.addEventListener('WebComponentsReady', function() {
+      // At this point we are guaranteed that all required polyfills have loaded,
+      // all HTML imports have loaded, and all defined custom elements have upgraded
+      let HughsVlog = customElements.get( 'hughs-vlog' );
+      let element = document.querySelector( 'hughs-vlog' );
+
+      console.assert( element instanceof HughsVlog );  // 👍
+      
+      // element.someAPI(); // 👍
+    });
+  </script>
 </body>
 </html>

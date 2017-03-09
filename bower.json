@@ -1,0 +1,28 @@
+{
+  "name": "hughs-vlog",
+  "description": "Hugh’s Vlog",
+  "main": "public/index.html",
+  "authors": [
+    "Hugh Guiney <hugh@hughguiney.com>"
+  ],
+  "license": "UNLICENSED",
+  "keywords": [
+    "vlog",
+    "website",
+    "es6",
+    "custom-elements",
+    "web-components"
+  ],
+  "homepage": "http://hugh.today",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.24"
+  }
+}

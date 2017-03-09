@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hugh’s Vlog</title>
+</head>
+<body>
+<hughs-vlog></hughs-vlog>
+<script>
+class HughsVlog extends HTMLElement {
+  
+  // Remember to call the super method here
+  constructor() {
+    super();
+  }
+  
+  // This a lifecyle call back that gets called
+  // when the custom element is attached to the DOM
+  connectedCallback() {
+    this.innerHTML = 'This is a custom element'
+  }
+}
+
+window.customElements.define( 'hughs-vlog', HughsVlog );
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<template id="hughs-vlog-header">
+  <style>
+    p { color: orange; }
+  </style>
+  <p>I'm in Shadow DOM. My markup was stamped from a &lt;template&gt;.</p>
+</template>
+
+<script>
+  'use strict';
+
+  // http://stackoverflow.com/q/41408477/214325
+  var ownerDocument = document.currentScript.ownerDocument;
+
+  class HughsVlogHeader extends HTMLElement {
+    
+    // Remember to call the super method here
+    constructor() {
+      super();
+
+      let shadowRoot = this.attachShadow({mode: 'open'});
+
+      const template = ownerDocument.querySelector( '#hughs-vlog-header' );
+      const instance = template.content.cloneNode( true );
+
+      shadowRoot.appendChild( instance );
+    }
+  }
+
+  window.customElements.define( 'hughs-vlog-header', HughsVlogHeader );
+</script>

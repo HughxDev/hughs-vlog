@@ -1,3 +1,4 @@
+<link rel="import" href="hughs-vlog-header.html" />
 <script>
   'use strict';
 
@@ -7,11 +8,15 @@
     constructor() {
       super();
 
-      let shadowRoot = this.attachShadow({mode: 'open'});
+      let shadowRoot = this.attachShadow({
+        "mode": "open"
+      });
+
       shadowRoot.innerHTML = `
         <style>:host { display: block; }</style>
-        <b>I'm in shadow dom!</b>
-        <slot></slot>
+        <hughs-vlog-header></hughs-vlog-header>
+        <!-- <main></main> -->
+        <!-- <hughs-vlog-footer></hughs-vlog-footer> -->
       `;
     }
   }

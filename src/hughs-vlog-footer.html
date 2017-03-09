@@ -1,15 +1,15 @@
-<template id="hughs-vlog-header">
-  <h1>Hugh’s Vlog</h1>
+<template id="hughs-vlog-footer">
+  <p>&copy; 2016–2017</p>
 </template>
 
 <script>
-(function () {
+(function() {
   'use strict';
 
   // http://stackoverflow.com/q/41408477/214325
   var ownerDocument = document.currentScript.ownerDocument;
 
-  class HughsVlogHeader extends HTMLElement {
+  class HughsVlogFooter extends HTMLElement {
     
     // Remember to call the super method here
     constructor() {
@@ -17,17 +17,17 @@
 
       let shadowRoot = this.attachShadow({mode: 'open'});
 
-      const template = ownerDocument.querySelector( '#hughs-vlog-header' );
+      const template = ownerDocument.querySelector( '#hughs-vlog-footer' );
       const instance = template.content.cloneNode( true );
 
       shadowRoot.appendChild( instance );
-    }
+    } // constructor
 
     connectedCallback() {
-      this.setAttribute( 'role', 'banner' );
+      this.setAttribute( 'role', 'contentinfo' );
     }
   }
 
-  window.customElements.define( 'hughs-vlog-header', HughsVlogHeader );
+  window.customElements.define( 'hughs-vlog-footer', HughsVlogFooter );
 })();
 </script>

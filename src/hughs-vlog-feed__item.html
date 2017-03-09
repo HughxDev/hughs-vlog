@@ -1,4 +1,6 @@
 <html>
+  <!-- <link rel="import" href="hughs-vlog-feed.html" /> -->
+
   <template id="hughs-vlog-feed__item"></template>
 
   <script>//<![CDATA[
@@ -8,7 +10,7 @@
     // http://stackoverflow.com/q/41408477/214325
     var ownerDocument = document.currentScript.ownerDocument;
 
-    class HughsVlogFeedItem extends HughsVlogFeed {
+    class HughsVlogFeedItem extends HTMLElement {
       
       // Remember to call the super method here
       constructor() {

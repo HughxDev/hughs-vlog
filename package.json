@@ -1,5 +1,10 @@
 {
+  "name": "hughs-vlog",
   "description": "Hugh’s Vlog",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "babel src -d lib"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hguiney/hughs-vlog.git"
@@ -9,5 +14,8 @@
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-preset-env": "^1.2.1"
+  },
+  "babel": {
+    "presets": [ "env" ]
   }
 }

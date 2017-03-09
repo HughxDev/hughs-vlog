@@ -1,0 +1,13 @@
+{
+  "description": "Hugh’s Vlog",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hguiney/hughs-vlog.git"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.2.1"
+  }
+}

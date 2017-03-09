@@ -1,27 +1,38 @@
-<link rel="import" href="hughs-vlog-header.html" />
-<link rel="import" href="hughs-vlog-footer.html" />
+<html>
+  <link rel="import" href="hughs-vlog-header.html" />
+  <link rel="import" href="hughs-vlog-main.html" />
+  <link rel="import" href="hughs-vlog-footer.html" />
 
-<script>
-  'use strict';
+  <template id="hughs-vlog">
+    <style>:host { display: block; }</style>
+    <hughs-vlog-header></hughs-vlog-header>
+    <hughs-vlog-main></hughs-vlog-main>
+    <hughs-vlog-footer></hughs-vlog-footer>
+  </template>
 
-  class HughsVlog extends HTMLElement {
-    
-    // Remember to call the super method here
-    constructor() {
-      super();
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
 
-      let shadowRoot = this.attachShadow({
-        "mode": "open"
-      });
+    var ownerDocument = document.currentScript.ownerDocument;
 
-      shadowRoot.innerHTML = `
-        <style>:host { display: block; }</style>
-        <hughs-vlog-header></hughs-vlog-header>
-        <!-- <main></main> -->
-        <hughs-vlog-footer></hughs-vlog-footer>
-      `;
+    class HughsVlog extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        const $shadowRoot = this.attachShadow({
+          "mode": "open"
+        });
+        const $HughsVlog = ownerDocument.querySelector( '#hughs-vlog' );
+        const $shadowContent = $HughsVlog.content.cloneNode( true );
+
+        $shadowRoot.appendChild( $shadowContent );
+      }
     }
-  }
 
-  window.customElements.define( 'hughs-vlog', HughsVlog );
-</script>
+    window.customElements.define( 'hughs-vlog', HughsVlog );
+  })();
+  //]]></script>
+</html>

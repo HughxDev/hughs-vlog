@@ -1,0 +1,39 @@
+<html>
+  <template id="hughs-vlog-main">
+    <iframe
+      width="853"
+      height="480"
+      src="https://www.youtube-nocookie.com/embed/aEmmNJHzjTw"
+      frameborder="0"
+      allowfullscreen="allowfullscreen"></iframe>
+  </template>
+
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
+
+    // http://stackoverflow.com/q/41408477/214325
+    var ownerDocument = document.currentScript.ownerDocument;
+
+    class HughsVlogMain extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        const $shadowRoot = this.attachShadow({mode: 'open'});
+        const $HughsVlogMain = ownerDocument.querySelector( '#hughs-vlog-main' );
+        const $shadowContent = $HughsVlogMain.content.cloneNode( true );
+
+        $shadowRoot.appendChild( $shadowContent );
+      } // constructor
+
+      connectedCallback() {
+        // this.setAttribute( 'role', 'contentinfo' );
+      }
+    }
+
+    window.customElements.define( 'hughs-vlog-main', HughsVlogMain );
+  })();
+  //]]></script>
+</html>

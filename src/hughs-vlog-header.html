@@ -1,33 +1,34 @@
-<template id="hughs-vlog-header">
-  <h1>Hugh’s Vlog</h1>
-</template>
+<html>
+  <template id="hughs-vlog-header">
+    <h1>Hugh’s Vlog</h1>
+  </template>
 
-<script>
-(function () {
-  'use strict';
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
 
-  // http://stackoverflow.com/q/41408477/214325
-  var ownerDocument = document.currentScript.ownerDocument;
+    // http://stackoverflow.com/q/41408477/214325
+    var ownerDocument = document.currentScript.ownerDocument;
 
-  class HughsVlogHeader extends HTMLElement {
-    
-    // Remember to call the super method here
-    constructor() {
-      super();
+    class HughsVlogHeader extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
 
-      let shadowRoot = this.attachShadow({mode: 'open'});
+        const $shadowRoot = this.attachShadow({mode: 'open'});
+        const $HughsVlogHeader = ownerDocument.querySelector( '#hughs-vlog-header' );
+        const $shadowContent = $HughsVlogHeader.content.cloneNode( true );
 
-      const template = ownerDocument.querySelector( '#hughs-vlog-header' );
-      const instance = template.content.cloneNode( true );
+        $shadowRoot.appendChild( $shadowContent );
+      }
 
-      shadowRoot.appendChild( instance );
+      connectedCallback() {
+        this.setAttribute( 'role', 'banner' );
+      }
     }
 
-    connectedCallback() {
-      this.setAttribute( 'role', 'banner' );
-    }
-  }
-
-  window.customElements.define( 'hughs-vlog-header', HughsVlogHeader );
-})();
-</script>
+    window.customElements.define( 'hughs-vlog-header', HughsVlogHeader );
+  })();
+  //]]></script>
+</html>

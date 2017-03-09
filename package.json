@@ -3,8 +3,7 @@
   "description": "Hugh’s Vlog",
   "version": "0.0.0",
   "scripts": {
-    "build": "rm -rf public/*; babel src/ -d lib/; cp -r src/* public/; mv lib/ public/lib/; cp -r bower_components/* public/lib/"
-    
+    "build": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/; cp -r bower_components/ public/lib/"
   },
   "repository": {
     "type": "git",

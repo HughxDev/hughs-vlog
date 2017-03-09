@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>Hugh’s Vlog</title>
   <!-- Load polyfills; note that "loader" will load these async -->
-  <script src="lib/webcomponentsjs/webcomponents-loader.js"></script>
+  <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js"></script> -->
+  <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
 
   <!-- Load a custom element definition via HTMLImports -->
   <link rel="import" href="hughs-vlog.html" />
@@ -13,17 +15,22 @@
   <hughs-vlog></hughs-vlog>
 
   <!-- Interact with the upgraded element -->
-  <script>
-    window.addEventListener('WebComponentsReady', function() {
+  <script>//<![CDATA[
+    window.addEventListener('WebComponentsReady', function HughsVlogWebComponentsReady() {
+    // window.customElements.whenDefined( 'hughs-vlog' ).then(function HughsVlogDefined() {  
       // At this point we are guaranteed that all required polyfills have loaded,
       // all HTML imports have loaded, and all defined custom elements have upgraded
       let HughsVlog = customElements.get( 'hughs-vlog' );
       let element = document.querySelector( 'hughs-vlog' );
 
+      console.log( 'HughsVlog', HughsVlog );
+
+      console.log( 'element', element );
+
       console.assert( element instanceof HughsVlog );  // 👍
       
       // element.someAPI(); // 👍
     });
-  </script>
+  //]]></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
   "description": "Hugh’s Vlog",
   "version": "0.0.0",
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "rm -rf public/*; babel src -d lib; cp -r src/* public; mv lib public/lib"
   },
   "repository": {
     "type": "git",
@@ -13,9 +13,17 @@
   "private": true,
   "devDependencies": {
     "babel-cli": "^6.23.0",
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "babel-plugin-transform-es2015-classes": "^6.23.0",
     "babel-preset-env": "^1.2.1"
   },
   "babel": {
-    "presets": [ "env" ]
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "transform-custom-element-classes",
+      "transform-es2015-classes"
+    ]
   }
 }

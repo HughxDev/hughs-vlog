@@ -2,6 +2,7 @@
 <!-- vim: syntax=xml -->
 <ovml
   xmlns="http://vocab.nospoon.tv/ovml#"
+  xmlns:ovml="http://vocab.nospoon.tv/ovml#"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
   <meta>
@@ -20,7 +21,8 @@
   -->
   <!--
     space-delimited?
-    type="series personal"><!-- series subtype = applies to all <video> children?
+    type="series personal">
+    series subtype = applies to all <video> children?
   -->
   <!-- video = work that can be played, work = can not be played ? -->
   <!-- group is already in use in glossary. may be worth repurposing for this -->

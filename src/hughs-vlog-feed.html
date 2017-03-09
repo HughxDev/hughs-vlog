@@ -1,0 +1,91 @@
+<html>
+  <template id="hughs-vlog-feed"></template>
+
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
+
+    // http://stackoverflow.com/q/41408477/214325
+    var ownerDocument = document.currentScript.ownerDocument;
+
+    class HughsVlogFeed extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        const $shadowRoot = this.attachShadow({mode: 'open'});
+        const $HughsVlogFeed = ownerDocument.querySelector( '#hughs-vlog-feed' );
+        const $shadowContent = $HughsVlogFeed.content.cloneNode( true );
+
+        this.xmlDoc = null;
+        this.nsResolver = null;
+        this.evaluator = new XPathEvaluator();
+        this.ns = {
+          "xml": "http://www.w3.org/XML/1998/namespace"
+        };
+
+        this.importXML();
+
+        $shadowRoot.appendChild( $shadowContent );
+      } // constructor
+
+      connectedCallback() {
+        // this.setAttribute( 'role', 'contentinfo' );
+      }
+
+      readXML( xpath, refNode, xpathType ) {
+        this.ns.defaultNS = this.xmlDoc.documentElement.getAttribute( 'xmlns' );
+        this.ns.ovml = this.xmlDoc.documentElement.getAttribute( 'xmlns:ovml' );
+        this.ns.xlink = this.xmlDoc.documentElement.getAttribute( 'xmlns:xlink' );
+        this.nsResolver = this.evaluator.createNSResolver( this.xmlDoc.documentElement );
+
+        xpath = xpath || '//ovml:video';
+        refNode = refNode || this.xmlDoc;
+        xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
+
+        console.log(this.evaluator.evaluate(
+          xpath,
+          refNode,
+          this.nsResolver,
+          //ns.ovml,g
+          //null,
+          xpathType,
+          null
+        ).iterateNext());
+      }
+
+      importXML() {
+        var feed = this;
+        var xmlFile = 'vlog.ovml';
+        var xhr = new XMLHttpRequest();
+
+        xhr.open( 'GET', xmlFile, true );
+        xhr.setRequestHeader( 'Accept', 'application/ovml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
+        
+        xhr.onload = function xhrOnLoad( event ) {
+          switch ( xhr.status ) {
+            case 200:
+              feed.xmlDoc = xhr.responseXML;
+
+              feed.readXML();
+            break;
+
+            default:
+          }
+        };
+
+        // xhr.onreadystatechange = function () {
+        //   if ( xhr.readyState === 4 ) {
+        //     console.log( 'responseXML', xhr.responseXML );
+        //   }
+        // };
+
+        xhr.send( '' );
+      }
+    }
+
+    window.customElements.define( 'hughs-vlog-feed', HughsVlogFeed );
+  })();
+  //]]></script>
+</html>

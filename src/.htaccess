@@ -2,3 +2,5 @@
   AddType application/xhtml+xml .html
 </Files>
 AddType application/ovml+xml .ovml
+# AddType text/xml .ovml
+# AddType application/xml .ovml

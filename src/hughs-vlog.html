@@ -24,7 +24,9 @@
       constructor() {
         super();
 
-        const $shadowRoot = this.attachShadow({
+        var app = this;
+
+        const $shadowRoot = app.attachShadow({
           "mode": "open"
         });
         const $HughsVlog = ownerDocument.querySelector( '#hughs-vlog' );

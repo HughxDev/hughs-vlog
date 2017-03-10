@@ -25,14 +25,13 @@
         const $shadowContent = $HughsVlogFeed.content.cloneNode( true );
 
         feed.ovml = null;
-        feed.nsResolver = null;
-        feed.evaluator = new XPathEvaluator();
+        feed.loading = false;
         feed.ns = {
           "xml": "http://www.w3.org/XML/1998/namespace",
           "xhtml": "http://www.w3.org/1999/xhtml",
+          "ovml": "http://vocab.nospoon.tv/ovml#",
+          "xlink": "http://www.w3.org/1999/xlink"
         };
-        feed.loading = false;
-
         feed.src = feed.getAttribute( 'src' ) || 'vlog.ovml';
 
         feed.OVMLimported = new Promise(function HughsVlogFeedImportOVMLPromise( resolve, reject ) {
@@ -55,7 +54,7 @@
                       // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
                       // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
 
-                      // Stupid hack to work around the fact that null-prefix for namespaced elements doesn't work
+                      // Stupid hack to work around the fact that null-prefix for default-namespaced elements doesn't work
                       feed.ovml = new DOMParser().parseFromString(
                         xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
                         'application/xml'
@@ -95,48 +94,41 @@
 
       select( xpath, refNode, xpathType ) {
         var feed = this;
+        var evaluator = new XPathEvaluator();
+        var promise = feed.OVMLimported.then(function ( response ) {
+          // response === feed.ovml
+          
+          // Automatic Namespace Resolution:
+          // feed.nsResolver = feed.evaluator.createNSResolver( feed.ovml.documentElement );
+          
+          // Custom Namespace Resolution:
+          var defaultNS = feed.ovml.documentElement.getAttribute( 'xmlns' ) || feed.ns.ovml;
 
-        var selectPromise = new Promise(function HughsVlogFeedSelectPromise( resolve, reject ) {
-          feed.OVMLimported.then(function ( response ) {
-            // response === feed.ovml
-            feed.ns[''] = feed.ovml.documentElement.getAttribute( 'xmlns' );
-            feed.ns.ovml = feed.ovml.documentElement.getAttribute( 'xmlns:ovml' );
-            feed.ns.xlink = feed.ovml.documentElement.getAttribute( 'xmlns:xlink' );
-            // feed.nsResolver = feed.evaluator.createNSResolver( feed.ovml.documentElement );
-            
-            // feed.ovml.documentElement.removeAttribute( 'xmlns' );
+          function nsResolver( prefix ) {
+            return ( feed.ns[prefix] || defaultNS );
+          };
 
-            function nsResolver( prefix ) {
-              return ( feed.ns[prefix] || feed.ns.defaultNS );
-            };
+          xpath = xpath || '//video';
+          refNode = refNode || feed.ovml;
+          xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
 
-            console.log( feed.ns );
+          var node = evaluator.evaluate(
+            xpath,
+            refNode,
+            nsResolver,
+            xpathType,
+            null
+          ).iterateNext();
 
-            xpath = xpath || '//video';
-            refNode = refNode || feed.ovml;
-            xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
-
-            // console.log();
-            // document.evaluate
-            var node = feed.evaluator.evaluate(
-              xpath,
-              refNode,
-              nsResolver,
-              xpathType,
-              null
-            ).iterateNext();
-
-            resolve( node );
-          });
+          // resolve( node );
+          return node;
         });
 
-        return selectPromise;
+        return promise;
       }
 
       isLoaded() {
-        var feed = this;
-
-        return ( !feed.loading && ( feed.ovml !== null ) );
+        return ( !this.loading && ( this.ovml !== null ) );
       }
     }
 

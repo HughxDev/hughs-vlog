@@ -29,6 +29,10 @@
 
       connectedCallback() {
         this.setAttribute( 'role', 'article' );
+
+        this.getYouTubeLink().then(function ( response ) {
+          console.log( 'response', response );
+        });
       }
 
       getYouTubeLink() {
@@ -40,7 +44,7 @@
       }
 
       getOembed( url ) {
-        
+
       }
     }
 

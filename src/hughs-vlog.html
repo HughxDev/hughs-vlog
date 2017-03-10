@@ -1,12 +1,14 @@
 <html>
   <link rel="import" href="hughs-vlog-header.html" />
-  <link rel="import" href="hughs-vlog-main.html" />
   <link rel="import" href="hughs-vlog-footer.html" />
+  <link rel="import" href="hughs-vlog-feed.html" />
 
   <template id="hughs-vlog">
     <style>:host { display: block; }</style>
     <hughs-vlog-header></hughs-vlog-header>
-    <hughs-vlog-main></hughs-vlog-main>
+    <main>
+      <hughs-vlog-feed src="vlog.ovml"></hughs-vlog-feed>
+    </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </template>
 

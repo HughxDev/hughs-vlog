@@ -20,19 +20,29 @@
       constructor() {
         super();
 
+        var entry = this;
+
         const $shadowRoot = this.attachShadow({mode: 'open'});
         const $HughsVlogFeedEntry = ownerDocument.querySelector( '#hughs-vlog-feed__entry' );
         const $shadowContent = $HughsVlogFeedEntry.content.cloneNode( true );
+
+        entry.oembed = null;
 
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
 
       connectedCallback() {
-        this.setAttribute( 'role', 'article' );
+        var entry = this;
 
-        this.getYouTubeLink().then(function ( response ) {
-          console.log( 'response', response );
-        });
+        entry.setAttribute( 'role', 'article' );
+
+        entry.getYouTubeLink().then(function ( url ) {
+          // console.log( 'response', response );
+          return entry.getOembed( url );
+        })
+        .then(function ( oembed ) {
+          console.log( 'oembed', oembed );
+        })
       }
 
       getYouTubeLink() {
@@ -44,7 +54,35 @@
       }
 
       getOembed( url ) {
+        var endpoint = 'http://www.youtube.com/oembed?url=' + encodeURIComponent( url ) + '&format=xml';
 
+        console.log( endpoint == 'http://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Do5MaYhQZONY&format=xml' );
+
+        return new Promise(function HughsVlogFeedEntryGetOembedPromise( resolve, reject ) {
+          var xhr = new XMLHttpRequest();
+
+          xhr.open( 'GET', endpoint, true );
+          xhr.setRequestHeader( 'Accept', 'application/xhtml+xml;q=0.8,text/html;q=0.6' );
+          
+          xhr.onload = function xhrOnLoad( event ) {
+            switch ( xhr.status ) {
+              case 200:
+                oembed = xhr.responseXML || xhr.responseText;
+
+                resolve( oembed );
+              break;
+
+              default:
+                reject( Error( xhr.statusText ) );
+            }
+          };
+
+          xhr.onerror = function xhrOnError( event ) {
+            reject( Error( 'There was a network error.' ) );
+          };
+
+          xhr.send( '' );
+        });
       }
     }
 

@@ -1,7 +1,9 @@
 <html>
-  <link rel="import" href="hughs-vlog-feed__item.html" />
+  <link rel="import" href="hughs-vlog-feed__entry.html" />
 
-  <template id="hughs-vlog-feed"></template>
+  <template id="hughs-vlog-feed">
+    <hughs-vlog-feed__entry></hughs-vlog-feed__entry>
+  </template>
 
   <script>//<![CDATA[
   (function () {
@@ -16,74 +18,125 @@
       constructor() {
         super();
 
-        const $shadowRoot = this.attachShadow({mode: 'open'});
+        var feed = this;
+
+        const $shadowRoot = feed.attachShadow({mode: 'open'});
         const $HughsVlogFeed = ownerDocument.querySelector( '#hughs-vlog-feed' );
         const $shadowContent = $HughsVlogFeed.content.cloneNode( true );
 
-        this.xmlDoc = null;
-        this.nsResolver = null;
-        this.evaluator = new XPathEvaluator();
-        this.ns = {
-          "xml": "http://www.w3.org/XML/1998/namespace"
+        feed.ovml = null;
+        feed.nsResolver = null;
+        feed.evaluator = new XPathEvaluator();
+        feed.ns = {
+          "xml": "http://www.w3.org/XML/1998/namespace",
+          "xhtml": "http://www.w3.org/1999/xhtml",
         };
+        feed.loading = false;
 
-        this.importXML();
+        feed.src = feed.getAttribute( 'src' ) || 'vlog.ovml';
+
+        feed.OVMLimported = new Promise(function HughsVlogFeedImportOVMLPromise( resolve, reject ) {
+          if ( !feed.isLoaded() ) {
+            var xhr = new XMLHttpRequest();
+
+            xhr.open( 'GET', feed.src, true );
+            xhr.setRequestHeader( 'Accept', 'application/ovml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
+            
+            xhr.onload = function xhrOnLoad( event ) {
+              switch ( xhr.status ) {
+                case 200:
+                  switch ( feed.getAttribute( 'fetch-mode' )  ) {
+                    case 'pedantic':
+                      feed.ovml = xhr.responseXML;
+                    break;
+
+                    case 'lax':
+                    default:
+                      // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
+                      // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
+
+                      // Stupid hack to work around the fact that null-prefix for namespaced elements doesn't work
+                      feed.ovml = new DOMParser().parseFromString(
+                        xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
+                        'application/xml'
+                      );
+                  }
+
+                  feed.loading = false;
+
+                  resolve( feed.ovml );
+                break;
+
+                default:
+                  feed.loading = false;
+
+                  reject( Error( xhr.statusText ) );
+              }
+            };
+
+            xhr.onerror = function xhrOnError( event ) {
+              feed.loading = false;
+
+              reject( Error( 'There was a network error.' ) );
+            };
+
+            xhr.send( '' );
+          } // !feed.isLoaded()
+        });
 
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
 
       connectedCallback() {
-        // this.setAttribute( 'role', 'contentinfo' );
-      }
-
-      readXML( xpath, refNode, xpathType ) {
-        this.ns.defaultNS = this.xmlDoc.documentElement.getAttribute( 'xmlns' );
-        this.ns.ovml = this.xmlDoc.documentElement.getAttribute( 'xmlns:ovml' );
-        this.ns.xlink = this.xmlDoc.documentElement.getAttribute( 'xmlns:xlink' );
-        this.nsResolver = this.evaluator.createNSResolver( this.xmlDoc.documentElement );
-
-        xpath = xpath || '//ovml:video';
-        refNode = refNode || this.xmlDoc;
-        xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
-
-        console.log(this.evaluator.evaluate(
-          xpath,
-          refNode,
-          this.nsResolver,
-          //ns.ovml,g
-          //null,
-          xpathType,
-          null
-        ).iterateNext());
-      }
-
-      importXML() {
         var feed = this;
-        var xmlFile = 'vlog.ovml';
-        var xhr = new XMLHttpRequest();
 
-        xhr.open( 'GET', xmlFile, true );
-        xhr.setRequestHeader( 'Accept', 'application/ovml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
-        
-        xhr.onload = function xhrOnLoad( event ) {
-          switch ( xhr.status ) {
-            case 200:
-              feed.xmlDoc = xhr.responseXML;
+        feed.setAttribute( 'role', 'article' );
+      }
 
-              feed.readXML();
-            break;
+      select( xpath, refNode, xpathType ) {
+        var feed = this;
 
-            default:
-          }
-        };
+        var selectPromise = new Promise(function HughsVlogFeedSelectPromise( resolve, reject ) {
+          feed.OVMLimported.then(function ( response ) {
+            // response === feed.ovml
+            feed.ns[''] = feed.ovml.documentElement.getAttribute( 'xmlns' );
+            feed.ns.ovml = feed.ovml.documentElement.getAttribute( 'xmlns:ovml' );
+            feed.ns.xlink = feed.ovml.documentElement.getAttribute( 'xmlns:xlink' );
+            // feed.nsResolver = feed.evaluator.createNSResolver( feed.ovml.documentElement );
+            
+            // feed.ovml.documentElement.removeAttribute( 'xmlns' );
 
-        // xhr.onreadystatechange = function () {
-        //   if ( xhr.readyState === 4 ) {
-        //     console.log( 'responseXML', xhr.responseXML );
-        //   }
-        // };
+            function nsResolver( prefix ) {
+              return ( feed.ns[prefix] || feed.ns.defaultNS );
+            };
 
-        xhr.send( '' );
+            console.log( feed.ns );
+
+            xpath = xpath || '//video';
+            refNode = refNode || feed.ovml;
+            xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
+
+            // console.log();
+            // document.evaluate
+            var node = feed.evaluator.evaluate(
+              xpath,
+              refNode,
+              nsResolver,
+              xpathType,
+              null
+            ).iterateNext();
+
+            resolve( node );
+          });
+        });
+
+        return selectPromise;
+      }
+
+      isLoaded() {
+        var feed = this;
+
+        return ( !feed.loading && ( feed.ovml !== null ) );
       }
     }
 

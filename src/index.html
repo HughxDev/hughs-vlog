@@ -16,6 +16,7 @@
 
   <!-- Interact with the upgraded element -->
   <script>//<![CDATA[
+  (function () {
     window.addEventListener('WebComponentsReady', function HughsVlogWebComponentsReady() {
     // window.customElements.whenDefined( 'hughs-vlog' ).then(function HughsVlogDefined() {  
       // At this point we are guaranteed that all required polyfills have loaded,
@@ -31,6 +32,7 @@
       
       // element.someAPI(); // 👍
     });
+  })();
   //]]></script>
 </body>
 </html>

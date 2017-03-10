@@ -25,13 +25,16 @@
         const $shadowContent = $HughsVlogFeed.content.cloneNode( true );
 
         feed.ovml = null;
+
         feed.loading = false;
+
         feed.ns = {
           "xml": "http://www.w3.org/XML/1998/namespace",
           "xhtml": "http://www.w3.org/1999/xhtml",
           "ovml": "http://vocab.nospoon.tv/ovml#",
           "xlink": "http://www.w3.org/1999/xlink"
         };
+
         feed.src = feed.getAttribute( 'src' ) || 'vlog.ovml';
 
         feed.OVMLimported = new Promise(function HughsVlogFeedImportOVMLPromise( resolve, reject ) {

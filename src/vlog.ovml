@@ -7,7 +7,7 @@
   xmlns:oembed="http://oembed.com/"
 >
   <meta>
-    <!-- <link rel="glossary" href="/glossary.ovml" /> -->
+    <!-- <link rel="glossary" xlink:href="/glossary.ovml" /> -->
     <link title="IMDb" rel="info" href="http://www.imdb.com/title/tt6082800/" />
   </meta>
   <!--
@@ -75,7 +75,7 @@
         <symbol>©</symbol>
         <entity xlink:href="#hugh-guiney" />
         <title>All rights reserved.</title>
-        <!-- <terms></terms> -->
+        <!-- <uri></uri> -->
       </license>
     </music>
 
@@ -131,6 +131,28 @@
           <uri>https://www.youtube.com/watch?v=aEmmNJHzjTw</uri>
           <uri>https://www.facebook.com/HughsVlog/videos/1928756370692126/</uri>
         </showing>
+        <music>
+          <title>Busy</title>
+          <entity>TEAM GOLD</entity>
+          <uri>https://soundcloud.com/team_gold/busy</uri>
+          <license code="CC BY-SA" version="3.0">
+            <title>Creative Commons Attribution-ShareAlike Unported</title>
+            <uri>https://creativecommons.org/licenses/by-sa/3.0/</uri>
+          </license>
+        </music>
+        <music>
+          <title>20th Century Fox Fanfare</title>
+          <entity>Alfred Newman</entity>
+          <conductor>
+            <entity>John Williams</entity>
+          </conductor>
+          <uri>https://en.wikipedia.org/wiki/File:20th_Century_FOX_fanfare.ogg</uri>
+          <license>
+            <symbol>©</symbol>
+            <published>1980</published>
+            <entity>21st Century Fox</entity>
+          </license>
+        </music>
       </video>
 
       <!-- https://www.youtube.com/watch?v=X-JXFh4A5AE -->

@@ -1,11 +1,7 @@
 <html>
-  <template id="hughs-vlog-feed__entry"></template>
-  <!-- <iframe
-  width="853"
-  height="480"
-  src="https://www.youtube-nocookie.com/embed/aEmmNJHzjTw"
-  frameborder="0"
-  allowfullscreen="allowfullscreen"></iframe> -->
+  <template id="hughs-vlog-feed__entry">
+    <div id="player" class="hughs-vlog-feed-entry__player"></div>
+  </template>
 
   <script>//<![CDATA[
   (function () {
@@ -28,6 +24,8 @@
 
         entry.oembed = null;
 
+        // entry.data = document.createDocumentFragment();
+
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
 
@@ -35,41 +33,69 @@
         var entry = this;
 
         entry.setAttribute( 'role', 'article' );
+        entry.setAttribute( 'class', 'hughs-vlog-feed-entry' );
+
+        // console.log( 'entry.data', entry.data );
 
         entry.getYouTubeLink().then(function ( url ) {
           // console.log( 'response', response );
           return entry.getOembed( url );
         })
         .then(function ( oembed ) {
-          console.log( 'oembed', oembed );
+
+          // console.log( 'oembed.html', oembed.html );
+
+          // console.log( entry.shadowRoot.querySelector('#player') );
+
+          entry.shadowRoot.querySelector( '#player' ).innerHTML = oembed.html;
+
+          // entry.shadowRoot.querySelector( '#player' ).appendChild(
+          //   new DOMParser().parseFromString( oembed.html, 'application/xhtml+xml' ).firstChild
+          // );
+        })
+        .catch(function ( event ) {
+          console.log( 'event', event );
         })
       }
 
       getYouTubeLink() {
-        var xpath = '//video/showing[@type="internet"][@admission="public"]/uri[starts-with(normalize-space(.), "https://www.youtube.com")]/text()';
+        var entry = this;
+        var xpath = 'showing[@type="internet"][@admission="public"]/uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
 
-        return this.parentNode.host.select( xpath ).then(function ( response ) {
-          return response.textContent;
+        var selected;
+
+        return entry.parentNode.host.select( xpath, entry.data ).then(function ( response ) {
+          if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
+            return response[0].textContent;
+          } else {
+            throw 'No YouTube Link Found';
+          }
         });
       }
 
       getOembed( url ) {
-        var endpoint = 'http://www.youtube.com/oembed?url=' + encodeURIComponent( url ) + '&format=xml';
-
-        console.log( endpoint == 'http://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Do5MaYhQZONY&format=xml' );
+        var entry = this;
+        var endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
 
         return new Promise(function HughsVlogFeedEntryGetOembedPromise( resolve, reject ) {
           var xhr = new XMLHttpRequest();
+          var oembedJSON;
 
           xhr.open( 'GET', endpoint, true );
-          xhr.setRequestHeader( 'Accept', 'application/xhtml+xml;q=0.8,text/html;q=0.6' );
+          xhr.setRequestHeader( 'Accept', 'application/xml;q=0.8,text/xml;q=0.6,application/json;q=0.4' );
           
           xhr.onload = function xhrOnLoad( event ) {
             switch ( xhr.status ) {
               case 200:
-                oembed = xhr.responseXML || xhr.responseText;
+                oembedJSON = JSON.parse( ( xhr.responseXML || xhr.responseText ) );
 
-                resolve( oembed );
+                oembedJSON.html = oembedJSON.html.replace( 'allowfullscreen', 'allowfullscreen="allowfullscreen"' );
+
+                // oembedJSON.html = oembedJSON.html.replace( /src="[^"]+"/, 'src="blah.html"' );
+
+                entry.oembed = oembedJSON;
+
+                resolve( entry.oembed );
               break;
 
               default:

@@ -1,9 +1,7 @@
 <html>
   <link rel="import" href="hughs-vlog-feed__entry.html" />
 
-  <template id="hughs-vlog-feed">
-    <hughs-vlog-feed__entry></hughs-vlog-feed__entry>
-  </template>
+  <template id="hughs-vlog-feed"></template>
 
   <script>//<![CDATA[
   (function () {
@@ -35,7 +33,9 @@
           "xlink": "http://www.w3.org/1999/xlink"
         };
 
-        feed.src = feed.getAttribute( 'src' ) || 'vlog.ovml';
+        feed.src = ( feed.getAttribute( 'src' ) || 'vlog.ovml' );
+
+        feed.order = ( feed.getAttribute( 'order' ) || 'desc' ).toLowerCase();
 
         feed.OVMLimported = new Promise(function HughsVlogFeedImportOVMLPromise( resolve, reject ) {
           if ( !feed.isLoaded() ) {
@@ -93,12 +93,65 @@
         var feed = this;
 
         feed.setAttribute( 'role', 'article' );
+
+        feed.OVMLimported.then(function ( response ) {
+          return feed.select( '//video', feed.ovml );
+        })
+        .then(function ( nodes ) {
+          var i;
+          var entry;
+          var node;
+
+          switch ( feed.order ) {
+            case 'asc':
+              for ( i = 0; i < nodes.length; i++ ) {
+                node = nodes[i];
+
+                if ( node ) {
+                  entry = document.createElement( 'hughs-vlog-feed__entry' );
+
+                  entry.data = node;
+
+                  feed.shadowRoot.appendChild( entry );
+                }
+              }
+            break;
+
+            case 'desc':
+            default:
+              for ( i = nodes.length - 1; i >= 0; i-- ) {
+                node = nodes[i];
+
+                if ( node ) {
+                  entry = document.createElement( 'hughs-vlog-feed__entry' );
+                  
+                  entry.data = node;
+                  
+                  feed.shadowRoot.appendChild( entry );
+                }
+              }
+            break;
+          }
+        });
       }
 
       select( xpath, refNode, xpathType ) {
         var feed = this;
         var evaluator = new XPathEvaluator();
         var promise = feed.OVMLimported.then(function ( response ) {
+          if ( !xpath ) {
+            throw 'No XPath provided';
+          }
+
+          if ( !refNode ) {
+            throw 'No reference node provided';
+          }
+
+          var result;
+          var nodes = [];
+          var node;
+          var i = 0;
+          var snapshotLength;
           // response === feed.ovml
           
           // Automatic Namespace Resolution:
@@ -111,20 +164,42 @@
             return ( feed.ns[prefix] || defaultNS );
           };
 
-          xpath = xpath || '//video';
-          refNode = refNode || feed.ovml;
-          xpathType = xpathType || XPathResult.ORDERED_NODE_ITERATOR_TYPE;
+          // xpathType = xpathType ||  XPathResult.ORDERED_NODE_ITERATOR_TYPE;
+          // Better performance (https://www.nczonline.net/blog/2009/03/17/xpath-in-javascript-part-1/)
+          xpathType = xpathType || XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
 
-          var node = evaluator.evaluate(
+          result = evaluator.evaluate(
             xpath,
             refNode,
             nsResolver,
             xpathType,
             null
-          ).iterateNext();
+          );
 
-          // resolve( node );
-          return node;
+          if ( result ) {
+            switch ( xpathType ) {
+              case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+                node = result.iterateNext();
+
+                nodes.push( node );
+
+                while( node ) {
+                  node = result.iterateNext();
+                  nodes.push( node );
+                }
+              break;
+
+              case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+                for ( snapshotLength = result.snapshotLength; i < snapshotLength; ++i ) {
+                  nodes.push( result.snapshotItem(i) );
+                }
+              default:
+
+            }
+          }
+
+          // resolve( result );
+          return nodes;
         });
 
         return promise;

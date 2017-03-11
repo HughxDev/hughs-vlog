@@ -103,14 +103,26 @@
           </div>
         </description>
         <runtime>PT11M49S</runtime>
+        <recorded>2016-09-14</recorded>
         <published>2017-03-06</published>
+        <showing scope="release" type="internet" admission="public">
+          <uri>http://hugh.today/2017-09-14</uri>
+          <uri>https://www.youtube.com/watch?v=aEmmNJHzjTw</uri>
+          <uri>https://www.facebook.com/HughsVlog/videos/1928756370692126/</uri>
+        </showing>
       </video>
 
       <!-- https://www.youtube.com/watch?v=X-JXFh4A5AE -->
       <video type="personal" xml:lang="en" xml:id="ep-22">
         <title>Buying Soda &amp; Breaking My Blood Oath</title>
         <runtime>PT3M57S</runtime>
+        <recorded>2016-09-15</recorded>
         <published>2017-03-07</published>
+        <showing scope="release" type="internet" admission="public">
+          <uri>http://hugh.today/2017-09-15</uri>
+          <uri>https://www.youtube.com/watch?v=X-JXFh4A5AE</uri>
+          <uri>https://www.facebook.com/HughsVlog/videos/1929571750610588/</uri>
+        </showing>
       </video>
     </group><!--/#season-3-->
 

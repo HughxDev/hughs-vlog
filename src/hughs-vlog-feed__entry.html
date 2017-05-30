@@ -89,7 +89,7 @@
               case 200:
                 oembedJSON = JSON.parse( ( xhr.responseXML || xhr.responseText ) );
 
-                oembedJSON.html = oembedJSON.html.replace( 'allowfullscreen', 'allowfullscreen="allowfullscreen"' );
+                oembedJSON.html = oembedJSON.html.replace( 'allowfullscreen', 'allowfullscreen="allowfullscreen"' ).replace( 'iframe', 'iframe xmlns="http://www.w3.org/1999/xhtml"' );
 
                 // oembedJSON.html = oembedJSON.html.replace( /src="[^"]+"/, 'src="blah.html"' );
 

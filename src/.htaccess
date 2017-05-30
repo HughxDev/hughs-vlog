@@ -1,6 +1,6 @@
 <Files index.html>
-  # AddType application/xhtml+xml .html
-  AddType text/html .html
+  AddType application/xhtml+xml .html
+  # AddType text/html .html
 </Files>
 AddType application/ovml+xml .ovml
 # AddType text/xml .ovml

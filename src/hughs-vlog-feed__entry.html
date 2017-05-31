@@ -60,7 +60,7 @@
 
       getYouTubeLink() {
         var entry = this;
-        var xpath = 'showing[@type="internet"][@admission="public"]/uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
+        var xpath = 'showing[@type="internet"][@admission="public"]//uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
 
         var selected;
 

@@ -1,0 +1,36 @@
+<html>
+  <link rel="import" href="hughs-vlog-feed.html" />
+
+  <template id="hughs-vlog-latest-episode">
+    <style>:host { display: block; }</style>
+    <hughs-vlog-feed src="http://localhost:3000/videos?limit=1" playable large></hughs-vlog-feed>
+  </template>
+
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
+
+    var ownerDocument = document.currentScript.ownerDocument;
+
+    class HughsVlogLatestEpisode extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        var latestEpisode = this;
+
+        const $shadowRoot = latestEpisode.attachShadow({
+          "mode": "open"
+        });
+        const $HughsVlogLatestEpisode = ownerDocument.querySelector( '#hughs-vlog-latest-episode' );
+        const $shadowContent = $HughsVlogLatestEpisode.content.cloneNode( true );
+
+        $shadowRoot.appendChild( $shadowContent );
+      }
+    }
+
+    window.customElements.define( 'hughs-vlog-latest-episode', HughsVlogLatestEpisode );
+  })();
+  //]]></script>
+</html>

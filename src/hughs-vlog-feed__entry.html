@@ -1,6 +1,60 @@
 <html>
   <template id="hughs-vlog-feed__entry">
-    <div id="player" class="hughs-vlog-feed-entry__player"></div>
+    <style>
+      :host {
+        display: inline-block;
+        /*display: inline-flex;*/
+        /*width: 360px;*/
+        width: 50%;
+        position: relative;
+      }
+
+      :host([large]) {
+        display: block;
+        /*display: flex;*/
+        /*width: 853px;*/
+        width: 100%;
+      }
+
+      .hughs-vlog-feed-entry__player {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+      }
+
+      .hughs-vlog-feed-entry__player > iframe,
+      .hughs-vlog-feed-entry__player > object,
+      .hughs-vlog-feed-entry__player > embed,
+      .hughs-vlog-feed-entry__player > img,
+      .hughs-vlog-feed-entry__player > svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .flex-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    
+    <a class="flex-container" href="javascript:void(0);">
+      <span id="title" class="flex-item"></span>
+    </a>
+    <div id="player" class="hughs-vlog-feed-entry__player">
+      <img src="http://via.placeholder.com/640x360" />
+    </div>
   </template>
 
   <script>//<![CDATA[
@@ -37,25 +91,44 @@
 
         // console.log( 'entry.data', entry.data );
 
-        entry.getYouTubeLink().then(function ( url ) {
-          // console.log( 'response', response );
-          return entry.getOembed( url );
-        })
-        .then(function ( oembed ) {
+        var playable = ( entry.parentNode.host.getAttribute( 'playable' ) !== null );
 
-          // console.log( 'oembed.html', oembed.html );
+        if ( playable ) {
+          entry.getYouTubeLink().then(function ( url ) {
+            // console.log( 'response', response );
+            return entry.getOembed( url );
+          })
+          .then(function ( oembed ) {
 
-          // console.log( entry.shadowRoot.querySelector('#player') );
+            // console.log( 'oembed.html', oembed.html );
 
-          entry.shadowRoot.querySelector( '#player' ).innerHTML = oembed.html;
+            // console.log( entry.shadowRoot.querySelector('#player') );
 
-          // entry.shadowRoot.querySelector( '#player' ).appendChild(
-          //   new DOMParser().parseFromString( oembed.html, 'application/xhtml+xml' ).firstChild
-          // );
-        })
-        .catch(function ( event ) {
-          console.log( 'event', event );
-        })
+            entry.shadowRoot.querySelector( '#player' ).innerHTML = oembed.html;
+
+            // entry.shadowRoot.querySelector( '#player' ).appendChild(
+            //   new DOMParser().parseFromString( oembed.html, 'application/xhtml+xml' ).firstChild
+            // );
+          })
+          .catch(function ( event ) {
+            console.log( 'event', event );
+          });
+        } else {
+          // console.log( entry.data );
+          entry.parentNode.host.select( 'title', entry.data ).then( function ( response ) {
+            if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
+              return response[0].textContent;
+            } else {
+              throw 'No title';
+            }
+          } )
+          .then( function ( title ) {
+            // console.log( title );
+
+            entry.shadowRoot.querySelector( '#title' ).textContent = title;
+          } );
+          // entry.shadowRoot.querySelector( '#title' ).innerHTML = entry.data.title;
+        }
       }
 
       getYouTubeLink() {
@@ -64,13 +137,13 @@
 
         var selected;
 
-        return entry.parentNode.host.select( xpath, entry.data ).then(function ( response ) {
+        return entry.parentNode.host.select( xpath, entry.data ).then( function ( response ) {
           if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
             return response[0].textContent;
           } else {
             throw 'No YouTube Link Found';
           }
-        });
+        } );
       }
 
       getOembed( url ) {

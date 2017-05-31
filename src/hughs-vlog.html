@@ -2,12 +2,24 @@
   <link rel="import" href="hughs-vlog-header.html" />
   <link rel="import" href="hughs-vlog-footer.html" />
   <link rel="import" href="hughs-vlog-feed.html" />
+  <link rel="import" href="hughs-vlog-latest-episode.html" />
 
   <template id="hughs-vlog">
-    <style>:host { display: block; }</style>
+    <style>
+      :host {
+        display: block;
+      }
+
+      hughs-vlog-latest-episode,
+      hughs-vlog-feed {
+        margin: 0 auto;
+        max-width: 853px;
+      }
+    </style>
     <hughs-vlog-header></hughs-vlog-header>
     <main>
-      <hughs-vlog-feed src="http://localhost:3000/videos/" order="desc"></hughs-vlog-feed>
+      <hughs-vlog-latest-episode></hughs-vlog-latest-episode>
+      <hughs-vlog-feed src="http://localhost:3000/videos"></hughs-vlog-feed>
     </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </template>

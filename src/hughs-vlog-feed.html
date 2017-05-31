@@ -1,7 +1,13 @@
 <html>
   <link rel="import" href="hughs-vlog-feed__entry.html" />
 
-  <template id="hughs-vlog-feed"></template>
+  <template id="hughs-vlog-feed">
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
 
   <script>//<![CDATA[
   (function () {
@@ -110,6 +116,10 @@
                 if ( node ) {
                   entry = document.createElement( 'hughs-vlog-feed__entry' );
 
+                  if ( feed.getAttribute( 'large' ) !== null ) {
+                    entry.setAttribute( 'large', '' );
+                  }
+
                   entry.data = node;
 
                   feed.shadowRoot.appendChild( entry );
@@ -124,6 +134,10 @@
 
                 if ( node ) {
                   entry = document.createElement( 'hughs-vlog-feed__entry' );
+
+                  if ( feed.getAttribute( 'large' ) !== null ) {
+                    entry.setAttribute( 'large', '' );
+                  }
                   
                   entry.data = node;
                   

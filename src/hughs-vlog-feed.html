@@ -28,34 +28,34 @@
         const $HughsVlogFeed = ownerDocument.querySelector( '#hughs-vlog-feed' );
         const $shadowContent = $HughsVlogFeed.content.cloneNode( true );
 
-        feed.ovml = null;
+        feed.hvml = null;
 
         feed.loading = false;
 
         feed.ns = {
           "xml": "http://www.w3.org/XML/1998/namespace",
           "xhtml": "http://www.w3.org/1999/xhtml",
-          "ovml": "http://vocab.nospoon.tv/ovml#",
+          "hvml": "http://vocab.nospoon.tv/ovml#",
           "xlink": "http://www.w3.org/1999/xlink"
         };
 
-        feed.src = ( feed.getAttribute( 'src' ) || 'vlog.ovml' );
+        feed.src = ( feed.getAttribute( 'src' ) || 'vlog.hvml' );
 
         feed.order = ( feed.getAttribute( 'order' ) || 'desc' ).toLowerCase();
 
-        feed.OVMLimported = new Promise(function HughsVlogFeedImportOVMLPromise( resolve, reject ) {
+        feed.hvmlimported = new Promise(function HughsVlogFeedImporthvmlPromise( resolve, reject ) {
           if ( !feed.isLoaded() ) {
             var xhr = new XMLHttpRequest();
 
             xhr.open( 'GET', feed.src, true );
-            xhr.setRequestHeader( 'Accept', 'application/ovml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
+            xhr.setRequestHeader( 'Accept', 'application/hvml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
             
             xhr.onload = function xhrOnLoad( event ) {
               switch ( xhr.status ) {
                 case 200:
                   switch ( feed.getAttribute( 'fetch-mode' )  ) {
                     case 'pedantic':
-                      feed.ovml = xhr.responseXML;
+                      feed.hvml = xhr.responseXML;
                     break;
 
                     case 'lax':
@@ -64,7 +64,7 @@
                       // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
 
                       // Stupid hack to work around the fact that null-prefix for default-namespaced elements doesn't work
-                      feed.ovml = new DOMParser().parseFromString(
+                      feed.hvml = new DOMParser().parseFromString(
                         xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
                         'application/xml'
                       );
@@ -72,7 +72,7 @@
 
                   feed.loading = false;
 
-                  resolve( feed.ovml );
+                  resolve( feed.hvml );
                 break;
 
                 default:
@@ -100,8 +100,8 @@
 
         feed.setAttribute( 'role', 'article' );
 
-        feed.OVMLimported.then(function ( response ) {
-          return feed.select( '//video', feed.ovml );
+        feed.hvmlimported.then(function ( response ) {
+          return feed.select( '//video', feed.hvml );
         })
         .then(function ( nodes ) {
           var i;
@@ -152,7 +152,7 @@
       select( xpath, refNode, xpathType ) {
         var feed = this;
         var evaluator = new XPathEvaluator();
-        var promise = feed.OVMLimported.then(function ( response ) {
+        var promise = feed.hvmlimported.then(function ( response ) {
           if ( !xpath ) {
             throw 'No XPath provided';
           }
@@ -166,13 +166,13 @@
           var node;
           var i = 0;
           var snapshotLength;
-          // response === feed.ovml
+          // response === feed.hvml
           
           // Automatic Namespace Resolution:
-          // feed.nsResolver = feed.evaluator.createNSResolver( feed.ovml.documentElement );
+          // feed.nsResolver = feed.evaluator.createNSResolver( feed.hvml.documentElement );
           
           // Custom Namespace Resolution:
-          var defaultNS = feed.ovml.documentElement.getAttribute( 'xmlns' ) || feed.ns.ovml;
+          var defaultNS = feed.hvml.documentElement.getAttribute( 'xmlns' ) || feed.ns.hvml;
 
           function nsResolver( prefix ) {
             return ( feed.ns[prefix] || defaultNS );
@@ -220,7 +220,7 @@
       }
 
       isLoaded() {
-        return ( !this.loading && ( this.ovml !== null ) );
+        return ( !this.loading && ( this.hvml !== null ) );
       }
     }
 

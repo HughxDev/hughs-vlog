@@ -47,24 +47,62 @@
         justify-content: center;
         align-items: center;
         color: white;
+      }
+
+      :host([playable]) .flex-container {
+        position: static;
+        display: block;
+        height: initial;
+        color: inherit;
+      }
+
+      a {
         text-decoration: none;
       }
 
-      .flex-container:hover,
-      .flex-container:active {
+      a:hover,
+      a:active {
         text-decoration: underline;
       }
 
       .flex-item {
         /*width: 39em;*/
         max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
         text-align: center;
+      }
+
+      dl {
+        text-align: center;
+      }
+
+      dt {
+        font-weight: bold;
+      }
+
+      dd {
+        margin-left: 0;
+      }
+
+      dt,
+      dd {
+        display: inline-block;
       }
     </style>
     
-    <a class="flex-container" href="javascript:void(0);">
-      <span id="title" class="flex-item"></span>
-    </a>
+    <header>
+      <a class="flex-container" href="javascript:void(0);">
+        <h2 id="title" class="flex-item"></h2>
+      </a>
+      <dl>
+        <dt>Recorded</dt>
+        <dd><time id="recorded"></time></dd>
+        <dt>Published</dt>
+        <dd><time id="published"></time></dd>
+      </dl>
+    </header>
+    <!-- <h2></h2> -->
     <div id="player" class="hughs-vlog-feed-entry__player">
       <img src="http://via.placeholder.com/640x360" />
     </div>
@@ -99,12 +137,18 @@
       connectedCallback() {
         var entry = this;
 
+        entry.$ = {};
+
         entry.setAttribute( 'role', 'article' );
         entry.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
         // console.log( 'entry.data', entry.data );
 
-        var playable = ( entry.parentNode.host.getAttribute( 'playable' ) !== null );
+        var playable = ( entry.parentNode.host.hasAttribute( 'playable' ) );
+
+        entry.$.h2 = entry.shadowRoot.querySelector( 'h2' );
+        entry.$.recorded = entry.shadowRoot.querySelector( '#recorded' );
+        entry.$.published = entry.shadowRoot.querySelector( '#published' );
 
         if ( playable ) {
           entry.getYouTubeLink().then(function ( url ) {
@@ -112,36 +156,152 @@
             return entry.getOembed( url );
           })
           .then(function ( oembed ) {
-
-            // console.log( 'oembed.html', oembed.html );
-
-            // console.log( entry.shadowRoot.querySelector('#player') );
-
             entry.shadowRoot.querySelector( '#player' ).innerHTML = oembed.html;
-
-            // entry.shadowRoot.querySelector( '#player' ).appendChild(
-            //   new DOMParser().parseFromString( oembed.html, 'application/xhtml+xml' ).firstChild
-            // );
           })
           .catch(function ( event ) {
             console.log( 'event', event );
           });
-        } else {
-          // console.log( entry.data );
-          entry.parentNode.host.select( 'title', entry.data ).then( function ( response ) {
-            if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
-              return response[0].textContent;
-            } else {
-              throw 'No title';
-            }
-          } )
-          .then( function ( title ) {
-            // console.log( title );
 
+          entry.setTitle();
+        } else {
+          entry.select( 'title' ).then( entry.getText )
+          .then( function ( title ) {
             entry.shadowRoot.querySelector( '#title' ).textContent = title;
           } );
-          // entry.shadowRoot.querySelector( '#title' ).innerHTML = entry.data.title;
         }
+
+        this.renderMetadata();
+      }
+
+      select( xpath, data ) {
+        data = ( data || this.data );
+
+        return this.parentNode.host.select( xpath, data );
+      }
+
+      getText( response ) {
+        if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
+          return response[0].textContent;
+        } else {
+          throw 'No text';
+        }
+      }
+
+      // extractTitle( response ) {
+      //   if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
+      //     return response[0].textContent;
+      //   } else {
+      //     throw 'No title';
+      //   }  
+      // }
+
+      getTitle() {
+        // @todo: async/await
+      }
+
+      setTitle() {
+        var entry = this;
+
+        var titlePromise = this.select( 'title' )
+          .then( this.getText )
+          .then( function ( title ) { 
+            entry.$.h2.textContent = title;
+
+            return title;
+           }
+          )
+        ;
+
+        return titlePromise;
+      }
+
+      formatDate( date ) {
+        // return ;
+        function getMonthName( number ) {
+          var months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+          ];
+
+          return months[ parseInt( number, 10 ) ];
+        }
+
+        // https://stackoverflow.com/a/13627586/214325
+        function getOrdinalSuffix( number ) {
+          var i = number % 10;
+          var j = number % 100;
+
+          if ( i === 1 && j !== 11 ) {
+            return "st";
+          }
+
+          if ( i === 2 && j !== 12 ) {
+            return "nd";
+          }
+
+          if ( i === 3 && j !== 13 ) {
+            return "rd";
+          }
+
+          return "th";
+        }
+
+        var dateParts = date.split( 'T' )[0].split( '-' );
+        var year = dateParts[0];
+        var monthNumber = dateParts[1];
+        var day = parseInt( dateParts[2], 10 );
+
+
+        var month = getMonthName( monthNumber );
+
+        var formatted = month + ' ' + day.toString() + getOrdinalSuffix( day ) + ', ' + year;
+
+        return formatted;
+      }
+
+      renderPublished() {
+        var entry = this;
+
+        var publishedPromise = this.select( 'published' )
+          .then( this.getText )
+          .then( function ( published ) {
+            published = entry.formatDate( published );
+
+            entry.$.published.textContent = published;
+
+            return published;
+          } )
+        ;
+      }
+
+      renderRecorded() {
+        var entry = this;
+
+        var recordedPromise = this.select( 'recorded' )
+          .then( this.getText )
+          .then( function ( recorded ) {
+            recorded = entry.formatDate( recorded );
+
+            entry.$.recorded.textContent = recorded;
+
+            return recorded;
+          } )
+        ;
+      }
+
+      renderMetadata() {
+        this.renderPublished();
+        this.renderRecorded();
       }
 
       getYouTubeLink() {
@@ -150,7 +310,7 @@
 
         var selected;
 
-        return entry.parentNode.host.select( xpath, entry.data ).then( function ( response ) {
+        return entry.select( xpath, entry.data ).then( function ( response ) {
           if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
             return response[0].textContent;
           } else {

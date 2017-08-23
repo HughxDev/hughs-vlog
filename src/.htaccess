@@ -1,7 +1,5 @@
-<Files index.html>
-  AddType application/xhtml+xml .html
-  # AddType text/html .html
-</Files>
+AddType application/xhtml+xml .html
+# AddType text/html .html
 AddType application/ovml+xml .ovml
 AddType application/hvml+xml .hvml
 # AddType text/xml .ovml

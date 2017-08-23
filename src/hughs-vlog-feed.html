@@ -43,7 +43,11 @@
 
         feed.order = ( feed.getAttribute( 'order' ) || 'desc' ).toLowerCase();
 
-        feed.hvmlimported = new Promise(function HughsVlogFeedImporthvmlPromise( resolve, reject ) {
+        if ( feed.hasAttribute( 'limit' ) ) {
+          feed.src += '?limit=' + feed.getAttribute( 'limit' );
+        }
+
+        feed.hvmlImported = new Promise(function HughsVlogFeedImportHvmlPromise( resolve, reject ) {
           if ( !feed.isLoaded() ) {
             var xhr = new XMLHttpRequest();
 
@@ -59,6 +63,7 @@
                     break;
 
                     case 'lax':
+                    /* falls through */
                     default:
                       // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
                       // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
@@ -100,7 +105,7 @@
 
         feed.setAttribute( 'role', 'article' );
 
-        feed.hvmlimported.then(function ( response ) {
+        feed.hvmlImported.then(function ( response ) {
           return feed.select( '//video', feed.hvml );
         })
         .then(function ( nodes ) {
@@ -116,8 +121,12 @@
                 if ( node ) {
                   entry = document.createElement( 'hughs-vlog-feed__entry' );
 
-                  if ( feed.getAttribute( 'large' ) !== null ) {
-                    entry.setAttribute( 'large', '' );
+                  if ( feed.hasAttribute( 'large' ) ) {
+                    entry.setAttribute( 'large', 'large' );
+                  }
+
+                  if ( feed.hasAttribute( 'playable' ) ) {
+                    entry.setAttribute( 'playable', 'playable' );
                   }
 
                   entry.data = node;
@@ -128,6 +137,7 @@
             break;
 
             case 'desc':
+            /* falls through */
             default:
               for ( i = nodes.length - 1; i >= 0; i-- ) {
                 node = nodes[i];
@@ -135,8 +145,12 @@
                 if ( node ) {
                   entry = document.createElement( 'hughs-vlog-feed__entry' );
 
-                  if ( feed.getAttribute( 'large' ) !== null ) {
-                    entry.setAttribute( 'large', '' );
+                  if ( feed.hasAttribute( 'large' ) ) {
+                    entry.setAttribute( 'large', 'large' );
+                  }
+
+                  if ( feed.hasAttribute( 'playable' ) ) {
+                    entry.setAttribute( 'playable', 'playable' );
                   }
                   
                   entry.data = node;
@@ -152,7 +166,7 @@
       select( xpath, refNode, xpathType ) {
         var feed = this;
         var evaluator = new XPathEvaluator();
-        var promise = feed.hvmlimported.then(function ( response ) {
+        var promise = feed.hvmlImported.then(function ( response ) {
           if ( !xpath ) {
             throw 'No XPath provided';
           }
@@ -176,7 +190,7 @@
 
           function nsResolver( prefix ) {
             return ( feed.ns[prefix] || defaultNS );
-          };
+          }
 
           // xpathType = xpathType ||  XPathResult.ORDERED_NODE_ITERATOR_TYPE;
           // Better performance (https://www.nczonline.net/blog/2009/03/17/xpath-in-javascript-part-1/)
@@ -207,8 +221,9 @@
                 for ( snapshotLength = result.snapshotLength; i < snapshotLength; ++i ) {
                   nodes.push( result.snapshotItem(i) );
                 }
-              default:
+              break;
 
+              // default:
             }
           }
 

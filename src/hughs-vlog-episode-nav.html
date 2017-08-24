@@ -1,0 +1,70 @@
+<html>
+  <template id="hughs-vlog-episode-nav">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :host {
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        margin: .5rem auto;
+      }
+
+      a {
+        flex: 1;
+        background-color: black;
+        color: white;
+        margin: 0 0.25rem;
+      }
+
+      a:first-of-type {
+        margin-left: 0;
+      }
+
+      a:last-of-type {
+        margin-right: 0;
+      }
+
+      .archive {
+        flex: 2;
+      }
+    </style>
+    <a href="javascript:void(0);">First</a> 
+    <a href="javascript:void(0);">Previous</a> 
+    <a class="archive" href="javascript:void(0);">Random</a>
+    <!-- <a class="archive" href="javascript:void(0);">Archive</a>  -->
+    <a href="javascript:void(0);">Next</a> 
+    <a href="javascript:void(0);">Latest</a>
+  </template>
+
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
+
+    // http://stackoverflow.com/q/41408477/214325
+    var ownerDocument = document.currentScript.ownerDocument;
+
+    class HughsVlogEpisodeNav extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        const $shadowRoot = this.attachShadow({mode: 'open'});
+        const $HughsVlogEpisodeNav = ownerDocument.querySelector( '#hughs-vlog-episode-nav' );
+        const $shadowContent = $HughsVlogEpisodeNav.content.cloneNode( true );
+
+        $shadowRoot.appendChild( $shadowContent );
+      }
+
+      connectedCallback() {
+        this.setAttribute( 'role', 'navigation' );
+      }
+    }
+
+    window.customElements.define( 'hughs-vlog-episode-nav', HughsVlogEpisodeNav );
+  })();
+  //]]></script>
+</html>

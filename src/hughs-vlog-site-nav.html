@@ -1,5 +1,5 @@
 <html>
-  <template id="hughs-vlog-nav">
+  <template id="hughs-vlog-site-nav">
     <style>
       * {
         box-sizing: border-box;
@@ -27,15 +27,14 @@
         margin-right: 0;
       }
 
-      .archive {
+      .middle {
         flex: 2;
       }
     </style>
-    <a href="javascript:void(0);">First</a> 
-    <a href="javascript:void(0);">Previous</a> 
-    <a class="archive" href="javascript:void(0);">Archive</a> 
-    <a href="javascript:void(0);">Next</a> 
-    <a href="javascript:void(0);">Latest</a>
+    <a href="javascript:void(0);">About</a> 
+    <a class="middle" href="javascript:void(0);">Episodes</a> 
+    <a class="middle" href="javascript:void(0);">Bonus Material</a> 
+    <a href="javascript:void(0);">Contact</a>
   </template>
 
   <script>//<![CDATA[
@@ -45,15 +44,15 @@
     // http://stackoverflow.com/q/41408477/214325
     var ownerDocument = document.currentScript.ownerDocument;
 
-    class HughsVlogNav extends HTMLElement {
+    class HughsVlogSiteNav extends HTMLElement {
       
       // Remember to call the super method here
       constructor() {
         super();
 
         const $shadowRoot = this.attachShadow({mode: 'open'});
-        const $HughsVlogNav = ownerDocument.querySelector( '#hughs-vlog-nav' );
-        const $shadowContent = $HughsVlogNav.content.cloneNode( true );
+        const $HughsVlogSiteNav = ownerDocument.querySelector( '#hughs-vlog-site-nav' );
+        const $shadowContent = $HughsVlogSiteNav.content.cloneNode( true );
 
         $shadowRoot.appendChild( $shadowContent );
       }
@@ -63,7 +62,7 @@
       }
     }
 
-    window.customElements.define( 'hughs-vlog-nav', HughsVlogNav );
+    window.customElements.define( 'hughs-vlog-site-nav', HughsVlogSiteNav );
   })();
   //]]></script>
 </html>

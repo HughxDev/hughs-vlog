@@ -25,5 +25,9 @@
       "transform-custom-element-classes",
       "transform-es2015-classes"
     ]
+  },
+  "dependencies": {
+    "node-http-proxy": "^0.2.3",
+    "ejs": "^2.5.7"
   }
 }

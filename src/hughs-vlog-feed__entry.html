@@ -49,11 +49,31 @@
         color: white;
       }
 
-      :host([playable]) .flex-container {
+      /*:host([playable]) .flex-container {
         position: static;
         display: block;
         height: initial;
         color: inherit;
+      }*/
+
+      header {
+        text-align: center;
+      }
+
+      header > dl {
+        margin-top: 0;
+      }
+
+      hgroup {
+        line-height: 1;
+      }
+
+      .h {
+        margin: 0 auto;
+      }
+
+      .title {
+        line-height: 2;
       }
 
       a {
@@ -70,7 +90,6 @@
         max-width: 90%;
         margin-left: auto;
         margin-right: auto;
-        text-align: center;
       }
 
       dl {
@@ -92,12 +111,17 @@
     </style>
     
     <header>
-      <a class="flex-container" href="javascript:void(0);">
-        <h2 id="title" class="flex-item"></h2>
+      <hgroup data-layout="standalone">
+        <h3 class="h h--3"><time id="recorded"></time>:</h3>
+        <h2 id="title" class="h h--2 title"></h2>
+      </hgroup>
+      <a data-layout="list" class="flex-container" href="javascript:void(0);">
+        <hgroup class="flex-item">
+          <h3 class="h h--3"><time id="recorded"></time>:</h3>
+          <h2 id="title" class="h h--2 title"></h2>
+        </hgroup>
       </a>
-      <dl>
-        <dt>Recorded</dt>
-        <dd><time id="recorded"></time></dd>
+      <dl data-layout="standalone">
         <dt>Published</dt>
         <dd><time id="published"></time></dd>
       </dl>
@@ -128,49 +152,25 @@
         const $shadowContent = $HughsVlogFeedEntry.content.cloneNode( true );
 
         entry.oembed = null;
-
-        // entry.data = document.createDocumentFragment();
+        entry.limit = null;
 
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
 
       connectedCallback() {
-        var entry = this;
+        this.$ = {};
 
-        entry.$ = {};
+        this.setAttribute( 'role', 'article' );
+        this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
-        entry.setAttribute( 'role', 'article' );
-        entry.setAttribute( 'class', 'hughs-vlog-feed-entry' );
-
-        // console.log( 'entry.data', entry.data );
-
-        var playable = ( entry.parentNode.host.hasAttribute( 'playable' ) );
-
-        entry.$.h2 = entry.shadowRoot.querySelector( 'h2' );
-        entry.$.recorded = entry.shadowRoot.querySelector( '#recorded' );
-        entry.$.published = entry.shadowRoot.querySelector( '#published' );
-
-        if ( playable ) {
-          entry.getYouTubeLink().then(function ( url ) {
-            // console.log( 'response', response );
-            return entry.getOembed( url );
-          })
-          .then(function ( oembed ) {
-            entry.shadowRoot.querySelector( '#player' ).innerHTML = oembed.html;
-          })
-          .catch(function ( event ) {
-            console.log( 'event', event );
-          });
-
-          entry.setTitle();
-        } else {
-          entry.select( 'title' ).then( entry.getText )
-          .then( function ( title ) {
-            entry.shadowRoot.querySelector( '#title' ).textContent = title;
-          } );
+        if ( this.parentNode.host.hasAttribute( 'limit' ) ) {
+          this.limit = parseInt( this.parentNode.host.getAttribute( 'limit' ), 10 );
         }
 
-        this.renderMetadata();
+        this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
+        this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
+        
+        this.render();
       }
 
       select( xpath, data ) {
@@ -180,6 +180,13 @@
       }
 
       getText( response ) {
+        // console.log ( '---' );
+        // console.log( 'response', response );
+        // console.log( 'response.length', response.length );
+        // console.log( 'response[0]', response[0] );
+        // console.log( "'textContent' in response[0].textContent", 'textContent' in response[0] );
+        // console.log( 'response[0].textContent', response[0].textContent );
+
         if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
           return response[0].textContent;
         } else {
@@ -205,7 +212,7 @@
         var titlePromise = this.select( 'title' )
           .then( this.getText )
           .then( function ( title ) { 
-            entry.$.h2.textContent = title;
+            entry.$.title.textContent = title;
 
             return title;
            }
@@ -269,39 +276,121 @@
         return formatted;
       }
 
+      selectPublished() {
+        return this.select( 'published' ).then( this.getText );
+      }
+
       renderPublished() {
+        if ( !this.$.published ) {
+          return;
+        }
+
         var entry = this;
 
-        var publishedPromise = this.select( 'published' )
-          .then( this.getText )
-          .then( function ( published ) {
-            published = entry.formatDate( published );
+        this.selectPublished().then( function setPublishedText( published ) {
+          var publishedFormatted = entry.formatDate( published );
 
-            entry.$.published.textContent = published;
+          entry.$.published.setAttribute( 'datetime', published );
+          entry.$.published.textContent = publishedFormatted;
 
-            return published;
-          } )
-        ;
+          return published;
+        } );
       }
 
       renderRecorded() {
+        if ( !this.$.recorded ) {
+          return;
+        }
+
         var entry = this;
 
         var recordedPromise = this.select( 'recorded' )
           .then( this.getText )
-          .then( function ( recorded ) {
-            recorded = entry.formatDate( recorded );
+          .catch( function noRecordedSet() {
+            return entry.selectPublished();
+          } )
+          .then( function setRecordedText( recorded ) {
+            var recordedFormatted = entry.formatDate( recorded );
 
-            entry.$.recorded.textContent = recorded;
+            entry.$.recorded.setAttribute( 'datetime', recorded );
+            entry.$.recorded.textContent = recordedFormatted;
 
             return recorded;
           } )
         ;
       }
 
-      renderMetadata() {
+      renderThumbnailOrPlayer() {
+        var entry = this;
+
+        var playable = entry.parentNode.host.hasAttribute( 'playable' );
+        
+        if ( playable ) {
+          entry.getYouTubeLink().then(function ( url ) {
+            // console.log( 'response', response );
+            return entry.getOembed( url );
+          })
+          .then(function ( oembed ) {
+            // @todo: XHTMLify
+            entry.$$( '#player' ).innerHTML = oembed.html;
+          })
+          .catch(function ( event ) {
+            console.log( 'event', event );
+          });
+
+          entry.setTitle();
+        } else {
+          entry.select( 'title' ).then( entry.getText )
+          .then( function ( title ) {
+            entry.$$( '#title' ).textContent = title;
+          } );
+        }
+      }
+
+      renderDates() {
         this.renderPublished();
         this.renderRecorded();
+      }
+
+      _cacheUI() {
+        this.$.title = this.$$( '#title' );
+        this.$.recorded = this.$$( '#recorded' );
+        this.$.published = this.$$( '#published' );
+      }
+
+      chooseLayout() {
+        var element;
+
+        var standaloneLayoutElements = this.$$$( '[data-layout="standalone"]' );
+        var listLayoutElements = this.$$$( '[data-layout="list"]' );
+        var entryIsStandalone = this.isStandalone();
+
+        console.log( 'standaloneLayoutElements', standaloneLayoutElements );
+        console.log( 'listLayoutElements', listLayoutElements );
+          
+        for ( element of standaloneLayoutElements ) {
+          if ( entryIsStandalone ) {
+            element.hidden = false;
+          } else {
+            element.remove();
+          }
+        }
+
+        for ( element of listLayoutElements ) {
+          if ( entryIsStandalone ) {
+            element.remove();
+          } else {
+            element.hidden = false;
+          }
+        }
+
+        this._cacheUI();
+      }
+
+      render() {
+        this.chooseLayout();
+        this.renderThumbnailOrPlayer();
+        this.renderDates();
       }
 
       getYouTubeLink() {
@@ -355,6 +444,15 @@
 
           xhr.send( '' );
         });
+      }
+
+      isStandalone() {
+        return ( this.limit === 1 );
+      }
+
+      isPartOfList() {
+        // return ( !this.limit || ( this.limit > 1 ) );
+        return !this.isStandalone();
       }
     }
 

@@ -105,10 +105,10 @@
 
         feed.setAttribute( 'role', 'article' );
 
-        feed.hvmlImported.then(function ( response ) {
+        feed.hvmlImported.then(function selectHvmlVideoElements( response ) {
           return feed.select( '//video', feed.hvml );
         })
-        .then(function ( nodes ) {
+        .then(function appendHtmlElements( nodes ) {
           var i;
           var entry;
           var node;

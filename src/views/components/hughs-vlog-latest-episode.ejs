@@ -1,11 +1,10 @@
-<html>
-  <link rel="import" href="hughs-vlog-feed.html" />
-
+<% include ../head.xml %>
+    <link rel="import" href="hughs-vlog-feed.html" />
+  </head>
   <template id="hughs-vlog-latest-episode">
     <style>:host { display: block; }</style>
     <hughs-vlog-feed src="http://localhost:3000/videos" limit="1" playable="playable" large="large"></hughs-vlog-feed>
   </template>
-
   <script>//<![CDATA[
   (function () {
     "use strict";

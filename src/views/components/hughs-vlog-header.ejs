@@ -1,30 +1,107 @@
-<html>
-  <link rel="import" href="hughs-vlog-site-nav.html" />
-
+<% include ../head.xml %>
+    <link rel="import" href="hughs-vlog-site-nav.html" />
+  </head>
   <template id="hughs-vlog-header">
-    <style>:host { text-align: center; }</style>
+    <style>
+      /*@namespace "http://www.w3.org/1999/xhtml";*/
+      @namespace fb "http://www.facebook.com/2008/fbml";
+
+      :host {
+        display: block;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      dl {
+        height: 56px;
+      }
+
+      dd {
+        margin-left: 0;
+      }
+
+      dt:first-of-type + dd::after {
+        content: '';
+        opacity: 0.25;
+        display: inline-block;
+        border-right: 1px solid black;
+        margin-right: 1rem;
+        padding-right: 1rem;
+        width: 0;
+        height: 100%;
+      }
+
+      dt {
+        /* @todo: sr-only */
+        display: none;
+      }
+
+      .subscribe-button-container {
+        display: inline-block;
+        /*vertical-align: middle;*/
+        height: 100%;
+      }
+
+      .subscribe-button-container.subscribe-button-container--fb {
+        width: 198px;
+      }
+
+      /*.subscribe-button-container.subscribe-button-container--yt {
+        height: 48px;
+      }*/
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        clip-path: inset(50%);
+        border: 0;
+      }
+
+      /*fb\:like {
+        @apply --fb-like;
+      }*/
+
+      /*fb|like {
+        @apply --fb-like;
+      }*/
+    </style>
     <a href="/">
       <h1>Hugh’s Vlog</h1>
     </a>
-    <p>The daily life of a startup founder<!-- and programmer and filmmaker--></p>
+    <p>The daily life of a startup founder, programmer, and filmmaker.</p>
     <hughs-vlog-site-nav></hughs-vlog-site-nav>
-    <h2>Subscribe</h2>
-    <dl>
-      <dt>YouTube</dt>
-      <dd>
-        <script src="https://apis.google.com/js/platform.js"></script>
-        <div class="g-ytsubscribe" data-channelid="UCGPCcxdykgp6hgvL0XE3yaA" data-layout="full" data-count="default"></div>
-        <!-- <div id="___ytsubscribe_0" style="text-indent: 0px; margin: 0px; padding: 0px; background: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 174px; height: 48px;" xmlns="http://www.w3.org/1999/xhtml">
-          <iframe data-gapiattached="true" frameborder="0" hspace="0" id="I0_1503548156605" marginheight="0" marginwidth="0" name="I0_1503548156605" ng-non-bindable="" scrolling="no" src="https://www.youtube.com/subscribe_embed?usegapi=1&amp;channelid=UCGPCcxdykgp6hgvL0XE3yaA&amp;layout=full&amp;count=default&amp;origin=http%3A%2F%2Flocal.hugh.today&amp;gsrc=3p&amp;ic=1&amp;jsh=m%3B%2F_%2Fscs%2Fapps-static%2F_%2Fjs%2Fk%3Doz.gapi.en_US.5OnA2XyB0oY.O%2Fm%3D__features__%2Fam%3DAQ%2Frt%3Dj%2Fd%3D1%2Frs%3DAGLTcCN5_71WZj3bIquZibHr86SDML5JxQ#_methods=onPlusOne%2C_ready%2C_close%2C_open%2C_resizeMe%2C_renderstart%2Concircled%2Cdrefresh%2Cerefresh%2Conload&amp;id=I0_1503548156605&amp;parent=http%3A%2F%2Flocal.hugh.today&amp;pfname=&amp;rpctoken=19736768" style="position: static; top: 0px; width: 174px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 48px;" tabindex="0" vspace="0" width="100%"></iframe>
-        </div> -->
-      </dd>
-      <dt>Facebook</dt>
-      <dd><iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FHughsVlog%2F&amp;tabs&amp;width=200&amp;height=70&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=false&amp;appId=1117428231678998" width="180" height="70" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe></dd>
-      <!-- <dt>hugh.today</dt> -->
-      <!-- <dd></dd> -->
-    </dl>
+    <aside>
+      <h2>Subscribe</h2>
+      <dl>
+        <dt class="sr-only">YouTube</dt>
+        <dd class="subscribe-button-container subscribe-button-container--yt">
+          <div id="yt-button-container-render">
+            <div class="g-ytsubscribe"></div>
+          </div>
+        </dd>
+        <dt class="sr-only">Facebook</dt>
+        <dd class="subscribe-button-container subscribe-button-container--fb">
+          <div id="fb-button-container-render">
+            <!-- layout="button_count" -->
+            <fb:like
+              href="https://www.facebook.com/HughsVlog/"
+              action="like"
+              width="116"
+              size="small"
+              show-faces="true"
+              share="false"></fb:like>
+          </div>
+        </dd>
+        <!-- <dt>hugh.today</dt> -->
+        <!-- <dd></dd> -->
+      </dl>
+    </aside>
   </template>
-
   <script>//<![CDATA[
   (function () {
     "use strict";
@@ -46,7 +123,36 @@
       }
 
       connectedCallback() {
+        // window.fbAsyncInit = this.renderFbLikeButton;
+
         this.setAttribute( 'role', 'banner' );
+        this.youtubeChannelID = 'UCGPCcxdykgp6hgvL0XE3yaA';
+
+        this.render();
+      }
+
+      renderFbLikeButton() {
+        console.log( 'FB', FB );
+
+        FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ) );
+      }
+
+      // https://developers.google.com/youtube/subscribe/reference
+      renderYtSubscribeButton( channelID ) {
+        channelID = channelID || this.youtubeChannelID;
+
+        var container = this.shadowRoot.getElementById( 'yt-button-container-render' );
+        var options = {
+          "channelId": channelID,
+          // "layout": "default"
+          "layout": "full"
+        };
+        gapi.ytsubscribe.render( container, options );
+      }
+
+      render() {
+        this.renderYtSubscribeButton();
+        // this.renderFbLikeButton();
       }
     }
 

@@ -3,26 +3,55 @@
     <!-- Load polyfills; note that "loader" will load these async -->
     <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js"></script> -->
     <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
 
     <!-- Load a custom element definition via HTMLImports -->
     <link rel="import" href="components/hughs-vlog.html" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
   <body>
+    <div id="fb-root"></div>
+    <script>//<![CDATA[
+      window.fbAsyncInit = function() {
+        FB.init( {
+          "appId": "1117428231678998",
+          "autoLogAppEvents": true,
+          "xfbml": false,
+          "version": "v2.10"
+        } );
+
+        FB.AppEvents.logPageView();
+
+        window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
+          window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
+            let hughsVlog = document.querySelector( 'hughs-vlog' );
+            let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' );
+
+            hughsVlogHeader.renderFbLikeButton();
+          } );
+        } )
+      };
+
+      ( function loadFacebookSDK( d, s, id ) {
+        var js, fjs = d.getElementsByTagName( s )[0];
+
+        if ( d.getElementById( id ) ) {
+          return;
+        }
+
+        js = d.createElement( s );
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+
+        fjs.parentNode.insertBefore( js, fjs );
+      }( document, 'script', 'facebook-jssdk' ) );
+    //]]></script>
     <hughs-vlog></hughs-vlog>
-
-    <!-- Interact with the upgraded element -->
-    <!-- <script>//<![CDATA[
-    (function () {
-      window.addEventListener('WebComponentsReady', function HughsVlogWebComponentsReady() {
-      // window.customElements.whenDefined( 'hughs-vlog' ).then(function HughsVlogDefined() {  
-        // At this point we are guaranteed that all required polyfills have loaded,
-        // all HTML imports have loaded, and all defined custom elements have upgraded
-        let HughsVlog = customElements.get( 'hughs-vlog' );
-        let element = document.querySelector( 'hughs-vlog' );
-
-        console.assert( element instanceof HughsVlog );  // 👍
-      });
-    })();
-    //]]></script> -->
   </body>
 </html>

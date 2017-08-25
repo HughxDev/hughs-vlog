@@ -11,6 +11,18 @@ const read = require( 'fs' ).readFileSync;
 const path = require( 'path' );
 const join = path.join;
 
+const formats = {
+  "html": {
+    "contentType": "application/xhtml+xml",
+    // "contentType": "text/html",
+    "extensions": [ "html", "xhtml" ]
+  },
+  "hvml": {
+    "contentType": "application/hvml+xml",
+    "extensions": [ "hvml", "ovml" ]
+  }
+};
+
 httpProxy.createProxyServer( {
   "target": "http://local.hugh.today:80"
 } ).listen( 11087 );
@@ -31,11 +43,16 @@ app.use( function CORS( req, res, next ) {
 } );
 
 app.use( function contentType( req, res, next ) {
-  res.contentType( 'application/xhtml+xml' );
+  // res.contentType( 'application/xhtml+xml' );
   next();
 } );
 
-app.use( '/lib', express.static( 'lib' ) );
+express.static.mime.define({
+  'application/xhtml+xml': [ 'html' ],
+  'application/hvml+xml': [ 'hvml' ],
+});
+
+app.use( '/lib', express.static( join( __dirname, '/src/lib' ) ) );
 
 // set
 app.set( 'port', process.env.PORT || 80 );
@@ -49,6 +66,7 @@ app.listen( app.get( 'port' ), function listen() {
 // Routes
 app.get( '/', function getHomepage( req, res ) {
   // res.write( compiled );
+  res.set( 'Content-Type', formats.html.contentType );
   res.render( 'index', function render( err, html ) {
     res.write( html );
   } );
@@ -57,6 +75,7 @@ app.get( '/', function getHomepage( req, res ) {
 } );
 
 app.get( '/components/:component', function getComponent( req, res ) {
+  res.set( 'Content-Type', formats.html.contentType );
   res.render( 'components/' + req.params.component.replace( /\.html$/, '' ) );
 } );
 

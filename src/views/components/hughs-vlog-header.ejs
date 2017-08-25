@@ -1,106 +1,47 @@
 <% include ../head.xml %>
     <link rel="import" href="hughs-vlog-site-nav.html" />
+    <link rel="import" href="hughs-vlog-subscribe.html" />
   </head>
   <template id="hughs-vlog-header">
     <style>
-      /*@namespace "http://www.w3.org/1999/xhtml";*/
-      @namespace fb "http://www.facebook.com/2008/fbml";
+      * {
+        box-sizing: border-box;
+      }
 
       :host {
         display: block;
         text-align: center;
-        margin-bottom: 3rem;
+        margin: 1.5rem auto 2.5rem;
       }
 
-      dl {
-        height: 56px;
+      a {
+        text-decoration: none;
+        color: inherit;
       }
 
-      dd {
-        margin-left: 0;
-      }
-
-      dt:first-of-type + dd::after {
-        content: '';
-        opacity: 0.25;
-        display: inline-block;
-        border-right: 1px solid black;
-        margin-right: 1rem;
-        padding-right: 1rem;
-        width: 0;
-        height: 100%;
-      }
-
-      dt {
-        /* @todo: sr-only */
-        display: none;
-      }
-
-      .subscribe-button-container {
-        display: inline-block;
-        /*vertical-align: middle;*/
-        height: 100%;
-      }
-
-      .subscribe-button-container.subscribe-button-container--fb {
-        width: 198px;
-      }
-
-      /*.subscribe-button-container.subscribe-button-container--yt {
-        height: 48px;
+      /*a:hover,
+      a:focus {
+        text-decoration: underline;
       }*/
 
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        overflow: hidden;
-        clip: rect(0,0,0,0);
-        white-space: nowrap;
-        clip-path: inset(50%);
-        border: 0;
+      .h {
+        margin: 0 auto;
       }
 
-      /*fb\:like {
-        @apply --fb-like;
-      }*/
+      p { 
+        margin: .5rem auto 1rem;
+      }
 
-      /*fb|like {
-        @apply --fb-like;
-      }*/
+      .link-wrapper {
+        display: block;
+      }
     </style>
-    <a href="/">
-      <h1>Hugh’s Vlog</h1>
+    <a class="link-wrapper" href="javascript:void(0);">
+      <h1 class="h h--1">Hugh’s Vlog</h1>
     </a>
     <p>The daily life of a startup founder, programmer, and filmmaker.</p>
     <hughs-vlog-site-nav></hughs-vlog-site-nav>
-    <aside>
-      <h2>Subscribe</h2>
-      <dl>
-        <dt class="sr-only">YouTube</dt>
-        <dd class="subscribe-button-container subscribe-button-container--yt">
-          <div id="yt-button-container-render">
-            <div class="g-ytsubscribe"></div>
-          </div>
-        </dd>
-        <dt class="sr-only">Facebook</dt>
-        <dd class="subscribe-button-container subscribe-button-container--fb">
-          <div id="fb-button-container-render">
-            <!-- layout="button_count" -->
-            <fb:like
-              href="https://www.facebook.com/HughsVlog/"
-              action="like"
-              width="116"
-              size="small"
-              show-faces="true"
-              share="false"></fb:like>
-          </div>
-        </dd>
-        <!-- <dt>hugh.today</dt> -->
-        <!-- <dd></dd> -->
-      </dl>
-    </aside>
+    <hughs-vlog-subscribe></hughs-vlog-subscribe>
   </template>
   <script>//<![CDATA[
   (function () {
@@ -123,36 +64,7 @@
       }
 
       connectedCallback() {
-        // window.fbAsyncInit = this.renderFbLikeButton;
-
         this.setAttribute( 'role', 'banner' );
-        this.youtubeChannelID = 'UCGPCcxdykgp6hgvL0XE3yaA';
-
-        this.render();
-      }
-
-      renderFbLikeButton() {
-        console.log( 'FB', FB );
-
-        FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ) );
-      }
-
-      // https://developers.google.com/youtube/subscribe/reference
-      renderYtSubscribeButton( channelID ) {
-        channelID = channelID || this.youtubeChannelID;
-
-        var container = this.shadowRoot.getElementById( 'yt-button-container-render' );
-        var options = {
-          "channelId": channelID,
-          // "layout": "default"
-          "layout": "full"
-        };
-        gapi.ytsubscribe.render( container, options );
-      }
-
-      render() {
-        this.renderYtSubscribeButton();
-        // this.renderFbLikeButton();
       }
     }
 

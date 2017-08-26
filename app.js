@@ -4,6 +4,7 @@ const router = express.Router();
 const http = require( 'http' );
 const httpProxy = require( 'http-proxy' );
 // const pug = require( 'pug' );
+const searchVideos = require( '../hughs-vlog-api/routes/videos' ).search;
 
 // EJS
 const ejs = require( 'ejs' );
@@ -75,7 +76,32 @@ app.get( '/', function getHomepage( req, res ) {
 } );
 
 app.get( '/components/:component', function getComponent( req, res ) {
+  var locals = {};
+  // switch ( req.params.component ) {
+  //   case 'hughs-vlog':
+  //     locals.episode = 'latest';
+  //   break;
+  // }
+
   res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'components/' + req.params.component.replace( /\.html$/, '' ) );
+  res.render( 'components/' + req.params.component.replace( /\.html$/, '' ), locals );
 } );
 
+// Permalinks
+// /year/month/day
+// /[4 digits min]/[01-12]/[01-31]
+app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2[0-9]|3[0-9])', function getEpisode( req, res ) {
+  // res.json( req.params );
+  var date = req.params.year + '-' + req.params.month + '-' + req.params.day;
+
+  searchVideos( {
+    "recorded": date
+  } )
+  .then( function foundVideos( hvml ) {
+    res.setHeader( 'Content-Type', 'application/xml' );
+    res.send( hvml );
+  } )
+  .catch( function couldntFindVideos( error ) {
+    res.status( 400 ).send( error );
+  } );
+} );

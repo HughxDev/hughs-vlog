@@ -65,16 +65,6 @@ app.listen( app.get( 'port' ), function listen() {
 } );
 
 // Routes
-app.get( '/', function getHomepage( req, res ) {
-  // res.write( compiled );
-  res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'index', function render( err, html ) {
-    res.write( html );
-  } );
-
-  res.end();
-} );
-
 app.get( '/components/:component', function getComponent( req, res ) {
   var locals = {};
   // switch ( req.params.component ) {
@@ -104,4 +94,14 @@ app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2
   .catch( function couldntFindVideos( error ) {
     res.status( 400 ).send( error );
   } );
+} );
+
+app.get( '*', function getHomepage( req, res ) {
+  // res.write( compiled );
+  res.set( 'Content-Type', formats.html.contentType );
+  res.render( 'index', function render( err, html ) {
+    res.write( html );
+  } );
+
+  res.end();
 } );

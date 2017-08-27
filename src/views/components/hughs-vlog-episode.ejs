@@ -1,0 +1,81 @@
+<% include ../head.xml %>
+    <link rel="import" href="hughs-vlog-feed.html" />
+  </head>
+  <template id="hughs-vlog-episode">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :host {
+        display: block;
+      }
+    </style>
+    <hughs-vlog-feed id="feed"></hughs-vlog-feed>
+  </template>
+  <script>//<![CDATA[
+  (function () {
+    "use strict";
+
+    var ownerDocument = document.currentScript.ownerDocument;
+
+    class HughsVlogEpisode extends HTMLElement {
+      
+      // Remember to call the super method here
+      constructor() {
+        super();
+
+        var episode = this;
+
+        const $shadowRoot = episode.attachShadow({
+          "mode": "open"
+        });
+        const $HughsVlogEpisode = ownerDocument.querySelector( '#hughs-vlog-episode' );
+        const $shadowContent = $HughsVlogEpisode.content.cloneNode( true );
+
+        $shadowRoot.appendChild( $shadowContent );
+
+        this.$ = {};
+        this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
+        this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
+      }
+
+      connectedCallback() {
+        this.$.feed = this.$$( '#feed' );
+
+        var feedSrc = 'http://localhost:3000/videos';
+
+        // @number, @published, @recorded
+        var query = null;
+        var whichAttribute = null;
+
+        if ( this.hasAttribute( 'published') ) {
+          whichAttribute = 'published';
+          query = this.getAttribute( whichAttribute );
+        } else if ( this.hasAttribute( 'number' ) ) {
+          whichAttribute = 'number';
+          query = this.getAttribute( whichAttribute );
+        } else if ( this.hasAttribute( 'recorded' ) ) {
+          whichAttribute = 'recorded';
+          query = this.getAttribute( whichAttribute );
+        }
+
+        if ( typeof query === 'string' ) {
+          query = query.toLowerCase().trim();
+        }
+      
+        switch ( query ) {
+          case 'latest':
+            this.$.feed.setAttribute( 'limit', '1' );
+            this.$.feed.setAttribute( 'playable', 'playable' );
+            this.$.feed.setAttribute( 'large', 'large' );
+            this.$.feed.setAttribute( 'src', feedSrc );
+          break;
+        }
+      }
+    }
+
+    window.customElements.define( 'hughs-vlog-episode', HughsVlogEpisode );
+  })();
+  //]]></script>
+</html>

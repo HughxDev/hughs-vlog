@@ -20,6 +20,114 @@
     var ownerDocument = document.currentScript.ownerDocument;
 
     class HughsVlogFeed extends HTMLElement {
+      static get observedAttributes() {
+        return [ 'src', 'order', 'limit' ];
+      }
+
+      getSrc( src ) {
+        src = ( src || this.getAttribute( 'src' ) );
+
+        if ( this.hasOwnProperty( 'limit' ) && ( this.limit > 0 ) ) {
+          src += '?limit=' + this.limit;
+        } else if ( this.hasAttribute( 'limit' ) && ( parseInt( this.getAttribute( 'limit' ), 10 ) > 0 ) ) {
+          src += '?limit=' + this.getAttribute( 'limit' );
+        }
+
+        return src;
+      }
+
+      getOrder( order ) {
+        return ( order || this.getAttribute( 'order' ) || 'desc' ).toLowerCase();
+      }
+
+      getLimit( limit ) {
+        return ( limit || this.getAttribute( 'limit' ) );
+      }
+
+      attributeChangedCallback( attribute, oldValue, newValue ) {
+        console.log( 'attribute changed' );
+
+        switch ( attribute ) {
+          case 'src':
+            this.src = this.getSrc( newValue );
+
+            this._importHvmlAndAppendEntries();
+          break;
+
+          case 'order':
+            this.order = this.getOrder( newValue );
+          break;
+
+          case 'limit':
+            this.limit = this.getLimit( newValue );
+          break;
+        }
+      }
+
+      importHvml() {
+        var feed = this;
+        
+        this.hvmlImported = new Promise(
+          // this.importHvmlPromise.bind( this )
+          function importHvmlPromise( resolve, reject ) {
+            if ( !feed.isLoaded() ) {
+              if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
+                console.log( 'has feed src' );
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open( 'GET', feed.src, true );
+                xhr.setRequestHeader( 'Accept', 'application/hvml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
+                
+                xhr.onload = function xhrOnLoad( event ) {
+                  switch ( xhr.status ) {
+                    case 200:
+                      switch ( feed.getAttribute( 'fetch-mode' )  ) {
+                        case 'pedantic':
+                          feed.hvml = xhr.responseXML;
+                        break;
+
+                        case 'lax':
+                        /* falls through */
+                        default:
+                          // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
+                          // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
+
+                          // Stupid hack to work around the fact that null-prefix for default-namespaced elements doesn't work
+                          feed.hvml = new DOMParser().parseFromString(
+                            xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
+                            'application/xml'
+                          );
+                      }
+
+                      console.log( 'feed.hvml', feed.hvml );
+
+                      feed.loading = false;
+
+                      resolve( feed.hvml );
+                    break;
+
+                    default:
+                      feed.loading = false;
+
+                      reject( Error( xhr.statusText ) );
+                  }
+                };
+
+                xhr.onerror = function xhrOnError( event ) {
+                  feed.loading = false;
+
+                  reject( Error( 'There was a network error.' ) );
+                };
+
+                xhr.send( '' );
+              } else {
+                console.log( 'no feed src' );
+              }
+            } // !feed.isLoaded()
+          }
+        );
+      }
       
       // Remember to call the super method here
       constructor() {
@@ -42,63 +150,15 @@
           "xlink": "http://www.w3.org/1999/xlink"
         };
 
-        feed.src = ( feed.getAttribute( 'src' ) || 'vlog.hvml' );
+        feed.src = feed.getSrc();
 
-        feed.order = ( feed.getAttribute( 'order' ) || 'desc' ).toLowerCase();
+        feed.order = feed.getOrder();
 
-        if ( feed.hasAttribute( 'limit' ) ) {
-          feed.src += '?limit=' + feed.getAttribute( 'limit' );
+        feed.limit = feed.getLimit();
+
+        if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
+          feed.importHvml();
         }
-
-        feed.hvmlImported = new Promise(function HughsVlogFeedImportHvmlPromise( resolve, reject ) {
-          if ( !feed.isLoaded() ) {
-            var xhr = new XMLHttpRequest();
-
-            xhr.open( 'GET', feed.src, true );
-            xhr.setRequestHeader( 'Accept', 'application/hvml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
-            
-            xhr.onload = function xhrOnLoad( event ) {
-              switch ( xhr.status ) {
-                case 200:
-                  switch ( feed.getAttribute( 'fetch-mode' )  ) {
-                    case 'pedantic':
-                      feed.hvml = xhr.responseXML;
-                    break;
-
-                    case 'lax':
-                    /* falls through */
-                    default:
-                      // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
-                      // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
-
-                      // Stupid hack to work around the fact that null-prefix for default-namespaced elements doesn't work
-                      feed.hvml = new DOMParser().parseFromString(
-                        xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
-                        'application/xml'
-                      );
-                  }
-
-                  feed.loading = false;
-
-                  resolve( feed.hvml );
-                break;
-
-                default:
-                  feed.loading = false;
-
-                  reject( Error( xhr.statusText ) );
-              }
-            };
-
-            xhr.onerror = function xhrOnError( event ) {
-              feed.loading = false;
-
-              reject( Error( 'There was a network error.' ) );
-            };
-
-            xhr.send( '' );
-          } // !feed.isLoaded()
-        });
 
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
@@ -108,10 +168,31 @@
 
         feed.setAttribute( 'role', 'article' );
 
+        if ( feed.hasOwnProperty( 'hvmlImported' ) ) {
+          feed._appendEntries();
+        }
+      }
+
+      _importHvmlAndAppendEntries() {
+        this.importHvml();
+        this._appendEntries();
+      }
+
+      _appendEntries() {
+        console.log( '_appendEntries' );
+
+        var feed = this;
+
+        console.log( 'feed.hvmlImported', feed.hvmlImported );
+
         feed.hvmlImported.then(function selectHvmlVideoElements( response ) {
+          console.log( 'selectHvmlVideoElements' );
+
           return feed.select( '//video', feed.hvml );
         })
         .then(function appendHtmlElements( nodes ) {
+          console.log( 'appendHtmlElements' );
+
           var i;
           var entry;
           var node;

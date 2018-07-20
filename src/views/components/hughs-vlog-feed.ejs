@@ -10,6 +10,10 @@
       :host {
         display: block;
       }
+
+      .hughs-vlog-feed-entry:first-of-type {
+        width: 100%;
+      }
     </style>
   </template>
   <script>//<![CDATA[
@@ -25,15 +29,7 @@
       }
 
       getSrc( src ) {
-        src = ( src || this.getAttribute( 'src' ) );
-
-        if ( this.hasOwnProperty( 'limit' ) && ( this.limit > 0 ) ) {
-          src += '?limit=' + this.limit;
-        } else if ( this.hasAttribute( 'limit' ) && ( parseInt( this.getAttribute( 'limit' ), 10 ) > 0 ) ) {
-          src += '?limit=' + this.getAttribute( 'limit' );
-        }
-
-        return src;
+        return ( src || this.getAttribute( 'src' ) );
       }
 
       getOrder( order ) {
@@ -45,12 +41,12 @@
       }
 
       attributeChangedCallback( attribute, oldValue, newValue ) {
-        console.log( 'attribute changed' );
+        console.log( 'attribute changed:' );
+        console.log( attribute, oldValue, newValue );
 
         switch ( attribute ) {
           case 'src':
             this.src = this.getSrc( newValue );
-
             this._importHvmlAndAppendEntries();
           break;
 
@@ -66,19 +62,20 @@
 
       importHvml() {
         var feed = this;
-        
+
         this.hvmlImported = new Promise(
           // this.importHvmlPromise.bind( this )
           function importHvmlPromise( resolve, reject ) {
             if ( !feed.isLoaded() ) {
               if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
                 console.log( 'has feed src' );
+                console.log( 'feed.src', feed.src );
 
                 var xhr = new XMLHttpRequest();
 
                 xhr.open( 'GET', feed.src, true );
                 xhr.setRequestHeader( 'Accept', 'application/hvml+xml;q=0.8,application/xml;q=0.6,text/xml;q=0.4' );
-                
+
                 xhr.onload = function xhrOnLoad( event ) {
                   switch ( xhr.status ) {
                     case 200:
@@ -128,7 +125,7 @@
           }
         );
       }
-      
+
       // Remember to call the super method here
       constructor() {
         super();
@@ -151,6 +148,7 @@
         };
 
         feed.src = feed.getSrc();
+        // console.log( 'feed.src', feed.src );
 
         feed.order = feed.getOrder();
 
@@ -198,7 +196,7 @@
           var node;
 
           switch ( feed.order ) {
-            case 'asc':
+            case 'desc':
               for ( i = 0; i < nodes.length; i++ ) {
                 node = nodes[i];
 
@@ -220,7 +218,7 @@
               }
             break;
 
-            case 'desc':
+            case 'asc':
             /* falls through */
             default:
               for ( i = nodes.length - 1; i >= 0; i-- ) {
@@ -236,9 +234,9 @@
                   if ( feed.hasAttribute( 'playable' ) ) {
                     entry.setAttribute( 'playable', 'playable' );
                   }
-                  
+
                   entry.data = node;
-                  
+
                   feed.shadowRoot.appendChild( entry );
                 }
               }
@@ -265,10 +263,10 @@
           var i = 0;
           var snapshotLength;
           // response === feed.hvml
-          
+
           // Automatic Namespace Resolution:
           // feed.nsResolver = feed.evaluator.createNSResolver( feed.hvml.documentElement );
-          
+
           // Custom Namespace Resolution:
           var defaultNS = feed.hvml.documentElement.getAttribute( 'xmlns' ) || feed.ns.hvml;
 

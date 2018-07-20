@@ -1,5 +1,5 @@
 const express = require( 'express' );
-const app = express();  
+const app = express();
 const router = express.Router();
 const http = require( 'http' );
 const httpProxy = require( 'http-proxy' );
@@ -60,7 +60,7 @@ app.set( 'port', process.env.PORT || 80 );
 app.set( 'view engine', 'ejs' );
 app.set( 'views', join( __dirname, '/src/views' ) );
 
-app.listen( app.get( 'port' ), function listen() {  
+app.listen( app.get( 'port' ), function listen() {
   console.log( 'Express up and listening on port ' + app.get( 'port' ) );
 } );
 
@@ -84,23 +84,48 @@ app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2
   // res.json( req.params );
   var date = req.params.year + '-' + req.params.month + '-' + req.params.day;
 
-  searchVideos( {
-    "recorded": date
-  } )
-  .then( function foundVideos( hvml ) {
-    res.setHeader( 'Content-Type', 'application/xml' );
-    res.send( hvml );
-  } )
-  .catch( function couldntFindVideos( error ) {
-    res.status( 400 ).send( error );
+  // searchVideos( {
+  //   "recorded": date
+  // } )
+  // .then( function foundVideos( hvml ) {
+  //   res.setHeader( 'Content-Type', 'application/xml' );
+  //   res.send( hvml );
+  // } )
+  // .catch( function couldntFindVideos( error ) {
+  //   res.status( 400 ).send( error );
+  // } );
+  res.set( 'Content-Type', formats.html.contentType );
+  res.render( 'index', { page: 'episode', published: date }, function render( err, html ) {
+    if ( !err ) {
+      res.write( html );
+    }
+    console.log( err );
   } );
+
+    res.end();
+} );
+
+app.get( '/episodes', function getEpisodes( req, res ) {
+  // res.write( compiled );
+  res.set( 'Content-Type', formats.html.contentType );
+  res.render( 'index', { page: 'episode', published: null }, function render( err, html ) {
+    if ( !err ) {
+      res.write( html );
+    }
+    console.log( err );
+  } );
+
+  res.end();
 } );
 
 app.get( '*', function getHomepage( req, res ) {
   // res.write( compiled );
   res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'index', function render( err, html ) {
-    res.write( html );
+  res.render( 'index', { page: 'episode', published: 'latest' }, function render( err, html ) {
+    if ( !err ) {
+      res.write( html );
+    }
+    console.log( err );
   } );
 
   res.end();

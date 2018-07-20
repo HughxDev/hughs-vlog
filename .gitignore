@@ -47,3 +47,6 @@ logs/*
 .screenrc
 sftp-config.json
 deployment-config.json
+.htaccess.prod
+.gitignore.prod
+.htaccess

@@ -20,7 +20,7 @@
     var ownerDocument = document.currentScript.ownerDocument;
 
     class HughsVlogEpisode extends HTMLElement {
-      
+
       // Remember to call the super method here
       constructor() {
         super();
@@ -52,26 +52,34 @@
         if ( this.hasAttribute( 'published') ) {
           whichAttribute = 'published';
           query = this.getAttribute( whichAttribute );
+
+          if ( query !== 'latest' ) {
+            feedSrc += '/search?published=' + query;
+          }
         } else if ( this.hasAttribute( 'number' ) ) {
           whichAttribute = 'number';
           query = this.getAttribute( whichAttribute );
+          feedSrc += '/search?number=' + query;
         } else if ( this.hasAttribute( 'recorded' ) ) {
           whichAttribute = 'recorded';
           query = this.getAttribute( whichAttribute );
+          feedSrc += '/search?recorded=' + query;
         }
 
         if ( typeof query === 'string' ) {
           query = query.toLowerCase().trim();
         }
-      
+
         switch ( query ) {
           case 'latest':
-            this.$.feed.setAttribute( 'limit', '1' );
-            this.$.feed.setAttribute( 'playable', 'playable' );
-            this.$.feed.setAttribute( 'large', 'large' );
-            this.$.feed.setAttribute( 'src', feedSrc );
+            // this.$.feed.setAttribute( 'limit', '1' );
+            feedSrc += '?limit=1';
           break;
         }
+
+        this.$.feed.setAttribute( 'playable', 'playable' );
+        this.$.feed.setAttribute( 'large', 'large' );
+        this.$.feed.setAttribute( 'src', feedSrc );
       }
     }
 

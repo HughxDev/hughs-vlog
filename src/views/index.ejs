@@ -67,7 +67,7 @@
     //]]></script>
     <hughs-vlog>
       <!-- @number, @published, @recorded -->
-      <hughs-vlog-episode published="latest"></hughs-vlog-episode>
+      <%- include(page, {published: published}) %>
       <!-- <hughs-vlog-latest-episode></hughs-vlog-latest-episode> -->
       <!-- <hughs-vlog-episode></hughs-vlog-episode> -->
       <!-- <hughs-vlog-feed src="http://localhost:3000/videos"></hughs-vlog-feed> -->

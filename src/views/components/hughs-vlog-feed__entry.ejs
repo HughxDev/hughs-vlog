@@ -75,10 +75,11 @@
 
       .h {
         margin: 0 auto;
+        line-height: 1.75;
       }
 
       .title {
-        line-height: 2;
+        line-height: 1.25;
       }
 
       a {
@@ -114,7 +115,7 @@
         display: inline-block;
       }
     </style>
-    
+
     <header>
       <hgroup data-layout="standalone">
         <h3 class="h h--3"><time id="recorded"></time>:</h3>
@@ -144,7 +145,7 @@
     var ownerDocument = document.currentScript.ownerDocument;
 
     class HughsVlogFeedEntry extends HTMLElement {
-      
+
       // Remember to call the super method here
       constructor() {
         super();
@@ -164,6 +165,7 @@
       connectedCallback() {
         this.$ = {};
 
+        this.setAttribute( 'id', ( this.data.getAttributeNS( 'xml', 'id' ) || this.data.getAttribute( 'xml:id' ) ) );
         this.setAttribute( 'role', 'article' );
         this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
@@ -173,7 +175,7 @@
 
         this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
         this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
-        
+
         this.render();
       }
 
@@ -196,7 +198,7 @@
       //     return response[0].textContent;
       //   } else {
       //     throw 'No title';
-      //   }  
+      //   }
       // }
 
       getTitle() {
@@ -208,7 +210,7 @@
 
         var titlePromise = this.select( 'title' )
           .then( this.getText )
-          .then( function ( title ) { 
+          .then( function ( title ) {
             entry.$.title.textContent = title;
 
             return title;
@@ -321,7 +323,7 @@
         var entry = this;
 
         var playable = entry.parentNode.host.hasAttribute( 'playable' );
-        
+
         if ( playable ) {
           entry.getYouTubeLink().then( function gotYouTubeLink( url ) {
             return entry.getOembed( url );
@@ -360,7 +362,7 @@
         var standaloneLayoutElements = this.$$$( '[data-layout="standalone"]' );
         var listLayoutElements = this.$$$( '[data-layout="list"]' );
         var entryIsStandalone = this.isStandalone();
-          
+
         for ( element of standaloneLayoutElements ) {
           if ( entryIsStandalone ) {
             element.hidden = false;
@@ -411,7 +413,7 @@
 
           xhr.open( 'GET', endpoint, true );
           xhr.setRequestHeader( 'Accept', 'application/xml;q=0.8,text/xml;q=0.6,application/json;q=0.4' );
-          
+
           xhr.onload = function xhrOnLoad( event ) {
             switch ( xhr.status ) {
               case 200:

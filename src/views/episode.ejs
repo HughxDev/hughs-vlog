@@ -1,4 +1,6 @@
-<%if (published) { %>
+<% if ( inline ) { %>
+      <hughs-vlog-episode><%- inline %></hughs-vlog-episode>
+<% } else if ( published ) { %>
       <hughs-vlog-episode published="<%= published %>"></hughs-vlog-episode>
 <% } else { %>
       <hughs-vlog-feed order="desc" src="http://localhost:3000/videos"></hughs-vlog-feed>

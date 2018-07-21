@@ -84,31 +84,48 @@ app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2
   // res.json( req.params );
   var date = req.params.year + '-' + req.params.month + '-' + req.params.day;
 
-  // searchVideos( {
-  //   "recorded": date
-  // } )
-  // .then( function foundVideos( hvml ) {
-  //   res.setHeader( 'Content-Type', 'application/xml' );
-  //   res.send( hvml );
-  // } )
-  // .catch( function couldntFindVideos( error ) {
-  //   res.status( 400 ).send( error );
-  // } );
-  res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'index', { page: 'episode', published: date }, function render( err, html ) {
-    if ( !err ) {
-      res.write( html );
-    }
-    console.log( err );
-  } );
+  searchVideos( {
+    "published": date
+  } )
+  .then( function foundVideos( hvml ) {
+    // Strip namespace to test for cases where it’s missing:
+    hvml = hvml.replace( ' xmlns="http://vocab.nospoon.tv/ovml#"', ' puppy="dog"' );
+    res.set( 'Content-Type', formats.html.contentType );
+    // .replace( '<hvml', '<hvml slot="hvml"' )
+    res.render( 'index',
+      {
+        page: 'episode',
+        published: null,
+        inline: hvml
+      },
+      function render( err, html ) {
+        if ( !err ) {
+          res.write( html );
+        }
+        console.log( err );
+      }
+    );
 
     res.end();
+  } )
+  .catch( function couldntFindVideos( error ) {
+    res.status( 400 ).send( error );
+  } );
+  // res.set( 'Content-Type', formats.html.contentType );
+  // res.render( 'index', { page: 'episode', published: date }, function render( err, html ) {
+  //   if ( !err ) {
+  //     res.write( html );
+  //   }
+  //   console.log( err );
+  // } );
+  //
+  // res.end();
 } );
 
 app.get( '/episodes', function getEpisodes( req, res ) {
   // res.write( compiled );
   res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'index', { page: 'episode', published: null }, function render( err, html ) {
+  res.render( 'index', { page: 'episode', published: null, inline: null }, function render( err, html ) {
     if ( !err ) {
       res.write( html );
     }
@@ -121,7 +138,7 @@ app.get( '/episodes', function getEpisodes( req, res ) {
 app.get( '*', function getHomepage( req, res ) {
   // res.write( compiled );
   res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'index', { page: 'episode', published: 'latest' }, function render( err, html ) {
+  res.render( 'index', { page: 'episode', published: 'latest', inline: null }, function render( err, html ) {
     if ( !err ) {
       res.write( html );
     }

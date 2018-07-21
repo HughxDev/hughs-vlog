@@ -15,6 +15,7 @@
         width: 100%;
       }
     </style>
+    <!-- <slot></slot> -->
   </template>
   <script>//<![CDATA[
   (function () {
@@ -41,8 +42,8 @@
       }
 
       attributeChangedCallback( attribute, oldValue, newValue ) {
-        console.log( 'attribute changed:' );
-        console.log( attribute, oldValue, newValue );
+        // console.log( 'attribute changed:' );
+        // console.log( attribute, oldValue, newValue );
 
         switch ( attribute ) {
           case 'src':
@@ -68,8 +69,8 @@
           function importHvmlPromise( resolve, reject ) {
             if ( !feed.isLoaded() ) {
               if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
-                console.log( 'has feed src' );
-                console.log( 'feed.src', feed.src );
+                // console.log( 'has feed src' );
+                // console.log( 'feed.src', feed.src );
 
                 var xhr = new XMLHttpRequest();
 
@@ -79,48 +80,76 @@
                 xhr.onload = function xhrOnLoad( event ) {
                   switch ( xhr.status ) {
                     case 200:
-                      switch ( feed.getAttribute( 'fetch-mode' )  ) {
-                        case 'pedantic':
-                          feed.hvml = xhr.responseXML;
-                        break;
-
-                        case 'lax':
-                        /* falls through */
-                        default:
-                          // Doesn't work, probably because elements are already registered in a certain namespace by the time the attribute is removed
-                          // xhr.responseXML.documentElement.removeAttribute( 'xmlns' );
-
-                          // Stupid hack to work around the fact that null-prefix for default-namespaced elements doesn't work
-                          feed.hvml = new DOMParser().parseFromString(
-                            xhr.responseText.replace( 'xmlns="http://vocab.nospoon.tv/ovml#"', '' ),
-                            'application/xml'
-                          );
-                      }
-
-                      console.log( 'feed.hvml', feed.hvml );
-
+                      feed.hvml = xhr.responseXML;
                       feed.loading = false;
-
                       resolve( feed.hvml );
                     break;
 
                     default:
                       feed.loading = false;
-
                       reject( Error( xhr.statusText ) );
                   }
                 };
 
                 xhr.onerror = function xhrOnError( event ) {
                   feed.loading = false;
-
                   reject( Error( 'There was a network error.' ) );
                 };
 
                 xhr.send( '' );
-              } else {
-                console.log( 'no feed src' );
+              // No src, check for slotted hvml child
+              } else if (
+                feed.children.length &&
+                ( feed.children[0].nodeName.toLowerCase() === 'slot' ) &&
+                feed.children[0].assignedNodes().length &&
+                ( feed.children[0].assignedNodes()[0].nodeName.toLowerCase() === 'hvml' )
+              ) {
+                // new DOMParser().parseFromString(
+                // feed.hvml
+                var tempHvml = feed.children[0].assignedNodes()[0];
+
+                // Hack for edge case where a slotted <hvml> has no @xmlns:
+                if ( tempHvml.namespaceURI === feed.ns.xhtml ) {
+                  feed.ns.hvml = feed.ns.xhtml;
+                }
+
+                // Document nodes are not allowed as children of Element nodes,
+                // so this should always be true and we can skip checking it
+                // if ( tempHvml.nodeType !== Node.DOCUMENT_NODE ) {
+                var doc = document.implementation.createDocument( ( tempHvml.namespaceURI || feed.ns.hvml ), 'hvml', null );
+
+                if ( tempHvml.hasAttributes() ) {
+                  let attributes = tempHvml.attributes;
+                  for ( let i = attributes.length - 1; i >= 0; --i ) {
+                    doc.documentElement.setAttribute( attributes[i].name, attributes[i].value );
+                  }
+                }
+
+                doc.documentElement.appendChild(
+                  tempHvml.children[0]
+                    // - Using cloneNode allows us to retain the light DOM.
+                    // - Omitting cloneNode will remove the HVML children from
+                    //   the light DOM and append them to the invisible feed.hvml.
+                    //   If the light DOM was updated, feed.hvml would have to be kept
+                    //   in-sync, and vice-versa.
+                    .cloneNode( true )
+                );
+                feed.hvml = doc;
+                // }
+                // else {
+                //   console.log( 'slotted child is already a document node - this should be impossible' );
+                //   feed.hvml = tempHvml;
+                // }
+
+                feed.loading = false;
+                resolve( feed.hvml );
+              // No src or composed children:
               }
+              // else {
+              //   // feed.loading = false;
+              //   // reject( Error( 'No `src` URL or <hvml> children loaded' ) );
+              //   console.log( 'feed has no src and no hvml slotted children - does THIS ever happen?' );
+              // }
             } // !feed.isLoaded()
           }
         );
@@ -154,9 +183,9 @@
 
         feed.limit = feed.getLimit();
 
-        if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
+        // if ( feed.hasOwnProperty( 'src' ) && feed.src ) {
           feed.importHvml();
-        }
+        // }
 
         $shadowRoot.appendChild( $shadowContent );
       } // constructor
@@ -177,19 +206,19 @@
       }
 
       _appendEntries() {
-        console.log( '_appendEntries' );
+        // console.log( '_appendEntries' );
 
         var feed = this;
 
-        console.log( 'feed.hvmlImported', feed.hvmlImported );
+        // console.log( 'feed.hvmlImported', feed.hvmlImported );
 
         feed.hvmlImported.then(function selectHvmlVideoElements( response ) {
-          console.log( 'selectHvmlVideoElements' );
+          // console.log( 'selectHvmlVideoElements', response );
 
-          return feed.select( '//video', feed.hvml );
+          return feed.select( '//hvml:video', feed.hvml );
         })
         .then(function appendHtmlElements( nodes ) {
-          console.log( 'appendHtmlElements' );
+          // console.log( 'appendHtmlElements', nodes );
 
           var i;
           var entry;
@@ -257,21 +286,57 @@
             throw 'No reference node provided';
           }
 
+          console.log( '[ refNode ]', [ refNode ] );
+
+          switch ( refNode.nodeType ) {
+            case Node.ELEMENT_NODE: // 1
+              console.log( 'Element node' );
+            break;
+
+            case Node.TEXT_NODE: // 3
+            case Node.PROCESSING_INSTRUCTION_NODE: // 7
+            case Node.COMMENT_NODE: // 8
+            break;
+
+            case Node.DOCUMENT_NODE: // 9
+              console.log( 'Document node' );
+            break;
+
+            case Node.DOCUMENT_TYPE_NODE: // 10
+            case Node.DOCUMENT_FRAGMENT_NODE: // 11
+            break;
+          }
+          // if ( refNode )
+
           var result;
           var nodes = [];
           var node;
           var i = 0;
           var snapshotLength;
           // response === feed.hvml
+          var defaultNS;
 
           // Automatic Namespace Resolution:
           // feed.nsResolver = feed.evaluator.createNSResolver( feed.hvml.documentElement );
 
           // Custom Namespace Resolution:
-          var defaultNS = feed.hvml.documentElement.getAttribute( 'xmlns' ) || feed.ns.hvml;
+          // hasAttribute
+          if ( feed.hvml.hasOwnProperty( 'getAttribute' ) ) {
+            defaultNS = feed.hvml.getAttribute( 'xmlns' );
+            // console.log('getAttribute')
+          } else if ( feed.hvml.hasOwnProperty( 'documentElement' ) ) {
+            defaultNS = feed.hvml.documentElement.getAttribute( 'xmlns' );
+            // console.log('documentElement');
+          } else {
+            defaultNS = feed.ns.hvml;
+            // console.log('fallback');
+          }
+
+          // console.log( 'defaultNS', defaultNS );
 
           function nsResolver( prefix ) {
             return ( feed.ns[prefix] || defaultNS );
+            // return feed.ns.xhtml;
           }
 
           // xpathType = xpathType ||  XPathResult.ORDERED_NODE_ITERATOR_TYPE;
@@ -280,15 +345,21 @@
 
           result = evaluator.evaluate(
             xpath,
+            // '//xhtml:hvml',
             refNode,
             nsResolver,
+            // feed.ns.xhtml,
+            // null,
             xpathType,
             null
           );
 
+          console.log( 'result', result );
+
           if ( result ) {
             switch ( xpathType ) {
               case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+                console.log( 'ordered node iterator' );
                 node = result.iterateNext();
 
                 nodes.push( node );
@@ -300,15 +371,22 @@
               break;
 
               case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+                console.log( 'ordered node snapshot' );
+
+                console.log( 'result.snapshotLength', result.snapshotLength );
+
                 for ( snapshotLength = result.snapshotLength; i < snapshotLength; ++i ) {
+                  console.log( 'result.snapshotItem(i)', result.snapshotItem(i) );
                   nodes.push( result.snapshotItem(i) );
                 }
               break;
 
-              // default:
+              default:
+                console.log( 'default' );
             }
           }
 
+          console.log( 'nodes', nodes );
           // resolve( result );
           return nodes;
         });

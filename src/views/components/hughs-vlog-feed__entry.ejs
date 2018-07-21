@@ -208,7 +208,7 @@
       setTitle() {
         var entry = this;
 
-        var titlePromise = this.select( 'title' )
+        var titlePromise = this.select( 'hvml:title' )
           .then( this.getText )
           .then( function ( title ) {
             entry.$.title.textContent = title;
@@ -276,7 +276,7 @@
       }
 
       selectPublished() {
-        return this.select( 'published' ).then( this.getText );
+        return this.select( 'hvml:published' ).then( this.getText );
       }
 
       renderPublished() {
@@ -303,7 +303,7 @@
 
         var entry = this;
 
-        var recordedPromise = this.select( 'recorded' )
+        var recordedPromise = this.select( 'hvml:recorded' )
           .then( this.getText )
           .catch( function noRecordedSet() {
             return entry.selectPublished();
@@ -338,7 +338,7 @@
 
           entry.setTitle();
         } else {
-          entry.select( 'title' ).then( entry.getText )
+          entry.select( 'hvml:title' ).then( entry.getText )
           .then( function ( title ) {
             entry.$$( '#title' ).textContent = title;
           } );
@@ -390,7 +390,7 @@
 
       getYouTubeLink() {
         var entry = this;
-        var xpath = 'showing[@type="internet"][@admission="public"]//uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
+        var xpath = 'hvml:showing[@type="internet"][@admission="public"]//uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
 
         var selected;
 

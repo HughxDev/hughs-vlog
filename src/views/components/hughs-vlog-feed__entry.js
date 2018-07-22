@@ -1,159 +1,159 @@
 "use strict";
+import HughsVlogElement from '/lib/hughs-vlog-element.js';
 import { parseHTML } from '/lib/dom.js';
 
 class HughsVlogFeedEntry extends HTMLElement {
+  static get is() {
+    return 'hughs-vlog-feed__entry';
+  }
+
   static get template() {
     return `
-      <style>
-        * {
-          box-sizing: border-box;
-        }
+      <template id="${HughsVlogFeedEntry.is}">
+        <style>
+          * {
+            box-sizing: border-box;
+          }
 
-        :host {
-          display: inline-block;
-          /*display: inline-flex;*/
-          /*width: 360px;*/
-          width: 50%;
-          position: relative;
-        }
+          :host {
+            display: inline-block;
+            /*display: inline-flex;*/
+            /*width: 360px;*/
+            width: 50%;
+            position: relative;
+          }
 
-        :host([large]) {
-          display: block;
-          /*display: flex;*/
-          /*width: 853px;*/
-          width: 100%;
-        }
+          :host([large]) {
+            display: block;
+            /*display: flex;*/
+            /*width: 853px;*/
+            width: 100%;
+          }
 
-        .hughs-vlog-feed-entry__player {
-          position: relative;
-          padding-bottom: 56.25%;
-          height: 0;
-          overflow: hidden;
-          max-width: 100%;
-        }
+          .hughs-vlog-feed-entry__player {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+          }
 
-        .hughs-vlog-feed-entry__player > iframe,
-        .hughs-vlog-feed-entry__player > object,
-        .hughs-vlog-feed-entry__player > embed,
-        .hughs-vlog-feed-entry__player > img,
-        .hughs-vlog-feed-entry__player > svg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
+          .hughs-vlog-feed-entry__player > iframe,
+          .hughs-vlog-feed-entry__player > object,
+          .hughs-vlog-feed-entry__player > embed,
+          .hughs-vlog-feed-entry__player > img,
+          .hughs-vlog-feed-entry__player > svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
 
-        .flex-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 2;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
-        }
+          .flex-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+          }
 
-        /*:host([playable]) .flex-container {
-          position: static;
-          display: block;
-          height: initial;
-          color: inherit;
-        }*/
+          /*:host([playable]) .flex-container {
+            position: static;
+            display: block;
+            height: initial;
+            color: inherit;
+          }*/
 
-        header {
-          text-align: center;
-        }
+          header {
+            text-align: center;
+          }
 
-        header > dl {
-          margin-top: 0;
-        }
+          header > dl {
+            margin-top: 0;
+          }
 
-        hgroup {
-          line-height: 1;
-        }
+          hgroup {
+            line-height: 1;
+          }
 
-        .h {
-          margin: 0 auto;
-          line-height: 1.75;
-        }
+          .h {
+            margin: 0 auto;
+            line-height: 1.75;
+          }
 
-        .title {
-          line-height: 1.25;
-        }
+          .title {
+            line-height: 1.25;
+          }
 
-        a {
-          text-decoration: none;
-        }
+          a {
+            text-decoration: none;
+          }
 
-        a:hover,
-        a:active {
-          text-decoration: underline;
-        }
+          a:hover,
+          a:active {
+            text-decoration: underline;
+          }
 
-        .flex-item {
-          /*width: 39em;*/
-          max-width: 90%;
-          margin-left: auto;
-          margin-right: auto;
-        }
+          .flex-item {
+            /*width: 39em;*/
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+          }
 
-        dl {
-          text-align: center;
-        }
+          dl {
+            text-align: center;
+          }
 
-        dt {
-          font-weight: bold;
-        }
+          dt {
+            font-weight: bold;
+          }
 
-        dd {
-          margin-left: 0;
-        }
+          dd {
+            margin-left: 0;
+          }
 
-        dt,
-        dd {
-          display: inline-block;
-        }
-      </style>
+          dt,
+          dd {
+            display: inline-block;
+          }
+        </style>
 
-      <header>
-        <hgroup data-layout="standalone">
-          <h3 class="h h--3"><time id="recorded"></time>:</h3>
-          <h2 id="title" class="h h--2 title"></h2>
-        </hgroup>
-        <a data-layout="list" class="flex-container" href="javascript:void(0);">
-          <hgroup class="flex-item">
+        <header>
+          <hgroup data-layout="standalone">
             <h3 class="h h--3"><time id="recorded"></time>:</h3>
             <h2 id="title" class="h h--2 title"></h2>
           </hgroup>
-        </a>
-        <dl data-layout="standalone">
-          <dt>Published</dt>
-          <dd><time id="published"></time></dd>
-        </dl>
-      </header>
-      <!-- <h2></h2> -->
-      <div id="player" class="hughs-vlog-feed-entry__player">
-        <img src="http://via.placeholder.com/640x360" />
-      </div>
+          <a data-layout="list" class="flex-container" href="javascript:void(0);">
+            <hgroup class="flex-item">
+              <h3 class="h h--3"><time id="recorded"></time>:</h3>
+              <h2 id="title" class="h h--2 title"></h2>
+            </hgroup>
+          </a>
+          <dl data-layout="standalone">
+            <dt>Published</dt>
+            <dd><time id="published"></time></dd>
+          </dl>
+        </header>
+        <!-- <h2></h2> -->
+        <div id="player" class="hughs-vlog-feed-entry__player">
+          <img src="http://via.placeholder.com/640x360" />
+        </div>
+      </template>
     `;
   }
 
   constructor() {
     super();
 
-    var entry = this;
-
-    const $shadowRoot = this.attachShadow( { mode: 'open' } );
-    const $shadowContent = parseHTML( HughsVlogFeedEntry.template );
-
-    entry.oembed = null;
-    entry.limit = null;
-
-    $shadowRoot.appendChild( $shadowContent );
+    this.oembed = null;
+    this.limit = null;
   } // constructor
 
   connectedCallback() {
@@ -472,4 +472,6 @@ class HughsVlogFeedEntry extends HTMLElement {
   }
 }
 
-window.customElements.define( 'hughs-vlog-feed__entry', HughsVlogFeedEntry );
+HughsVlogFeedEntry = HughsVlogElement( HughsVlogFeedEntry );
+
+window.customElements.define( HughsVlogFeedEntry.is, HughsVlogFeedEntry );

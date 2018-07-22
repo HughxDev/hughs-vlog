@@ -1,24 +1,31 @@
 "use strict";
-import { parseHTML, attachShadowDOM, XMLNS } from '/lib/dom.js';
+import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import { XMLNS } from '/lib/dom.js';
 
 class HughsVlogFeed extends HTMLElement {
+  static get is() {
+    return 'hughs-vlog-feed';
+  }
+
   static get template() {
     return `
-      <script type="module" src="components/hughs-vlog-feed__entry.js"></script>
-      <style>
-        * {
-          box-sizing: border-box;
-        }
+      <template id="${HughsVlogFeed.is}">
+        <script type="module" src="components/hughs-vlog-feed__entry.js"></script>
+        <style>
+          * {
+            box-sizing: border-box;
+          }
 
-        :host {
-          display: block;
-        }
+          :host {
+            display: block;
+          }
 
-        .hughs-vlog-feed-entry:first-of-type {
-          width: 100%;
-        }
-      </style>
-      <slot></slot>
+          .hughs-vlog-feed-entry:first-of-type {
+            width: 100%;
+          }
+        </style>
+        <slot></slot>
+      </template>
     `;
   }
 
@@ -28,9 +35,6 @@ class HughsVlogFeed extends HTMLElement {
 
   constructor() {
     super();
-
-    let $shadowContent = parseHTML( HughsVlogFeed.template );
-    this.attachShadow( { mode: 'open' } ); // this.shadowRoot
 
     this.hvml = null;
     this.hvmlImported = false;
@@ -48,12 +52,14 @@ class HughsVlogFeed extends HTMLElement {
     //   this.importHvml();
     // }
 
-    this.shadowRoot.appendChild( $shadowContent );
+    if ( !this.shadowRoot ) {
+      this.attachShadow( { "mode": "open" } );
+    }
   } // constructor
 
   connectedCallback() {
     this.setAttribute( 'role', 'article' );
-
+    console.log( 'connectedCallback' );
     if ( !this.hvmlImported ) {
       this.importHvml();
     }
@@ -472,4 +478,6 @@ class HughsVlogFeed extends HTMLElement {
   }
 }
 
-window.customElements.define( 'hughs-vlog-feed', HughsVlogFeed );
+HughsVlogFeed = HughsVlogElement( HughsVlogFeed );
+
+window.customElements.define( HughsVlogFeed.is, HughsVlogFeed );

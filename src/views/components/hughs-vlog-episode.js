@@ -1,35 +1,36 @@
 "use strict";
-import { attachShadowDOM } from '/lib/dom.js';
+import HughsVlogElement from '/lib/hughs-vlog-element.js';
 
 class HughsVlogEpisode extends HTMLElement {
+  static get is() {
+    return 'hughs-vlog-episode';
+  }
+
   static get template() {
     return `
-      <script type="module" src="components/hughs-vlog-feed.js"></script>
-      <style>
-        * {
-          box-sizing: border-box;
-        }
+      <template id="${HughsVlogEpisode.is}">
+        <script type="module" src="components/hughs-vlog-feed.js"></script>
+        <style>
+          * {
+            box-sizing: border-box;
+          }
 
-        :host {
-          display: block;
-        }
-      </style>
-      <hughs-vlog-feed id="feed">
-        <slot></slot>
-      </hughs-vlog-feed>
+          :host {
+            display: block;
+          }
+        </style>
+        <hughs-vlog-feed id="feed">
+          <slot></slot>
+        </hughs-vlog-feed>
+      </template>
     `;
   }
 
-  constructor() {
-    super();
-    attachShadowDOM( this, HughsVlogEpisode );
-
+  connectedCallback() {
     this.$ = {};
     this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
     this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
-  }
 
-  connectedCallback() {
     this.$.feed = this.$$( '#feed' );
 
     if ( this.children.length ) {
@@ -76,4 +77,6 @@ class HughsVlogEpisode extends HTMLElement {
   }
 }
 
-window.customElements.define( 'hughs-vlog-episode', HughsVlogEpisode );
+HughsVlogEpisode = HughsVlogElement( HughsVlogEpisode );
+
+window.customElements.define( HughsVlogEpisode.is, HughsVlogEpisode );

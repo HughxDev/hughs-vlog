@@ -1,5 +1,3 @@
-const range = document.createRange();
-
 // const getOwnerDocument = () => {
 //   if ( 'currentScript' in document ) {
 //     return document.currentScript.ownerDocument;
@@ -10,18 +8,40 @@ const range = document.createRange();
 //   }
 // };
 
+const range = document.createRange();
 const parseHTML = function parseHTML( string ) {
   return range.createContextualFragment( string );
 };
 
 export { parseHTML };
 
-const attachShadowDOM = function attachShadowDOM( elementInstance, ElementClass, mode ) {
+// prepareTemplate(templateElement, elementName, elementExtension){},
+// ShadyCSS.prepareTemplate(myElementTemplate, 'my-element');
+//   class MyElement extends HTMLElement {
+//     connectedCallback() {
+//       ShadyCSS.styleElement(this);
+//       if (!this.shadowRoot) {
+//         this.attachShadow({mode: 'open'});
+//         this.shadowRoot.appendChild(
+//           document.importNode(myElementTemplate.content, true));
+//       }
+//     }
+//   }
+
+const attachShadowDOM = function attachShadowDOM(
+  elementInstance,
+  ElementClass,
+  mode
+) {
   mode = ( mode || "open" );
   const $shadowRoot = elementInstance.attachShadow( { "mode": mode } );
-  const $shadowContent = parseHTML( ElementClass.template );
+  const $template = parseHTML( ElementClass.template );
 
-  $shadowRoot.appendChild( $shadowContent );
+  ShadyCSS.prepareTemplate( $template, ElementClass.is );
+  // $shadowRoot.appendChild( $shadowContent );
+  $shadowRoot.appendChild(
+    document.importNode( $template.content, true )
+  );
 };
 
 export { attachShadowDOM };

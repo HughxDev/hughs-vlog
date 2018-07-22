@@ -23,6 +23,6 @@
     "tests"
   ],
   "dependencies": {
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.x"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^2.x"
   }
 }

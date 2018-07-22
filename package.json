@@ -3,7 +3,8 @@
   "description": "Hugh’s Vlog",
   "version": "0.0.0",
   "scripts": {
-    "build": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/; cp -r bower_components/ public/lib/"
+    "postinstall": "rm -rf src/lib/webcomponentsjs/; cp -r node_modules/@webcomponents/webcomponentsjs/ src/lib/webcomponentsjs/",
+    "build": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     ]
   },
   "dependencies": {
+    "@webcomponents/webcomponentsjs": "^2.0.3",
     "ejs": "^2.5.7",
     "express": "^4.16.3",
     "http-proxy": "^1.17.0",

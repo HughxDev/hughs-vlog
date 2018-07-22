@@ -1,12 +1,18 @@
-<% include head.xml %>
+<% include head.html %>
     <title>Hugh’s Vlog</title>
     <!-- Load polyfills; note that "loader" will load these async -->
-    <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js"></script> -->
-    <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
+    <!-- <script src="lib/webcomponentsjs/entrypoints/custom-elements-es5-adapter-index.js"></script> -->
+    <!-- <script src="lib/webcomponentsjs/entrypoints/webcomponents-bundle-index.js"></script> -->
+    <!-- <script src="lib/webcomponentsjs/entrypoints/webcomponents-sd-ce-pf-index.js"></script> -->
+    <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script> -->
+    <script src="lib/webcomponentsjs/webcomponents-bundle.js"></script>
+    <!-- <script src="lib/webcomponentsjs/webcomponents-lite.js"></script> -->
     <script src="https://apis.google.com/js/platform.js"></script>
 
     <!-- Load a custom element definition via HTMLImports -->
-    <link rel="import" href="components/hughs-vlog.html" />
+    <!-- <link rel="import" href="components/hughs-vlog.html" /> -->
+    <script type="module" src="components/hughs-vlog.js"></script>
+    <script type="module" src="components/hughs-vlog-feed.js"></script>
     <style>
       @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
 
@@ -38,17 +44,32 @@
 
         FB.AppEvents.logPageView();
 
-        window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
-          window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
-            window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( function hughsVlogSubscribeDefined() {
-              let hughsVlog = document.querySelector( 'hughs-vlog' );
-              let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
-              let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
+        // console.log( 'wtf' );
 
-              hughsVlogSubscribe.renderFbLikeButton();
+        function renderFbLikeButtonWhenReady() {
+          window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
+            // console.log( 'hughs-vlog' );
+            window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
+              // console.log( 'hughs-vlog-header' );
+              window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( function hughsVlogSubscribeDefined() {
+                // console.log( 'hughs-vlog-subscribe' );
+                let hughsVlog = document.querySelector( 'hughs-vlog' );
+                let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
+                let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
+
+                hughsVlogSubscribe.renderFbLikeButton();
+              } );
             } );
-          } );
-        } )
+          } )
+        }
+
+        if ( WebComponents && 'waitFor' in WebComponents ) {
+          console.log( 'waitFor' );
+          WebComponents.waitFor( renderFbLikeButtonWhenReady );
+        } else {
+          // console.log( 'no waitFor' );
+          renderFbLikeButtonWhenReady();
+        }
       };
 
       ( function loadFacebookSDK( d, s, id ) {

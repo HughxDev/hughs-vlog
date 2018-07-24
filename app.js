@@ -49,7 +49,9 @@ app.use( function contentType( req, res, next ) {
 } );
 
 express.static.mime.define({
-  'application/xhtml+xml': [ 'html' ],
+  // 'application/xhtml+xml': [ 'html' ],
+  'text/html': [ 'html' ],
+  'application/javascript': [ 'js' ],
   'application/hvml+xml': [ 'hvml' ],
 });
 
@@ -81,6 +83,8 @@ app.listen( app.get( 'port' ), function listen() {
 
 // Components - JS (for ES Modules)
 app.use( '/components', express.static( join( __dirname, '/src/views/components' ) ) );
+
+app.use( '/skatejs', express.static( join( __dirname, '/skatejs' ) ) );
 
 // Permalinks
 // /year/month/day

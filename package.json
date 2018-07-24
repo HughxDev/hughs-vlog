@@ -28,10 +28,13 @@
     ]
   },
   "dependencies": {
+    "@skatejs/renderer-preact": "^0.3.3",
     "@webcomponents/webcomponentsjs": "^2.0.3",
     "ejs": "^2.5.7",
     "express": "^4.16.3",
     "http-proxy": "^1.17.0",
-    "node-http-proxy": "^0.2.3"
+    "node-http-proxy": "^0.2.3",
+    "preact": "^8.2.9",
+    "skatejs": "^5.2.1"
   }
 }

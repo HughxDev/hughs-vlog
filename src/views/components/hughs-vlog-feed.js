@@ -313,6 +313,9 @@ class HughsVlogFeed extends HTMLElement {
         return nodes;
       } )
       .then( this._appendEntries.bind( this ) )
+      .then( () => {
+        this.setAttribute( 'loaded', 'loaded' );
+      } )
       .catch( ( error ) => {
         console.warn( 'HVML Import failed: ', error );
         delete this.hvmlImported;

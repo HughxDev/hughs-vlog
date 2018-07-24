@@ -39,11 +39,7 @@ class HughsVlogEpisode extends HTMLElement {
 
     const hvmlChild = this.$.feed._getFirstHvmlChild( this.children );
 
-    // test
-    if ( hvmlChild ) {
-      this.$.feed.shadowRoot.appendChild( hvmlChild );
-      this.$.feed.importHvml();
-    } else {
+    if ( !hvmlChild ) {
       var feedSrc = 'http://localhost:3000/videos';
 
       // @number, @published, @recorded
@@ -71,12 +67,12 @@ class HughsVlogEpisode extends HTMLElement {
         query = query.toLowerCase().trim();
       }
 
-      switch ( query ) {
-        case 'latest':
+      // switch ( query ) {
+      //   case 'latest':
           // this.$.feed.setAttribute( 'limit', '1' );
-          feedSrc += '?limit=1';
-        break;
-      }
+      feedSrc += '?limit=1';
+        // break;
+      // }
 
       // this.$.feed.setAttribute( 'playable', 'playable' );
       // this.$.feed.setAttribute( 'large', 'large' );

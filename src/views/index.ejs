@@ -85,9 +85,7 @@
 
         if ( WebComponents && 'waitFor' in WebComponents ) {
           console.log( 'waitFor' );
-          WebComponents.waitFor( function waitForWebComponentsAndPolyfills() {
-            renderFbLikeButtonWhenReady();
-          } );
+          WebComponents.waitFor( renderFbLikeButtonWhenReady );
         } else {
           console.log( 'no waitFor' );
           renderFbLikeButtonWhenReady();

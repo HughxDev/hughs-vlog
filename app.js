@@ -95,11 +95,12 @@ app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2
   .then( function foundVideos( hvml ) {
     // Strip namespace to test for cases where it’s missing:
     hvml = hvml
-    //   .replace( ' xmlns="http://vocab.nospoon.tv/ovml#"', '' )
-    //   // .replace( /<([^<>\s]+)(.*)>/g, '<hvml:$1$2>' )
-    //   // .replace( /<\/([^<>\s]+)>/g, '</hvml:$1>' )
+      // .replace( ' xmlns="http://vocab.nospoon.tv/ovml#"', '' )
+      // .replace( /<([^<>\s]+)(.*)>/g, '<hvml:$1$2>' )
+      // .replace( /<\/([^<>\s]+)>/g, '</hvml:$1>' )
       .replace( /<(hvml[^<>]*)>/, '<$1 hidden="hidden">' )
     ;
+
     res.set( 'Content-Type', formats.html.contentType );
     // .replace( '<hvml', '<hvml slot="hvml"' )
     res.render( 'index',

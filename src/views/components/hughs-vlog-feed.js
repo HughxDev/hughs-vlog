@@ -44,19 +44,6 @@ class HughsVlogFeed extends HTMLElement {
     this.src = this.getSrc();
     this.order = this.getOrder();
     this.limit = this.getLimit();
-
-    // let slot;
-    // if (
-    //   ( this.hasOwnProperty( 'src' ) && this.src ) ||
-    //   ( this.hasChildren() && this.children[0].nodeName.toLowerCase() === 'hvml' ) ||
-    //   ( ( slot = this.querySelector( 'slot' ) ) && slot.assignedNodes().length )
-    // ) {
-    //   this.importHvml();
-    // }
-
-    if ( !this.shadowRoot ) {
-      this.attachShadow( { "mode": "open" } );
-    }
   } // constructor
 
   connectedCallback() {
@@ -163,6 +150,12 @@ class HughsVlogFeed extends HTMLElement {
     // return false;
   }
 
+  _loadHvmlFrom( hvml, resolve ) {
+    this.hvml = this._documentifyHvml( hvml );
+    this.loading = false;
+    resolve( this.hvml );
+  }
+
   slotChanged( resolve, reject, event ) {
     console.log( 'event', event );
     console.log( 'resolve', resolve );
@@ -171,14 +164,11 @@ class HughsVlogFeed extends HTMLElement {
     const slot = event.currentTarget;
     const assignedNodes = slot.assignedNodes();
     // console.log( 'assignedNodes', assignedNodes );
+    const hvmlChild = _getFirstHvmlChild( assignedNodes );
 
-    if ( this._slotContainsHvml( slot ) ) {
+    if ( hvmlChild ) {
       console.log( 'got slotted hvml' );
-
-      this.hvml = this._documentifyHvml( assignedNodes[0] );
-      this.loading = false;
-
-      resolve( this.hvml );
+      this._loadHvmlFrom( hvmlChild, resolve );
     // No src or composed children:
     }
     // else {
@@ -265,10 +255,16 @@ class HughsVlogFeed extends HTMLElement {
         console.log( 'Feed has no src, check for slotted hvml child', this.shadowRoot );
 
         var slot = this.querySelector( 'slot' );
-        console.log( 'slot', slot );
 
-        if ( slot && this._slotContainsHvml( slot ) ) {
-          console.log( 'feed has slot; setting up event listener' )
+        if ( slot ) {
+          console.log( 'feed has slot; loading HVML if possible right now and setting up event listener' );
+
+          let hvmlChild = this._getFirstHvmlChild( slot.assignedNodes() );
+
+          if ( hvmlChild ) {
+            this._loadHvmlFrom( hvmlChild, resolve );
+          }
+
           // Avoid race conditions:
           slot.addEventListener( 'slotchange', this.slotChanged.bind( this, resolve, reject ) );
         // No src or slotted hvml; test for direct children (e.g. in the case of the ShadyDOM polyfill)
@@ -306,7 +302,8 @@ class HughsVlogFeed extends HTMLElement {
     // this.hvmlImported = ( this.hvmlImported || new Promise( this._resolveHvml.bind( this ) ) );
     this.hvmlImported = ( new Promise( this._resolveHvml.bind( this ) ) );
     console.log( 'this.hvmlImported', this.hvmlImported );
-    this.hvmlImported.then( ( response ) => {
+    this.hvmlImported
+      .then( ( response ) => {
         console.log( 'HVML has been imported; selecting hvml:video elements from: ', response );
         console.log( 'this.hvml', this.hvml );
         let nodes = this.select( '//hvml:video', response );
@@ -318,6 +315,7 @@ class HughsVlogFeed extends HTMLElement {
       .then( this._appendEntries.bind( this ) )
       .catch( ( error ) => {
         console.warn( 'HVML Import failed: ', error );
+        delete this.hvmlImported;
       } )
     ;
   }

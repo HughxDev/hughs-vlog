@@ -9,11 +9,15 @@ const HughsVlogElement = ( superClass ) => {
       // console.log( 'superClass.is', superClass.is );
       // console.log( 'superClass.template', superClass.template );
       // console.log( 'this.$template', this.$template );
-      ShadyCSS.prepareTemplate( this.$template, superClass.is );
+      if ( window.hasOwnProperty( 'ShadyCSS' ) ) {
+        ShadyCSS.prepareTemplate( this.$template, superClass.is );
+      }
     }
 
     connectedCallback() {
-      ShadyCSS.styleElement( this );
+      if ( window.hasOwnProperty( 'ShadyCSS' ) ) {
+        ShadyCSS.styleElement( this );
+      }
 
       if ( !this.shadowRoot ) {
         this.attachShadow( { "mode": "open" } );

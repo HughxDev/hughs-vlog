@@ -2,6 +2,8 @@
 import HughsVlogElement from '/lib/hughs-vlog-element.js';
 import { XMLNS } from '/lib/dom.js';
 
+import '/components/hughs-vlog-feed__entry.js';
+
 class HughsVlogFeed extends HTMLElement {
   static get is() {
     return 'hughs-vlog-feed';
@@ -10,7 +12,7 @@ class HughsVlogFeed extends HTMLElement {
   static get template() {
     return `
       <template id="${HughsVlogFeed.is}">
-        <script type="module" src="components/hughs-vlog-feed__entry.js"></script>
+        <!-- <script type="module" src="components/hughs-vlog-feed__entry.js"></script> -->
         <style>
           * {
             box-sizing: border-box;
@@ -134,9 +136,31 @@ class HughsVlogFeed extends HTMLElement {
     }
   }
 
+  _getFirstHvmlChild( children ) {
+    // @todo: Deal with hvml not being the first child
+    if ( children.length ) {
+      for ( let i = 0; i < children.length; i++ ) {
+        if ( children[i].nodeName.toLowerCase() === 'hvml' ) {
+          return children[i];
+        }
+      }
+    }
+
+    return false;
+  }
+
+  _containsHvml( children ) {
+    return !!this._getFirstHvmlChild( children );
+  }
+
   _slotContainsHvml( slot ) {
+    // @todo: Check if input is actually a slot.
+    // Deferred for now because it’s usually redundant.
+    // if ( slot && ( slot.nodeName.toLowerCase() === 'slot' ) ) {
     const assignedNodes = slot.assignedNodes();
-    return ( assignedNodes.length && ( assignedNodes[0].nodeName.toLowerCase() === 'hvml' ) );
+    return this._containsHvml( assignedNodes );
+    // }
+    // return false;
   }
 
   slotChanged( resolve, reject, event ) {
@@ -156,10 +180,10 @@ class HughsVlogFeed extends HTMLElement {
 
       resolve( this.hvml );
     // No src or composed children:
-    } else {
-      reject( 'No src or composed children' );
     }
-
+    // else {
+    //   reject( 'No src or composed children' );
+    // }
   }
 
   // Plain node trees can’t be queried with XPath,
@@ -247,14 +271,25 @@ class HughsVlogFeed extends HTMLElement {
           console.log( 'feed has slot; setting up event listener' )
           // Avoid race conditions:
           slot.addEventListener( 'slotchange', this.slotChanged.bind( this, resolve, reject ) );
-        // @todo: Test for direct children
-        // } else if (  ) {
+        // No src or slotted hvml; test for direct children (e.g. in the case of the ShadyDOM polyfill)
         } else {
-          // this.loading = false;
-          // reject( Error( 'No `src` URL or <hvml> children loaded' ) );
-          console.log( 'feed has no src and no hvml slotted children - does THIS ever happen?' );
-          console.log( '[this.children]', [this.children] );
-
+          let hvmlChild = this._getFirstHvmlChild( this.children );
+          if ( hvmlChild ) {
+            this.hvml = this._documentifyHvml( hvmlChild );
+            this.loading = false;
+            resolve( this.hvml );
+          // No light DOM hvml children
+          } else {
+            let hvmlChild = this._getFirstHvmlChild( this.shadowRoot.children );
+            if ( hvmlChild ) {
+              this.hvml = this._documentifyHvml( hvmlChild );
+              this.loading = false;
+              resolve( this.hvml );
+            // No shadow DOM hvml children
+            } else {
+              reject( 'No src, nor hvml children (slotted, direct, or shadow)' );
+            }
+          }
         } // if slot
       }
     // !this.isLoaded()
@@ -282,7 +317,7 @@ class HughsVlogFeed extends HTMLElement {
       } )
       .then( this._appendEntries.bind( this ) )
       .catch( ( error ) => {
-        console.error( 'HVML Import Error: ', error );
+        console.warn( 'HVML Import failed: ', error );
       } )
     ;
   }
@@ -481,3 +516,5 @@ class HughsVlogFeed extends HTMLElement {
 HughsVlogFeed = HughsVlogElement( HughsVlogFeed );
 
 window.customElements.define( HughsVlogFeed.is, HughsVlogFeed );
+
+export default HughsVlogFeed;

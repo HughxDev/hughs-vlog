@@ -6,26 +6,27 @@
     <!-- <script src="lib/webcomponentsjs/entrypoints/webcomponents-sd-ce-pf-index.js"></script> -->
     <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script> -->
     <script>var ShadyDOM = { "force": true };</script>
-    <script src="lib/webcomponentsjs/webcomponents-bundle.js"></script>
+    <!-- <script src="lib/webcomponentsjs/webcomponents-bundle.js"></script> -->
+    <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script>
     <!-- <script src="lib/webcomponentsjs/webcomponents-lite.js"></script> -->
     <script src="https://apis.google.com/js/platform.js"></script>
 
     <!-- Load a custom element definition via HTMLImports -->
     <!-- <link rel="import" href="components/hughs-vlog.html" /> -->
-    <script type="module" src="components/hughs-vlog.js"></script>
+    <!-- <script type="module" src="components/hughs-vlog.js"></script> -->
 
-    <script type="module" src="components/hughs-vlog-header.js"></script>
-    <script type="module" src="components/hughs-vlog-site-nav.js"></script>
-    <script type="module" src="components/hughs-vlog-subscribe.js"></script>
-    <script type="module" src="components/hughs-vlog-footer.js"></script>
+    <!-- <script type="module" src="components/hughs-vlog-header.js"></script> -->
+    <!-- <script type="module" src="components/hughs-vlog-site-nav.js"></script> -->
+    <!-- <script type="module" src="components/hughs-vlog-subscribe.js"></script> -->
+    <!-- <script type="module" src="components/hughs-vlog-footer.js"></script> -->
 
-    <script type="module" src="components/hughs-vlog-feed.js"></script>
-    <script type="module" src="components/hughs-vlog-feed__entry.js"></script>
+    <!-- <script type="module" src="components/hughs-vlog-feed.js"></script> -->
+    <!-- <script type="module" src="components/hughs-vlog-feed__entry.js"></script> -->
 
-    <script type="module" src="components/hughs-vlog-episode.js"></script>
-    <script type="module" src="components/hughs-vlog-episode-nav.js"></script>
+    <!-- <script type="module" src="components/hughs-vlog-episode.js"></script> -->
+    <!-- <script type="module" src="components/hughs-vlog-episode-nav.js"></script> -->
 
-    <script type="module" src="components/hughs-vlog-playback-options.js"></script>
+    <!-- <script type="module" src="components/hughs-vlog-playback-options.js"></script> -->
 
     <style>
       @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
@@ -47,7 +48,11 @@
   </head>
   <body>
     <div id="fb-root"></div>
-    <script>//<![CDATA[
+    <script type="module">//<![CDATA[
+      import HughsVlog from './components/hughs-vlog.js';
+      import HughsVlogFeed from './components/hughs-vlog-feed.js';
+      import HughsVlogEpisode from './components/hughs-vlog-episode.js';
+
       window.fbAsyncInit = function() {
         FB.init( {
           "appId": "1117428231678998",
@@ -60,13 +65,14 @@
 
         // console.log( 'wtf' );
 
+        // WebComponents.waitFor
         function renderFbLikeButtonWhenReady() {
           window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
-            // console.log( 'hughs-vlog' );
+            console.log( 'hughs-vlog' );
             window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
-              // console.log( 'hughs-vlog-header' );
+              console.log( 'hughs-vlog-header' );
               window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( function hughsVlogSubscribeDefined() {
-                // console.log( 'hughs-vlog-subscribe' );
+                console.log( 'hughs-vlog-subscribe' );
                 let hughsVlog = document.querySelector( 'hughs-vlog' );
                 let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
                 let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
@@ -79,9 +85,11 @@
 
         if ( WebComponents && 'waitFor' in WebComponents ) {
           console.log( 'waitFor' );
-          WebComponents.waitFor( renderFbLikeButtonWhenReady );
+          WebComponents.waitFor( function waitForWebComponentsAndPolyfills() {
+            renderFbLikeButtonWhenReady();
+          } );
         } else {
-          // console.log( 'no waitFor' );
+          console.log( 'no waitFor' );
           renderFbLikeButtonWhenReady();
         }
       };

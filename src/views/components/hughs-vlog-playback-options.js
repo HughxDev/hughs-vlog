@@ -68,3 +68,5 @@ class HughsVlogPlaybackOptions extends HTMLElement {
 HughsVlogPlaybackOptions = HughsVlogElement( HughsVlogPlaybackOptions );
 
 window.customElements.define( HughsVlogPlaybackOptions.is, HughsVlogPlaybackOptions );
+
+export default HughsVlogPlaybackOptions;

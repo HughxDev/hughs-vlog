@@ -50,3 +50,6 @@ deployment-config.json
 .htaccess.prod
 .gitignore.prod
 .htaccess
+polymer/
+preact/
+skatejs/

@@ -1,6 +1,9 @@
 "use strict";
 import HughsVlogElement from '/lib/hughs-vlog-element.js';
 
+import '/components/hughs-vlog-site-nav.js';
+import '/components/hughs-vlog-subscribe.js';
+
 class HughsVlogHeader extends HTMLElement {
   static get is() {
     return 'hughs-vlog-header';
@@ -66,3 +69,5 @@ class HughsVlogHeader extends HTMLElement {
 HughsVlogHeader = HughsVlogElement( HughsVlogHeader );
 
 window.customElements.define( HughsVlogHeader.is, HughsVlogHeader );
+
+export default HughsVlogHeader;

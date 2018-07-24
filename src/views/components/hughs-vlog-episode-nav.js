@@ -64,3 +64,5 @@ class HughsVlogEpisodeNav extends HTMLElement {
 HughsVlogEpisodeNav = HughsVlogElement( HughsVlogEpisodeNav );
 
 window.customElements.define( HughsVlogEpisodeNav.is, HughsVlogEpisodeNav );
+
+export default HughsVlogEpisodeNav;

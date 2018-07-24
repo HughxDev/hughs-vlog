@@ -475,3 +475,5 @@ class HughsVlogFeedEntry extends HTMLElement {
 HughsVlogFeedEntry = HughsVlogElement( HughsVlogFeedEntry );
 
 window.customElements.define( HughsVlogFeedEntry.is, HughsVlogFeedEntry );
+
+export default HughsVlogFeedEntry;

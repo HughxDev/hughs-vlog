@@ -42,8 +42,14 @@ class HughsVlog extends HTMLElement {
       </template>
     `;
   }
+
+  connectedCallback() {
+    console.log( 'connected' );
+  }
 }
 
 HughsVlog = HughsVlogElement( HughsVlog );
 
 window.customElements.define( HughsVlog.is, HughsVlog );
+
+export default HughsVlog;

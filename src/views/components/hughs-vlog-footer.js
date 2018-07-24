@@ -24,7 +24,7 @@ class HughsVlogFooter extends HTMLElement {
   }
 
   connectedCallback() {
-    const $currentYear = this.$template.content.querySelector( '#current-year' );
+    const $currentYear = this.shadowRoot.querySelector( '#current-year' );
     $currentYear.textContent = this.currentYear;
     this.setAttribute( 'role', 'contentinfo' );
   }
@@ -37,3 +37,5 @@ class HughsVlogFooter extends HTMLElement {
 HughsVlogFooter = HughsVlogElement( HughsVlogFooter );
 
 window.customElements.define( HughsVlogFooter.is, HughsVlogFooter );
+
+export default HughsVlogFooter;

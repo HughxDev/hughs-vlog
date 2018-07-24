@@ -14,12 +14,15 @@ const HughsVlogElement = ( superClass ) => {
 
     connectedCallback() {
       ShadyCSS.styleElement( this );
+
       if ( !this.shadowRoot ) {
         this.attachShadow( { "mode": "open" } );
         this.shadowRoot.appendChild(
           document.importNode( this.$template.content, true )
         );
       }
+
+      super.connectedCallback();
     }
   }
 };

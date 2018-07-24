@@ -148,3 +148,5 @@ class HughsVlogSubscribe extends HTMLElement {
 HughsVlogSubscribe = HughsVlogElement( HughsVlogSubscribe );
 
 window.customElements.define( HughsVlogSubscribe.is, HughsVlogSubscribe );
+
+export default HughsVlogSubscribe;

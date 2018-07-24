@@ -1,6 +1,8 @@
 "use strict";
 import HughsVlogElement from '/lib/hughs-vlog-element.js';
 
+import '/components/hughs-vlog-feed.js';
+
 class HughsVlogEpisode extends HTMLElement {
   static get is() {
     return 'hughs-vlog-episode';
@@ -9,7 +11,7 @@ class HughsVlogEpisode extends HTMLElement {
   static get template() {
     return `
       <template id="${HughsVlogEpisode.is}">
-        <script type="module" src="components/hughs-vlog-feed.js"></script>
+        <!-- <script type="module" src="components/hughs-vlog-feed.js"></script> -->
         <style>
           * {
             box-sizing: border-box;
@@ -32,9 +34,15 @@ class HughsVlogEpisode extends HTMLElement {
     this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
 
     this.$.feed = this.$$( '#feed' );
+    this.$.feed.setAttribute( 'playable', 'playable' );
+    this.$.feed.setAttribute( 'large', 'large' );
 
-    if ( this.children.length ) {
-      //
+    const hvmlChild = this.$.feed._getFirstHvmlChild( this.children );
+
+    // test
+    if ( hvmlChild ) {
+      this.$.feed.shadowRoot.appendChild( hvmlChild );
+      this.$.feed.importHvml();
     } else {
       var feedSrc = 'http://localhost:3000/videos';
 
@@ -70,8 +78,8 @@ class HughsVlogEpisode extends HTMLElement {
         break;
       }
 
-      this.$.feed.setAttribute( 'playable', 'playable' );
-      this.$.feed.setAttribute( 'large', 'large' );
+      // this.$.feed.setAttribute( 'playable', 'playable' );
+      // this.$.feed.setAttribute( 'large', 'large' );
       this.$.feed.setAttribute( 'src', feedSrc );
     }
   }
@@ -80,3 +88,5 @@ class HughsVlogEpisode extends HTMLElement {
 HughsVlogEpisode = HughsVlogElement( HughsVlogEpisode );
 
 window.customElements.define( HughsVlogEpisode.is, HughsVlogEpisode );
+
+export default HughsVlogEpisode;

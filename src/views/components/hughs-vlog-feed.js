@@ -48,14 +48,14 @@ class HughsVlogFeed extends HTMLElement {
 
   connectedCallback() {
     this.setAttribute( 'role', 'article' );
-    console.log( 'connectedCallback' );
+
     if ( !this.hvmlImported ) {
       this.importHvml();
     }
   }
 
   attributeChangedCallback( attribute, oldValue, newValue ) {
-    console.log( 'Attribute changed: ', attribute, oldValue, newValue );
+    // console.log( 'Attribute changed: ', attribute, oldValue, newValue );
 
     switch ( attribute ) {
       case 'src':
@@ -100,9 +100,8 @@ class HughsVlogFeed extends HTMLElement {
   }
 
   giveChildrenUpForAdoption() {
-    // console.log( 'this.lastChild', this.lastChild );
     if ( this.shadowRoot.children.length ) {
-      console.log( 'Removing applicable children: ', this.shadowRoot.children );
+      // console.log( 'Removing applicable children: ', this.shadowRoot.children );
 
       var children = this.shadowRoot.children;
 
@@ -112,14 +111,14 @@ class HughsVlogFeed extends HTMLElement {
         let nodeName = child.nodeName.toLowerCase();
 
         if ( !this._isTemplateChild( nodeName ) ) {
-          console.log( `Removing ${nodeName}`, child )
+          // console.log( `Removing ${nodeName}`, child )
           this.shadowRoot.removeChild( child );
         } else {
-          console.log( `Skipping ${nodeName}`, child );
+          // console.log( `Skipping ${nodeName}`, child );
         }
       }
     } else {
-      console.log( 'has no children' );
+      // console.log( 'has no children' );
     }
   }
 
@@ -157,17 +156,12 @@ class HughsVlogFeed extends HTMLElement {
   }
 
   slotChanged( resolve, reject, event ) {
-    console.log( 'event', event );
-    console.log( 'resolve', resolve );
-    console.log( 'reject', reject );
-
     const slot = event.currentTarget;
     const assignedNodes = slot.assignedNodes();
-    // console.log( 'assignedNodes', assignedNodes );
     const hvmlChild = _getFirstHvmlChild( assignedNodes );
 
     if ( hvmlChild ) {
-      console.log( 'got slotted hvml' );
+      // console.log( 'got slotted hvml' );
       this._loadHvmlFrom( hvmlChild, resolve );
     // No src or composed children:
     }
@@ -191,7 +185,7 @@ class HughsVlogFeed extends HTMLElement {
     var doc = document.implementation.createDocument( ( tempHvml.namespaceURI || XMLNS.hvml ), 'hvml', null );
 
     if ( tempHvml.hasAttributes() ) {
-      console.log( 'tempHvml has attributes' );
+      // console.log( 'tempHvml has attributes' );
       let attributes = tempHvml.attributes;
       for ( let i = attributes.length - 1; i >= 0; --i ) {
         doc.documentElement.setAttribute( attributes[i].name, attributes[i].value );
@@ -212,19 +206,16 @@ class HughsVlogFeed extends HTMLElement {
   }
 
   _resolveHvml( resolve, reject ) {
-    console.log( 'Resolving HVML' );
-    console.log( 'resolve', resolve );
-    console.log( 'reject', reject );
+    // console.log( 'Resolving HVML' );
 
     if ( !this.isLoaded() ) {
-      console.log( 'HVML not yet loaded' );
+      // console.log( 'HVML not yet loaded' );
 
       if ( this.hasOwnProperty( 'src' ) && this.src ) {
-        console.log( 'Feed has src attribute' );
+        // console.log( 'Feed has src attribute' );
 
         // console.log( 'has feed src' );
         // console.log( 'this.src', this.src );
-        // console.log( 'a' );
         var xhr = new XMLHttpRequest();
 
         xhr.open( 'GET', this.src, true );
@@ -252,12 +243,12 @@ class HughsVlogFeed extends HTMLElement {
         xhr.send( '' );
       // No src, check for slotted hvml child
       } else {
-        console.log( 'Feed has no src, check for slotted hvml child', this.shadowRoot );
+        // console.log( 'Feed has no src, check for slotted hvml child', this.shadowRoot );
 
         var slot = this.querySelector( 'slot' );
 
         if ( slot ) {
-          console.log( 'feed has slot; loading HVML if possible right now and setting up event listener' );
+          // console.log( 'feed has slot; loading HVML if possible right now and setting up event listener' );
 
           let hvmlChild = this._getFirstHvmlChild( slot.assignedNodes() );
 
@@ -290,26 +281,21 @@ class HughsVlogFeed extends HTMLElement {
       }
     // !this.isLoaded()
     } else {
-      console.log( 'HVML is alread loaded' );
+      // console.log( 'HVML is alread loaded' );
       resolve( this.hvml );
     }
     // return this.hvml;
   }
 
   importHvml() {
-    console.log( 'importHvml was called' );
+    // console.log( 'importHvml was called' );
 
     // this.hvmlImported = ( this.hvmlImported || new Promise( this._resolveHvml.bind( this ) ) );
     this.hvmlImported = ( new Promise( this._resolveHvml.bind( this ) ) );
-    console.log( 'this.hvmlImported', this.hvmlImported );
     this.hvmlImported
       .then( ( response ) => {
-        console.log( 'HVML has been imported; selecting hvml:video elements from: ', response );
-        console.log( 'this.hvml', this.hvml );
+        // console.log( 'HVML has been imported; selecting hvml:video elements from: ', response );
         let nodes = this.select( '//hvml:video', response );
-
-        console.log( 'nodes from first then', nodes );
-
         return nodes;
       } )
       .then( this._appendEntries.bind( this ) )
@@ -324,7 +310,7 @@ class HughsVlogFeed extends HTMLElement {
   }
 
   _appendEntries( nodes ) {
-    console.log( '_appendEntries', nodes );
+    // console.log( '_appendEntries', nodes );
 
     var i;
     var entry;
@@ -380,10 +366,7 @@ class HughsVlogFeed extends HTMLElement {
   } // _appendEntries
 
   select( xpath, refNode, xpathType ) {
-    // var feed = this;
-    // console.log( 'this', [this] );
     var evaluator = new XPathEvaluator();
-    // var promise = this.hvmlImported.then(function ( response ) {
       if ( !xpath ) {
         throw 'No XPath provided';
       }
@@ -391,9 +374,6 @@ class HughsVlogFeed extends HTMLElement {
       if ( !refNode ) {
         throw 'No reference node provided';
       }
-
-      // console.log( 'refNode', [refNode] );
-      // console.log( 'refNode.documentElement.namespaceURI', refNode.documentElement.namespaceURI );
 
       switch ( refNode.nodeType ) {
         case Node.ELEMENT_NODE: // 1
@@ -413,35 +393,31 @@ class HughsVlogFeed extends HTMLElement {
         case Node.DOCUMENT_FRAGMENT_NODE: // 11
         break;
       }
-      // if ( refNode )
 
       var result;
       var nodes = [];
       var node;
       var i = 0;
       var snapshotLength;
-      // response === this.hvml
       var defaultNS;
+
+      // console.log( 'refNode', refNode );
 
       // Automatic Namespace Resolution:
       // XMLNSResolver = this.evaluator.createNSResolver( this.hvml.documentElement );
 
       // Custom Namespace Resolution:
-      console.log( 'refNode', refNode );
-      // hasAttribute
       if ( ( 'hasAttribute' in refNode ) && refNode.hasAttribute( 'xmlns' ) ) {
         defaultNS = refNode.getAttribute( 'xmlns' );
-        console.log('getAttribute')
       } else if ( ( 'documentElement' in refNode ) && refNode.documentElement.hasAttribute( 'xmlns' ) ) {
         defaultNS = refNode.documentElement.getAttribute( 'xmlns' );
-        console.log('documentElement');
       } else {
         // defaultNS = XMLNS.hvml;
         defaultNS = XMLNS.xhtml;
-        console.log( 'fallback' );
+        // console.log( 'fallback' );
       }
 
-      console.log( 'defaultNS', defaultNS );
+      // console.log( 'defaultNS', defaultNS );
 
       function nsResolver( prefix ) {
         return ( XMLNS[prefix] || defaultNS );
@@ -463,14 +439,13 @@ class HughsVlogFeed extends HTMLElement {
         null
       );
 
-      console.log( 'result', result );
+      // console.log( 'result', result );
 
       if ( result ) {
         switch ( xpathType ) {
           case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
             // console.log( 'ordered node iterator' );
             node = result.iterateNext();
-
             nodes.push( node );
 
             while( node ) {
@@ -483,13 +458,11 @@ class HughsVlogFeed extends HTMLElement {
             let snapshotLength = result.snapshotLength;
             // console.log( 'ordered node snapshot' );
 
-            // console.log( 'result.snapshotLength', result.snapshotLength );
             if ( !snapshotLength ) {
               throw `XPath expression \`${xpath}\` didn’t match any nodes in ${refNode.nodeName.toLowerCase()}`;
             }
 
             for ( ; i < snapshotLength; ++i ) {
-              // console.log( 'result.snapshotItem(i)', result.snapshotItem(i) );
               nodes.push( result.snapshotItem(i) );
             }
           break;
@@ -497,16 +470,12 @@ class HughsVlogFeed extends HTMLElement {
           default:
             // console.log( 'default' );
         }
-      } else {
-        console.log( 'Falsey result: ', result );
       }
+      // else {
+      //   console.log( 'Falsey result: ', result );
+      // }
 
-      // console.log( 'nodes', nodes );
-      // resolve( result );
       return nodes;
-    // } );
-
-    // return promise;
   };
 
   isLoaded() {

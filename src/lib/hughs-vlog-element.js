@@ -26,6 +26,10 @@ const HughsVlogElement = ( superClass ) => {
         );
       }
 
+      // This will fail if a custom element lacks a connectedCallback.
+      // Unfortunately there doesn’t seem to be a way to test for the
+      // presence of it. So all custom elements should include a
+      // connectedCallback definition even if it’s empty.
       super.connectedCallback();
     }
   }

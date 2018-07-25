@@ -338,15 +338,8 @@ class HughsVlogFeedEntry extends HTMLElement {
       //   // …
       // } ) ;
       this.getOembed( this.getYouTubeLink() ).then( ( oembed ) => {
-        console.log( 'oembed', oembed );
-
         let parsedHTML = parseHTML( oembed.html );
-
-        console.log( 'parsedHTML', parsedHTML );
-
         let embed = parsedHTML.querySelector( 'iframe' );
-
-        console.log( 'embed', embed );
 
         this.$$( '#player' ).appendChild( embed );
         this.setTitle();

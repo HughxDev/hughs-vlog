@@ -43,9 +43,7 @@ class HughsVlog extends HTMLElement {
     `;
   }
 
-  connectedCallback() {
-    console.log( 'connected' );
-  }
+  connectedCallback() {}
 }
 
 HughsVlog = HughsVlogElement( HughsVlog );

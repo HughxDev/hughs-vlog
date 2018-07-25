@@ -1,8 +1,9 @@
 <% include head.html %>
     <title>Hugh’s Vlog</title>
-    <script>var ShadyDOM = { "force": true };</script>
+    <script>window.ShadyDOM = { "force": true };</script>
     <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script>
     <script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
+    <!-- <script src="lib/vue/dist/vue.js"></script> -->
     <style>
       @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
 
@@ -24,10 +25,6 @@
   <body>
     <div id="fb-root"></div>
     <script type="module">//<![CDATA[
-      import HughsVlog from './components/hughs-vlog.js';
-      import HughsVlogFeed from './components/hughs-vlog-feed.js';
-      import HughsVlogEpisode from './components/hughs-vlog-episode.js';
-
       window.fbAsyncInit = function() {
         FB.init( {
           "appId": "1117428231678998",
@@ -40,30 +37,26 @@
 
         // console.log( 'wtf' );
 
-        // WebComponents.waitFor
         function renderFbLikeButtonWhenReady() {
-          window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
-            console.log( 'hughs-vlog' );
-            window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
-              console.log( 'hughs-vlog-header' );
-              window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( function hughsVlogSubscribeDefined() {
-                console.log( 'hughs-vlog-subscribe' );
-                let hughsVlog = document.querySelector( 'hughs-vlog' );
-                let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
-                let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
+          let hughsVlog = document.querySelector( 'hughs-vlog' );
+          let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
+          let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
 
-                hughsVlogSubscribe.renderFbLikeButton();
-              } );
-            } );
-          } )
+          hughsVlogSubscribe.renderFbLikeButton();
+        }
+
+        function webComponentsReady() {
+          window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
+
+          return import( './components/hughs-vlog.js' );
         }
 
         if ( WebComponents && 'waitFor' in WebComponents ) {
-          console.log( 'waitFor' );
-          WebComponents.waitFor( renderFbLikeButtonWhenReady );
+          // console.log( 'waitFor' );
+          WebComponents.waitFor( webComponentsReady );
         } else {
-          console.log( 'no waitFor' );
-          renderFbLikeButtonWhenReady();
+          // console.log( 'no waitFor' );
+          webComponentsReady();
         }
       };
 

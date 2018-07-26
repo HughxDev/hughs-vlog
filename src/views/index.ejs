@@ -3,7 +3,6 @@
     <script>window.ShadyDOM = { "force": true };</script>
     <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script>
     <script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
-    <!-- <script src="lib/vue/dist/vue.js"></script> -->
     <style>
       @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
 
@@ -48,7 +47,7 @@
         function webComponentsReady() {
           window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
 
-          return import( './components/hughs-vlog.js' );
+          return import( '/views/components/hughs-vlog.js' );
         }
 
         if ( WebComponents && 'waitFor' in WebComponents ) {
@@ -76,10 +75,11 @@
     //]]></script>
     <hughs-vlog>
       <!-- @number, @published, @recorded -->
-      <%- include(page, {published: published, inline: inline}) %>
+      <!-- <%- include(page, {published: published, inline: inline}) %> -->
       <!-- <hughs-vlog-latest-episode></hughs-vlog-latest-episode> -->
       <!-- <hughs-vlog-episode></hughs-vlog-episode> -->
       <!-- <hughs-vlog-feed src="http://localhost:3000/videos"></hughs-vlog-feed> -->
     </hughs-vlog>
+    <!-- <div id="app"></div> -->
   </body>
 </html>

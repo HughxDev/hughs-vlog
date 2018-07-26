@@ -1,18 +1,20 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
-import { XMLNS } from '/lib/dom.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
+import { XMLNS } from '../../lib/dom.js';
 
-import '/components/hughs-vlog-feed__entry.js';
+import /*HughsVlogFeedEntry from*/ './hughs-vlog-feed__entry.js';
 
-class HughsVlogFeed extends HTMLElement {
+let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
   static get is() {
     return 'hughs-vlog-feed';
   }
 
   static get template() {
+    /*
+      <script type="module" src="components/hughs-vlog-feed__entry.js"></script>
+    */
     return `
       <template id="${HughsVlogFeed.is}">
-        <!-- <script type="module" src="components/hughs-vlog-feed__entry.js"></script> -->
         <style>
           * {
             box-sizing: border-box;
@@ -93,14 +95,14 @@ class HughsVlogFeed extends HTMLElement {
       case 'style':
       case 'script':
         return true;
-      break;
+      // break;
     }
 
     return false;
   }
 
   giveChildrenUpForAdoption() {
-    if ( this.shadowRoot.children.length ) {
+    if ( this.shadowRoot && this.shadowRoot.children && this.shadowRoot.children.length ) {
       // console.log( 'Removing applicable children: ', this.shadowRoot.children );
 
       var children = this.shadowRoot.children;
@@ -158,7 +160,7 @@ class HughsVlogFeed extends HTMLElement {
   slotChanged( resolve, reject, event ) {
     const slot = event.currentTarget;
     const assignedNodes = slot.assignedNodes();
-    const hvmlChild = _getFirstHvmlChild( assignedNodes );
+    const hvmlChild = this._getFirstHvmlChild( assignedNodes );
 
     if ( hvmlChild ) {
       // console.log( 'got slotted hvml' );
@@ -398,7 +400,7 @@ class HughsVlogFeed extends HTMLElement {
       var nodes = [];
       var node;
       var i = 0;
-      var snapshotLength;
+      // var snapshotLength;
       var defaultNS;
 
       // console.log( 'refNode', refNode );
@@ -454,6 +456,7 @@ class HughsVlogFeed extends HTMLElement {
             }
           break;
 
+          // eslint-disable-next-line
           case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
             let snapshotLength = result.snapshotLength;
             // console.log( 'ordered node snapshot' );
@@ -476,7 +479,7 @@ class HughsVlogFeed extends HTMLElement {
       // }
 
       return nodes;
-  };
+  }
 
   isLoaded() {
     return ( !this.loading && ( this.hvml !== null ) );

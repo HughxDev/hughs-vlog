@@ -1,7 +1,7 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-class HughsVlogPlaybackOptions extends HTMLElement {
+let HughsVlogPlaybackOptions = class HughsVlogPlaybackOptions extends HTMLElement {
   static get is() {
     return 'hughs-vlog-playback-options';
   }

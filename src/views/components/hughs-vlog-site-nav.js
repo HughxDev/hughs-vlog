@@ -1,7 +1,7 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-class HughsVlogSiteNav extends HTMLElement {
+let HughsVlogSiteNav = class HughsVlogSiteNav extends HTMLElement {
   static get is() {
     return 'hughs-vlog-site-nav';
   }
@@ -21,7 +21,7 @@ class HughsVlogSiteNav extends HTMLElement {
             margin: .5rem auto;
           }
 
-          a {
+          ::slotted(a) {
             flex: 1;
             background-color: black;
             color: white;
@@ -29,8 +29,8 @@ class HughsVlogSiteNav extends HTMLElement {
             padding: .5rem;
           }
 
-          a:hover,
-          a:focus {
+          ::slotted(a:hover),
+          ::slotted(a:focus) {
             text-decoration: none;
           }
 
@@ -38,18 +38,15 @@ class HughsVlogSiteNav extends HTMLElement {
             margin-left: 0;
           }
 
-          a:last-of-type {
+          ::slotted(a:last-of-type) {
             margin-right: 0;
           }
 
-          .middle {
+          ::slotted(.middle) {
             flex: 2;
           }
         </style>
-        <a href="javascript:void(0);">About</a>
-        <a href="/episodes">Episodes</a>
-        <!-- <a class="middle" href="javascript:void(0);">Companion Blog</a>  -->
-        <a href="javascript:void(0);">Contact</a>
+        <slot></slot>
       </template>
     `;
   }

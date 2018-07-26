@@ -1,4 +1,4 @@
-import { parseHTML } from '/lib/dom.js';
+import { parseHTML } from './dom.js';
 
 const HughsVlogElement = ( superClass ) => {
   return class extends superClass {
@@ -10,13 +10,13 @@ const HughsVlogElement = ( superClass ) => {
       // console.log( 'superClass.template', superClass.template );
       // console.log( 'this.$template', this.$template );
       if ( window.hasOwnProperty( 'ShadyCSS' ) ) {
-        ShadyCSS.prepareTemplate( this.$template, superClass.is );
+        window.ShadyCSS.prepareTemplate( this.$template, superClass.is );
       }
     }
 
     connectedCallback() {
       if ( window.hasOwnProperty( 'ShadyCSS' ) ) {
-        ShadyCSS.styleElement( this );
+        window.ShadyCSS.styleElement( this );
       }
 
       if ( !this.shadowRoot ) {

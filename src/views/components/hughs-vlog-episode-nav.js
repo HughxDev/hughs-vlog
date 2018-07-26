@@ -1,5 +1,5 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
 class HughsVlogEpisodeNav extends HTMLElement {
   static get is() {

@@ -37,7 +37,7 @@ const attachShadowDOM = function attachShadowDOM(
   const $shadowRoot = elementInstance.attachShadow( { "mode": mode } );
   const $template = parseHTML( ElementClass.template );
 
-  ShadyCSS.prepareTemplate( $template, ElementClass.is );
+  window.ShadyCSS.prepareTemplate( $template, ElementClass.is );
   // $shadowRoot.appendChild( $shadowContent );
   $shadowRoot.appendChild(
     document.importNode( $template.content, true )

@@ -51,8 +51,11 @@ app.use( function contentType( req, res, next ) {
 express.static.mime.define({
   'application/xhtml+xml': [ 'html' ],
   'application/hvml+xml': [ 'hvml' ],
+  'application/javascript': [ 'js' ]
 });
 
+app.use( '/', express.static( join( __dirname, '/src' ) ) );
+// app.use( '/node_modules', express.static( join( __dirname, '/node_modules' ) ) );
 app.use( '/lib', express.static( join( __dirname, '/src/lib' ) ) );
 
 // set

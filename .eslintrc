@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "plugin:vue/essential"
+  ],
+  "rules": {
+    "no-console": "off"
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "modules": true
+    }
+  }
+}

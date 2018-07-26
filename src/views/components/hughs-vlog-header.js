@@ -1,19 +1,21 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-import '/components/hughs-vlog-site-nav.js';
-import '/components/hughs-vlog-subscribe.js';
+import /*HughsVlogSiteNav from*/ './hughs-vlog-site-nav.js';
+import /*HughsVlogSubscribe from*/ './hughs-vlog-subscribe.js';
 
-class HughsVlogHeader extends HTMLElement {
+let HughsVlogHeader = class HughsVlogHeader extends HTMLElement {
   static get is() {
     return 'hughs-vlog-header';
   }
 
   static get template() {
+    /*
+      <script type="module" src="components/hughs-vlog-site-nav.js"></script>
+      <script type="module" src="components/hughs-vlog-subscribe.js"></script>
+    */
     return `
       <template id="${HughsVlogHeader.is}">
-        <script type="module" src="components/hughs-vlog-site-nav.js"></script>
-        <script type="module" src="components/hughs-vlog-subscribe.js"></script>
         <style>
           * {
             box-sizing: border-box;
@@ -25,34 +27,31 @@ class HughsVlogHeader extends HTMLElement {
             margin: 1.5rem auto 2.5rem;
           }
 
-          a {
+          ::slotted(a) {
             text-decoration: none;
             color: inherit;
           }
 
-          /*a:hover,
-          a:focus {
-            text-decoration: underline;
-          }*/
+          /*
+            ::slotted(a:hover),
+            ::slotted(a:focus) {
+              text-decoration: underline;
+            }
+          */
 
-          .h {
+          ::slotted(.h) {
             margin: 0 auto;
           }
 
-          p {
+          ::slotted(p) {
             margin: .5rem auto 1rem;
           }
 
-          .link-wrapper {
+          ::slotted(.link-wrapper) {
             display: block;
           }
         </style>
-        <a class="link-wrapper" href="/">
-          <h1 class="h h--1">Hugh’s Vlog</h1>
-        </a>
-        <p>The daily life of a startup founder, programmer, and filmmaker.</p>
-        <hughs-vlog-site-nav></hughs-vlog-site-nav>
-        <hughs-vlog-subscribe></hughs-vlog-subscribe>
+        <slot></slot>
       </template>
     `;
   }

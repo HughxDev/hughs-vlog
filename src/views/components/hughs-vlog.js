@@ -1,7 +1,13 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-class HughsVlog extends HTMLElement {
+import /*HughsVlogHeader from*/ './hughs-vlog-header.js';
+import /*HughsVlogPlaybackOptions from*/ './hughs-vlog-playback-options.js';
+import /*HughsVlogEpisode from*/ './hughs-vlog-episode.js';
+import /*HughsVlogEpisodeNav from*/ './hughs-vlog-episode-nav.js';
+import /*HughsVlogFooter from*/ './hughs-vlog-footer.js';
+
+let HughsVlog = class HughsVlog extends HTMLElement {
   // Copying static getter convention from Polymer 3,
   // though not strictly necessary.
   static get is() {
@@ -9,13 +15,15 @@ class HughsVlog extends HTMLElement {
   }
 
   static get template() {
+    /*
+      <script type="module" src="components/hughs-vlog-header.js"></script>
+      <script type="module" src="components/hughs-vlog-playback-options.js"></script>
+      <script type="module" src="components/hughs-vlog-episode.js"></script>
+      <script type="module" src="components/hughs-vlog-episode-nav.js"></script>
+      <script type="module" src="components/hughs-vlog-footer.js"></script>
+    */
     return `
       <template id="${HughsVlog.is}">
-        <script type="module" src="components/hughs-vlog-header.js"></script>
-        <script type="module" src="components/hughs-vlog-playback-options.js"></script>
-        <script type="module" src="components/hughs-vlog-episode.js"></script>
-        <script type="module" src="components/hughs-vlog-episode-nav.js"></script>
-        <script type="module" src="components/hughs-vlog-footer.js"></script>
         <style>
           * {
             box-sizing: border-box;
@@ -27,18 +35,11 @@ class HughsVlog extends HTMLElement {
             max-width: 853px;
           }
 
-          main {
+          ::slotted(main) {
             margin-bottom: 3rem;
           }
         </style>
-        <hughs-vlog-header></hughs-vlog-header>
-        <main>
-          <h2>It works!</h2>
-          <slot></slot>
-          <hughs-vlog-playback-options></hughs-vlog-playback-options>
-          <hughs-vlog-episode-nav></hughs-vlog-episode-nav>
-        </main>
-        <hughs-vlog-footer></hughs-vlog-footer>
+        <slot></slot>
       </template>
     `;
   }

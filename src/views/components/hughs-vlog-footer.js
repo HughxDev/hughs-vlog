@@ -1,7 +1,7 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-class HughsVlogFooter extends HTMLElement {
+let HughsVlogFooter = class HughsVlogFooter extends HTMLElement {
   static get is() {
     return 'hughs-vlog-footer';
   }

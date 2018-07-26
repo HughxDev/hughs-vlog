@@ -1,8 +1,8 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
-import { parseHTML } from '/lib/dom.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
+import { parseHTML } from '../../lib/dom.js';
 
-class HughsVlogFeedEntry extends HTMLElement {
+let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   static get is() {
     return 'hughs-vlog-feed__entry';
   }
@@ -309,7 +309,7 @@ class HughsVlogFeedEntry extends HTMLElement {
 
     try {
       recorded = this.getText( this.select( 'hvml:recorded' ) );
-    } catch {
+    } catch ( error ) {
       recorded = entry.selectPublished(); // may not be accurate
     }
 
@@ -400,7 +400,7 @@ class HughsVlogFeedEntry extends HTMLElement {
     var entry = this;
     var xpath = 'hvml:showing[@type="internet"][@admission="public"]//hvml:uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
 
-    var selected;
+    // var selected;
 
     // return entry.select( xpath, entry.data ).then( function ( response ) {
     //   if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
@@ -428,7 +428,7 @@ class HughsVlogFeedEntry extends HTMLElement {
       xhr.open( 'GET', endpoint, true );
       xhr.setRequestHeader( 'Accept', 'application/xml;q=0.8,text/xml;q=0.6,application/json;q=0.4' );
 
-      xhr.onload = function xhrOnLoad( event ) {
+      xhr.onload = function xhrOnLoad( /*event*/ ) {
         switch ( xhr.status ) {
           case 200:
             oembedJSON = JSON.parse( ( xhr.responseXML || xhr.responseText ) );
@@ -447,7 +447,7 @@ class HughsVlogFeedEntry extends HTMLElement {
         }
       };
 
-      xhr.onerror = function xhrOnError( event ) {
+      xhr.onerror = function xhrOnError( /*event*/ ) {
         reject( Error( 'There was a network error.' ) );
       };
 

@@ -1,7 +1,7 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-import '/components/hughs-vlog-feed.js';
+import HughsVlogFeed from './hughs-vlog-feed.js';
 
 class HughsVlogEpisode extends HTMLElement {
   static get is() {
@@ -9,9 +9,11 @@ class HughsVlogEpisode extends HTMLElement {
   }
 
   static get template() {
+    /*
+      <script type="module" src="components/hughs-vlog-feed.js"></script>
+    */
     return `
       <template id="${HughsVlogEpisode.is}">
-        <!-- <script type="module" src="components/hughs-vlog-feed.js"></script> -->
         <style>
           * {
             box-sizing: border-box;

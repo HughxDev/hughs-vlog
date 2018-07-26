@@ -1,7 +1,7 @@
 "use strict";
-import HughsVlogElement from '/lib/hughs-vlog-element.js';
+import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 
-class HughsVlogSubscribe extends HTMLElement {
+let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
   static get is() {
     return 'hughs-vlog-subscribe';
   }
@@ -78,7 +78,7 @@ class HughsVlogSubscribe extends HTMLElement {
             border: 0;
           }
 
-          /*fb\:like {
+          /*fb:like {
             @apply --fb-like;
           }*/
 
@@ -123,7 +123,7 @@ class HughsVlogSubscribe extends HTMLElement {
   }
 
   renderFbLikeButton() {
-    FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ) );
+    window.FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ) );
   }
 
   // https://developers.google.com/youtube/subscribe/reference
@@ -136,7 +136,7 @@ class HughsVlogSubscribe extends HTMLElement {
       // "layout": "default"
       "layout": "full"
     };
-    gapi.ytsubscribe.render( container, options );
+    window.gapi.ytsubscribe.render( container, options );
   }
 
   render() {

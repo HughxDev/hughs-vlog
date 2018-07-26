@@ -3,8 +3,11 @@
   "description": "Hugh’s Vlog",
   "version": "0.0.0",
   "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "postinstall": "node ./postinstall.js",
-    "build": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/"
+    "publish": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/"
   },
   "repository": {
     "type": "git",
@@ -13,10 +16,21 @@
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@vue/cli-plugin-babel": "^3.0.0-rc.5",
+    "@vue/cli-plugin-eslint": "^3.0.0-rc.5",
+    "@vue/cli-service": "^3.0.0-rc.5",
     "babel-cli": "^6.23.0",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-custom-element-classes": "^0.1.0",
     "babel-plugin-transform-es2015-classes": "^6.23.0",
-    "babel-preset-env": "^1.2.1"
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.2.0",
+    "eslint-loader": "^2.1.0",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.16.2"
   },
   "babel": {
     "presets": [
@@ -24,19 +38,46 @@
     ],
     "plugins": [
       "transform-custom-element-classes",
-      "transform-es2015-classes"
+      "transform-es2015-classes",
+      "syntax-dynamic-import"
     ]
   },
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.0.3",
     "ejs": "^2.5.7",
+    "eslint-plugin-vue": "^5.0.0-beta.1",
     "express": "^4.16.3",
     "http-proxy": "^1.17.0",
     "node-http-proxy": "^0.2.3",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1"
   },
   "_lib": [
     "@webcomponents/webcomponentsjs",
     "vue"
+  ],
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
   ]
 }

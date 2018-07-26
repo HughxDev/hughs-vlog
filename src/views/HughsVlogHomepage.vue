@@ -1,5 +1,5 @@
 <template>
-  <hughs-vlog-episode published="latest"></hughs-vlog-episode>
+  <hughs-vlog-episode id="latest-episode" published="latest"></hughs-vlog-episode>
 </template>
 
 <script>

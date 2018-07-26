@@ -163,12 +163,16 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     this.setAttribute( 'role', 'article' );
     this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
-    if ( this.parentNode.host.hasAttribute( 'limit' ) ) {
-      this.limit = parseInt( this.parentNode.host.getAttribute( 'limit' ), 10 );
-    }
-
     this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
     this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
+
+    console.log( 'this', [this] );
+
+    if ( this.parentNode && this.parentNode.host ) {
+      if ( this.parentNode.host.hasAttribute( 'limit' ) ) {
+        this.limit = parseInt( this.parentNode.host.getAttribute( 'limit' ), 10 );
+      }
+    }
 
     this.render();
   }
@@ -176,15 +180,26 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   select( xpath, data ) {
     data = ( data || this.data );
 
-    return this.parentNode.host.select( xpath, data );
+    if ( this.parentNode && this.parentNode.host ) {
+      try {
+        return this.parentNode.host.select( xpath, data );
+      } catch ( error ) {
+        console.info( error );
+        return false;
+      }
+    }
+
+    // @todo: throw?
+    return false;
   }
 
   getText( response ) {
     if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
       return response[0].textContent;
-    } else {
-      throw 'No text';
     }
+
+    // throw 'No text';
+    return '';
   }
 
   // extractTitle( response ) {
@@ -200,14 +215,6 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   }
 
   setTitle() {
-    // var titlePromise = this.select( 'hvml:title' )
-    //   .then( this.getText )
-    //   .then( function ( title ) {
-    //     entry.$.title.textContent = title;
-    //
-    //     return title;
-    //   } )
-    // ;
     this.$.title.textContent = this.getText( this.select( 'hvml:title' ) );
   }
 
@@ -272,16 +279,13 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
       return;
     }
 
-    var entry = this;
+    const published = this.selectPublished();
+    const publishedFormatted = this.formatDate( published );
 
-    this.selectPublished().then( function setPublishedText( published ) {
-      var publishedFormatted = entry.formatDate( published );
+    this.$.published.setAttribute( 'datetime', published );
+    this.$.published.textContent = publishedFormatted;
 
-      entry.$.published.setAttribute( 'datetime', published );
-      entry.$.published.textContent = publishedFormatted;
-
-      return published;
-    } );
+    return published;
   }
 
   renderRecorded() {
@@ -289,54 +293,22 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
       return;
     }
 
-    var entry = this;
+    const recorded = this.getText( this.select( 'hvml:recorded' ) );
 
-    // var recordedPromise = this.select( 'hvml:recorded' )
-    //   .then( this.getText )
-    //   .catch( function noRecordedSet() {
-    //     return entry.selectPublished();
-    //   } )
-    //   .then( function setRecordedText( recorded ) {
-    //     var recordedFormatted = entry.formatDate( recorded );
-    //
-    //     entry.$.recorded.setAttribute( 'datetime', recorded );
-    //     entry.$.recorded.textContent = recordedFormatted;
-    //
-    //     return recorded;
-    //   } )
-    // ;
-    var recorded;
+    if ( recorded ) {
+      let recordedFormatted = this.formatDate( recorded );
 
-    try {
-      recorded = this.getText( this.select( 'hvml:recorded' ) );
-    } catch ( error ) {
-      recorded = entry.selectPublished(); // may not be accurate
+      this.$.recorded.setAttribute( 'datetime', recorded );
+      this.$.recorded.textContent = recordedFormatted;
     }
-
-    var recordedFormatted = entry.formatDate( recorded );
-
-    entry.$.recorded.setAttribute( 'datetime', recorded );
-    entry.$.recorded.textContent = recordedFormatted;
 
     return recorded;
   }
 
   renderThumbnailOrPlayer() {
-    const playable = this.parentNode.host.hasAttribute( 'playable' );
+    const playable = ( this.parentNode && this.parentNode.host && this.parentNode.host.hasAttribute( 'playable' ) );
 
     if ( playable ) {
-      // entry.getYouTubeLink().then( function gotYouTubeLink( url ) {
-      //   return entry.getOembed( url );
-      // } )
-      // .then( function renderEmbed( oembed ) {
-      //   // @todo: XHTMLify
-      //   // entry.$$( '#player' ).innerHTML = oembed.html;
-      //   var oembedHTML = ( new DOMParser() ).parseFromString( oembed.html, 'text/html' ).querySelector( 'iframe' );
-      //   entry.$$( '#player' ).appendChild( oembedHTML );
-      // } )
-      // .catch(function couldntRenderEmbed( event ) {
-      //   // …
-      // } ) ;
       this.getOembed( this.getYouTubeLink() ).then( ( oembed ) => {
         let parsedHTML = parseHTML( oembed.html );
         let embed = parsedHTML.querySelector( 'iframe' );
@@ -345,10 +317,6 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         this.setTitle();
       } );
     } else {
-      // entry.select( 'hvml:title' ).then( entry.getText )
-      // .then( function ( title ) {
-      //   entry.$$( '#title' ).textContent = title;
-      // } );
       this.$$( '#title' ).textContent = this.getText( this.select( 'hvml:title' ) );
     }
   }
@@ -397,38 +365,27 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   }
 
   getYouTubeLink() {
-    var entry = this;
-    var xpath = 'hvml:showing[@type="internet"][@admission="public"]//hvml:uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
+    const xpath = 'hvml:showing[@type="internet"][@admission="public"]//hvml:uri[starts-with(normalize-space(.), "https://www.youtube.com")][1]/text()';
+    const youTubeLinks = this.select( xpath, this.data );
 
-    // var selected;
-
-    // return entry.select( xpath, entry.data ).then( function ( response ) {
-    //   if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
-    //     return response[0].textContent;
-    //   } else {
-    //     throw 'No YouTube Link Found';
-    //   }
-    // } );
-    let youTubeLinks = entry.select( xpath, entry.data );
     if ( youTubeLinks.length && youTubeLinks[0] && ( 'textContent' in youTubeLinks[0] ) ) {
       return youTubeLinks[0].textContent;
-    } else {
-      throw 'No YouTube Link Found';
     }
+
+    // throw 'No YouTube Link Found';
+    return null;
   }
 
   getOembed( url ) {
-    var entry = this;
-    var endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
-
-    return new Promise(function HughsVlogFeedEntryGetOembedPromise( resolve, reject ) {
-      var xhr = new XMLHttpRequest();
-      var oembedJSON;
+    const endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
+    const oembedPromise = ( resolve, reject ) => {
+      const xhr = new XMLHttpRequest();
+      let oembedJSON;
 
       xhr.open( 'GET', endpoint, true );
       xhr.setRequestHeader( 'Accept', 'application/xml;q=0.8,text/xml;q=0.6,application/json;q=0.4' );
 
-      xhr.onload = function xhrOnLoad( /*event*/ ) {
+      xhr.onload = ( /*event*/ ) => {
         switch ( xhr.status ) {
           case 200:
             oembedJSON = JSON.parse( ( xhr.responseXML || xhr.responseText ) );
@@ -437,9 +394,9 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
 
             // oembedJSON.html = oembedJSON.html.replace( /src="[^"]+"/, 'src="blah.html"' );
 
-            entry.oembed = oembedJSON;
+            this.oembed = oembedJSON;
 
-            resolve( entry.oembed );
+            resolve( this.oembed );
           break;
 
           default:
@@ -447,12 +404,14 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         }
       };
 
-      xhr.onerror = function xhrOnError( /*event*/ ) {
+      xhr.onerror = ( /*event*/ ) => {
         reject( Error( 'There was a network error.' ) );
       };
 
       xhr.send( '' );
-    });
+    };
+
+    return new Promise( oembedPromise );
   }
 
   isStandalone() {

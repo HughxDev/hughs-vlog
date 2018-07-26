@@ -2,19 +2,18 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 // import App from './App.vue';
 
-import HughsVlogSite from './views/components/HughsVlogSite';
-import HughsVlogHomepage from './views/components/HughsVlogHomepage';
-import HughsVlogEpisodes from './views/components/HughsVlogEpisodes';
+import HughsVlogSite from './views/HughsVlogSite';
+import HughsVlogHomepage from './views/HughsVlogHomepage';
+import HughsVlogEpisodes from './views/HughsVlogEpisodes';
 
 Vue.config.productionTip = true;
 Vue.config.ignoredElements = [
-  'hughs-vlog',
-  /^hughs-vlog-/
+  /^hughs-vlog-?/
 ];
 
 // 0. If using a module system (e.g. via vue-cli), import Vue and VueRouter
 // and then call `Vue.use(VueRouter)`.
-Vue.use(VueRouter);
+Vue.use( VueRouter );
 
 // 1. Define route components.
 // These can be imported from other files

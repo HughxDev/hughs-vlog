@@ -14,19 +14,19 @@ module.exports = {
   devServer: {
     // historyApiFallback: true,
     // noInfo: true,
-    proxy: {
-      "/components": {
-        target: "http://localhost:80",
-        secure: false
-      },
-      "/lib": {
-        target: "http://localhost:80",
-        secure: false
-      },
-      // "/components": {
-      //   target: "http://localhost:80",
-      //   secure: false
-      // }
-    }
+    // proxy: {
+    //   "/components": {
+    //     target: "http://localhost:80",
+    //     secure: false
+    //   },
+    //   "/lib": {
+    //     target: "http://localhost:80",
+    //     secure: false
+    //   },
+    //   // "/components": {
+    //   //   target: "http://localhost:80",
+    //   //   secure: false
+    //   // }
+    // }
   }
 }

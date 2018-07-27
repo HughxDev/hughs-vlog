@@ -31,10 +31,6 @@ class HughsVlogEpisode extends HTMLElement {
   }
 
   connectedCallback() {
-    this.$ = {};
-    this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
-    this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
-
     this.$.feed = this.$$( '#feed' );
     this.$.feed.setAttribute( 'playable', 'playable' );
     this.$.feed.setAttribute( 'large', 'large' );

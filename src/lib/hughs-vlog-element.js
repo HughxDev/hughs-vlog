@@ -26,6 +26,11 @@ const HughsVlogElement = ( superClass ) => {
         );
       }
 
+      this.$   = {};
+      this.$$  = this.shadowRoot.querySelector.bind( this.shadowRoot );
+      this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
+      this.$id = this.shadowRoot.getElementById.bind( this.shadowRoot );
+
       // This will fail if a custom element lacks a connectedCallback.
       // Unfortunately there doesn’t seem to be a way to test for the
       // presence of it. So all custom elements should include a

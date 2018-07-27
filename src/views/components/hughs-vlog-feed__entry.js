@@ -107,6 +107,10 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             margin-right: auto;
           }
 
+          .play-video {
+            pointer-events: none;
+          }
+
           dl {
             text-align: center;
           }
@@ -130,7 +134,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             <h3 class="h h--3"><time id="recorded"></time>:</h3>
             <h2 id="title" class="h h--2 title"></h2>
           </hgroup>
-          <a data-layout="list" class="flex-container" href="javascript:void(0);">
+          <a data-layout="list" class="flex-container play-video" href="javascript:void(0);">
             <hgroup class="flex-item">
               <h3 class="h h--3"><time id="recorded"></time>:</h3>
               <h2 id="title" class="h h--2 title"></h2>
@@ -236,7 +240,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         "December"
       ];
 
-      return months[ parseInt( number, 10 ) ];
+      return months[ parseInt( number, 10 ) - 1 ];
     }
 
     // https://stackoverflow.com/a/13627586/214325
@@ -376,6 +380,11 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     return null;
   }
 
+  getDocumentLanguage() {
+    const html = document.documentElement;
+    return ( html.getAttributeNS( 'http://www.w3.org/XML/1998/namespace', 'lang' ) || html.getAttribute( 'xml:lang' ) || html.getAttribute( 'lang' ) );
+  }
+
   getOembed( url ) {
     const endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
     const oembedPromise = ( resolve, reject ) => {
@@ -390,7 +399,14 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
           case 200:
             oembedJSON = JSON.parse( ( xhr.responseXML || xhr.responseText ) );
 
-            oembedJSON.html = oembedJSON.html.replace( 'allowfullscreen', 'allowfullscreen="allowfullscreen"' ).replace( 'iframe', 'iframe xmlns="http://www.w3.org/1999/xhtml"' );
+            oembedJSON.html = oembedJSON.html
+              .replace( 'allowfullscreen', 'allowfullscreen="allowfullscreen"' )
+              .replace( 'iframe', 'iframe xmlns="http://www.w3.org/1999/xhtml"' )
+              .replace(
+                /(\/\/www.youtube.com\/embed\/[^\/]+\?feature=oembed)/,
+                `$1&modestbranding=1&showinfo=0&enablejsapi=1&rel=0&hl=${this.getDocumentLanguage()}`
+              ) // &controls=0, &autohide=1 (deprecated)
+            ;
 
             // oembedJSON.html = oembedJSON.html.replace( /src="[^"]+"/, 'src="blah.html"' );
 

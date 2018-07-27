@@ -30,13 +30,17 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
 
           dl {
             height: 56px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
           }
 
           dd {
             margin-left: 0;
           }
 
-          dt:first-of-type + dd::after {
+          /*dt:first-of-type + dd::after {
             content: '';
             opacity: 0.25;
             display: inline-block;
@@ -45,7 +49,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             padding-right: 1rem;
             width: 0;
             height: 100%;
-          }
+          }*/
 
           dt {
             /* @todo: sr-only */
@@ -56,15 +60,32 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             display: inline-block;
             vertical-align: middle;
             height: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+          }
+
+          .subscribe-button-container__render {
+            transition: opacity ease-in 0.2s;
+            opacity: 0;
+          }
+
+          .subscribe-button-container__render.subscribe-button-container__render--loaded {
+            opacity: 1;
           }
 
           .subscribe-button-container.subscribe-button-container--fb {
-            width: 198px;
+            text-align: left;
+            justify-content: flex-start;
+            padding-left: 1rem;
           }
 
-          /*.subscribe-button-container.subscribe-button-container--yt {
-            height: 48px;
-          }*/
+          .subscribe-button-container.subscribe-button-container--yt {
+            text-align: right;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            border-right: 1px solid rgba(0,0,0,0.25);
+          }
 
           .sr-only {
             position: absolute;
@@ -90,13 +111,13 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
         <dl>
           <dt class="sr-only">YouTube</dt>
           <dd class="subscribe-button-container subscribe-button-container--yt">
-            <div id="yt-button-container-render">
+            <div id="yt-button-container-render" class="subscribe-button-container__render">
               <div class="g-ytsubscribe"></div>
             </div>
           </dd>
           <dt class="sr-only">Facebook</dt>
           <dd class="subscribe-button-container subscribe-button-container--fb">
-            <div id="fb-button-container-render">
+            <div id="fb-button-container-render" class="subscribe-button-container__render">
               <!-- layout="button_count" -->
               <fb:like
                 href="https://www.facebook.com/HughsVlog/"
@@ -114,29 +135,51 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
     `;
   }
 
+  static get youtubeChannelID() {
+    return 'UCGPCcxdykgp6hgvL0XE3yaA';
+  }
+
   connectedCallback() {
     this.setAttribute( 'role', 'complementary' );
-
-    this.youtubeChannelID = 'UCGPCcxdykgp6hgvL0XE3yaA';
+    this.$.fbButtonContainerRender = this.$id( 'fb-button-container-render' );
+    this.$.ytButtonContainerRender = this.$id( 'yt-button-container-render' );
 
     this.render();
   }
 
   renderFbLikeButton() {
-    window.FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ) );
+    window.FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ), () => {
+      this.$.fbButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+    } );
   }
 
   // https://developers.google.com/youtube/subscribe/reference
   renderYtSubscribeButton( channelID ) {
-    channelID = channelID || this.youtubeChannelID;
+    channelID = channelID || HughsVlogSubscribe.youtubeChannelID;
 
-    var container = this.shadowRoot.getElementById( 'yt-button-container-render' );
+    console.log( 'channelID', channelID );
+
+    var container = this.$id( 'yt-button-container-render' );
     var options = {
       "channelId": channelID,
       // "layout": "default"
       "layout": "full"
     };
+
     window.gapi.ytsubscribe.render( container, options );
+
+    const checkIfYtSubscribeButtonIsRendered = window.setInterval( () => {
+      if ( this.$.ytButtonContainerRender.children.length ) {
+        // First and only child should be an iframe so we will trust that it is
+        this.$.ytButtonContainerRender.children[0].onload = () => {
+          this.$.ytButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+        };
+
+        // Clear the interval as soon as a child is appended;
+        // the onload gives us a true callback and obviates the need for it
+        window.clearInterval( checkIfYtSubscribeButtonIsRendered );
+      }
+    }, 1 );
   }
 
   render() {

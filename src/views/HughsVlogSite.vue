@@ -1,5 +1,5 @@
 <template>
-  <hughs-vlog id="app">
+  <hughs-vlog hidden="hidden">
     <hughs-vlog-header>
       <router-link class="link-wrapper" to="/">
         <h1 class="h h--1">Hugh’s Vlog</h1>
@@ -59,8 +59,15 @@
       hughsVlogSubscribe.renderFbLikeButton();
     }
 
+    function revealSite( param ) {
+      let hughsVlog = document.querySelector( 'hughs-vlog' );
+
+      hughsVlog.removeAttribute( 'hidden' );
+    }
+
     function webComponentsReady() {
       window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
+      window.customElements.whenDefined( 'hughs-vlog' ).then( revealSite );
 
       return import( './components/hughs-vlog.js' );
     }
@@ -110,4 +117,4 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style></style>

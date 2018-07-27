@@ -33,6 +33,12 @@ let HughsVlog = class HughsVlog extends HTMLElement {
             display: block;
             margin: 0 auto;
             max-width: 853px;
+            opacity: 1;
+            transition: opacity ease-in 0.2s;
+          }
+
+          :host([hidden]) {
+            opacity: 0;
           }
 
           ::slotted(main) {

@@ -5,22 +5,22 @@
         <h1 class="h h--1">Hugh’s Vlog</h1>
       </router-link>
       <p>The daily life of a startup founder, programmer, and filmmaker.</p>
-      <hughs-vlog-site-nav>
-        <a href="javascript:void(0);">About</a>
+      <hughs-vlog-site-nav nite="nite">
+        <router-link to="/about">About</router-link>
         <router-link to="/episodes">Episodes</router-link>
         <!-- <a class="middle" href="javascript:void(0);">Companion Blog</a>  -->
         <a href="javascript:void(0);">Contact</a>
       </hughs-vlog-site-nav>
-      <hughs-vlog-subscribe></hughs-vlog-subscribe>
+      <hughs-vlog-subscribe nite="nite"></hughs-vlog-subscribe>
     </hughs-vlog-header>
     <main>
-      <h2>It works!</h2>
+      <!-- <h2>It works!</h2> -->
       <!-- <slot></slot> -->
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
-      <hughs-vlog-playback-options></hughs-vlog-playback-options>
-      <hughs-vlog-episode-nav></hughs-vlog-episode-nav>
+      <hughs-vlog-playback-options v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-playback-options>
+      <hughs-vlog-episode-nav v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-episode-nav>
     </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </hughs-vlog>
@@ -117,4 +117,43 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style></style>
+<style>
+  @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-image: url( '../assets/boston-skyline-vhs@0.25x.svg' );
+    font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: black;
+    color: white;
+  }
+
+  @media only screen and ( min-width: 960px ) {
+    body {
+      background-image: url( '../assets/boston-skyline-vhs@0.5x.svg' );
+    }
+  }
+
+  @media only screen and ( min-width: 1920px ) {
+    body {
+      background-image: url( '../assets/boston-skyline-vhs.svg' );
+    }
+  }
+
+  /* This shouldn’t be necessary but it is */
+  .h.h--1 {
+    margin: 0 auto;
+  }
+</style>

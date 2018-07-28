@@ -20,8 +20,15 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           :host {
             display: block;
             background: #eee;
+            background: white;
             padding: 1rem;
             margin: 1rem auto;
+          }
+
+          :host([nite]) {
+            color: white;
+            background: rgba(238, 238, 238, 0.25);
+            background: rgba(255, 255, 255, 0.25);
           }
 
           .h {
@@ -125,7 +132,9 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
                 width="116"
                 size="small"
                 show-faces="true"
-                share="false"></fb:like>
+                share="false"
+                colorscheme="dark"
+                ></fb:like>
             </div>
           </dd>
           <!-- <dt>hugh.today</dt> -->
@@ -163,7 +172,8 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
     var options = {
       "channelId": channelID,
       // "layout": "default"
-      "layout": "full"
+      "layout": "full",
+      "theme": "dark"
     };
 
     window.gapi.ytsubscribe.render( container, options );

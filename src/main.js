@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 
 import HughsVlogSite from './views/HughsVlogSite';
 import HughsVlogHomepage from './views/HughsVlogHomepage';
+import HughsVlogAbout from './views/HughsVlogAbout';
 import HughsVlogEpisodes from './views/HughsVlogEpisodes';
 
 Vue.config.productionTip = true;
@@ -26,8 +27,9 @@ Vue.use( VueRouter );
 // `Vue.extend()`, or just a component options object.
 // We'll talk about nested routes later.
 const routes = [
-  { path: '/', component: HughsVlogHomepage },
-  { path: '/episodes', component: HughsVlogEpisodes }
+  { path: '/', name: 'home', component: HughsVlogHomepage },
+  { path: '/about', name: 'about', component: HughsVlogAbout },
+  { path: '/episodes', name: 'episodes', component: HughsVlogEpisodes }
 ];
 
 // 3. Create the router instance and pass the `routes` option

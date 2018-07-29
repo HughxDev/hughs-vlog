@@ -1,9 +1,9 @@
 module.exports = {
-  chainWebpack: config => {
+  "chainWebpack": config => {
     config
       .plugin( 'html' )
       .tap( args => {
-        // console.log( 'process.env', process.env );
+        // console.log( process.env, process.env );
         if ( process.env.NODE_ENV === 'development' ) {
           args[0].template = './src/index.html';
         }
@@ -11,15 +11,10 @@ module.exports = {
       } )
     ;
   },
-  configureWebpack: {
-    // chainWebpack: config => {
-    //   config.plugins.delete('html')
-    //   config.plugins.delete('preload')
-    //   config.plugins.delete('prefetch')
-    // },
-    resolve: {
-      alias: {
-        'vue$': 'vue/dist/vue.esm.js'
+  "configureWebpack": {
+    "resolve": {
+      "alias": {
+        "vue$": "vue/dist/vue.esm.js"
       }
     },
   },
@@ -39,6 +34,16 @@ module.exports = {
   //     //   target: "http://localhost:80",
   //     //   secure: false
   //     // }
+  //   }
+  // }
+  // "css": {
+  //   "loaderOptions": {
+  //     // css: {},
+  //     "postcss": {
+  //       "plugins": {
+  //         "autoprefixer": false
+  //       }
+  //     }
   //   }
   // }
 }

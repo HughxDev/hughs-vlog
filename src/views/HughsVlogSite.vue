@@ -1,26 +1,27 @@
 <template>
   <hughs-vlog hidden="hidden">
     <hughs-vlog-header>
-      <router-link class="link-wrapper" to="/">
-        <h1 class="h h--1">Hugh’s Vlog</h1>
+      <router-link class="logo link-wrapper" to="/" exact="exact" v-on:click.native="clearFocus">
+        <h1 class="logotype h h--1">Hugh’s Vlog</h1>
+        <img class="logomark" src="../assets/hughs-vlog-logo.svg" alt="Logo: White round glasses with TV color bars in both frames" />
       </router-link>
       <p>The daily life of a startup founder, programmer, and filmmaker.</p>
       <hughs-vlog-site-nav nite="nite">
-        <router-link to="/about">About</router-link>
-        <router-link to="/episodes">Episodes</router-link>
+        <router-link to="/about" v-on:click.native="clearFocus">About</router-link>
+        <router-link to="/episodes" v-on:click.native="clearFocus">Episodes</router-link>
         <!-- <a class="middle" href="javascript:void(0);">Companion Blog</a>  -->
         <a href="javascript:void(0);">Contact</a>
       </hughs-vlog-site-nav>
       <hughs-vlog-subscribe nite="nite"></hughs-vlog-subscribe>
     </hughs-vlog-header>
     <main>
-      <!-- <h2>It works!</h2> -->
-      <!-- <slot></slot> -->
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
+      <transition name="view-fade" mode="out-in">
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
       <hughs-vlog-playback-options v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-playback-options>
-      <hughs-vlog-episode-nav v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-episode-nav>
+      <hughs-vlog-episode-nav v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1" nite="nite"></hughs-vlog-episode-nav>
     </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </hughs-vlog>
@@ -36,8 +37,6 @@
     } );
 
     window.FB.AppEvents.logPageView();
-
-    // console.log( 'wtf' );
 
     function renderFbLikeButtonWhenReady() {
       // If subscribe section not in nested shadow DOM, such as with polyfill:
@@ -59,15 +58,9 @@
       hughsVlogSubscribe.renderFbLikeButton();
     }
 
-    function revealSite( param ) {
-      let hughsVlog = document.querySelector( 'hughs-vlog' );
-
-      hughsVlog.removeAttribute( 'hidden' );
-    }
-
     function webComponentsReady() {
       window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
-      window.customElements.whenDefined( 'hughs-vlog' ).then( revealSite );
+      // window.customElements.whenDefined( 'hughs-vlog' ).then( revealSite );
 
       return import( './components/hughs-vlog.js' );
     }
@@ -100,17 +93,14 @@
     props: {
       msg: String
     },
-    computed: {
-      username () {
-        // We will see what `params` is shortly
-        return this.$route.params.username
-      }
-    },
     methods: {
       goBack () {
         window.history.length > 1
           ? this.$router.go(-1)
           : this.$router.push('/')
+      },
+      clearFocus: function ( event ) {
+        event.currentTarget.blur();
       }
     }
   }
@@ -138,6 +128,7 @@
     background-attachment: fixed;
     background-color: black;
     color: white;
+    font-size: 1.25rem;
   }
 
   @media only screen and ( min-width: 960px ) {
@@ -152,8 +143,40 @@
     }
   }
 
-  /* This shouldn’t be necessary but it is */
-  .h.h--1 {
+  .logo {
+    font-size: 1rem;
+    width: 190px;
+    width: 11.875em;
+    /* height: 104px; */
+    height: 6.6em;
+    margin: 1.25em auto;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .logotype,
+  .logomark {
     margin: 0 auto;
+  }
+
+  .logotype {
+    text-transform: lowercase;
+    width: 71.89%;
+    font-size: 1.5331248641em;
+    margin-top: -.33333333em;
+    margin-bottom: .33333333em;
+    font-family: "Open Sans", "Noto Sans", "Noto Sans CJK", sans-serif;
+  }
+
+  .logomark {
+    width: 100%;
+  }
+
+  /* Transitions */
+  .view-fade-enter-active, .view-fade-leave-active {
+    transition: opacity .3s ease;
+  }
+  .view-fade-enter, .view-fade-leave-to {
+    opacity: 0;
   }
 </style>

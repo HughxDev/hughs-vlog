@@ -11,7 +11,7 @@
       <header>
         <h3 class="h h--3">The Company</h3>
         <div class="logo-container">
-          <img class="redblue-logo" src="../assets/redblue.svg" width="256" height="256" alt="RedBlue logo" />
+          <img class="redblue-logo" src="../assets/redblue-logo.svg" width="256" height="256" alt="Logo: a flat pill icon composed of a red side and a blue side" />
         </div>
       </header>
       <p>Hypervideo—online video annotated with time-based links and other widgets—is on the rise. It opens up a world of immersive storytelling, such as choose-your-own-story films, which boast high audience engagement. Frustratingly, there is no free, standardized solution for creating and distributing hypervideo in active development. Current offerings are proprietary, requiring recurring payments and vendor lock-in to use. This hinders cash-strapped visual artists, and silos metadata that could be useful in search and beyond.</p>
@@ -56,9 +56,6 @@
     margin-left: auto;
     margin-right: auto;
     line-height: 1.75;
-    /* background-color: rgba( 255, 255, 255, 0.0125 ); */
-    /* padding: 2rem; */
-    /* color: hsla( 32, 100%, 50%, 1 ); */
     text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
   }
 

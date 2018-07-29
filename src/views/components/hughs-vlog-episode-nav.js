@@ -27,11 +27,17 @@ class HughsVlogEpisodeNav extends HTMLElement {
             color: white;
             margin: 0 0.25rem;
             padding: .5rem;
+            text-decoration: none;
+          }
+
+          :host([nite]) a {
+            background-color: white;
+            color: black;
           }
 
           a:hover,
           a:focus {
-            text-decoration: none;
+            text-decoration: underline;
           }
 
           a:first-of-type {

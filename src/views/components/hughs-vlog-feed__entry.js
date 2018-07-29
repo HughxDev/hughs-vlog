@@ -87,6 +87,14 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             line-height: 1.75;
           }
 
+          .h.h--2 {
+            font-size: 1.5rem;
+          }
+
+          .h.h--3 {
+            font-size: 1.17rem;
+          }
+
           .title {
             line-height: 1.25;
           }
@@ -161,16 +169,9 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   } // constructor
 
   connectedCallback() {
-    this.$ = {};
-
-    this.setAttribute( 'id', ( this.data.getAttributeNS( 'xml', 'id' ) || this.data.getAttribute( 'xml:id' ) ) );
+    this.setAttribute( 'id', ( this.data.getAttributeNS( 'http://www.w3.org/XML/1998/namespace', 'id' ) || this.data.getAttribute( 'xml:id' ) ) );
     this.setAttribute( 'role', 'article' );
     this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
-
-    this.$$ = this.shadowRoot.querySelector.bind( this.shadowRoot );
-    this.$$$ = this.shadowRoot.querySelectorAll.bind( this.shadowRoot );
-
-    console.log( 'this', [this] );
 
     if ( this.parentNode && this.parentNode.host ) {
       if ( this.parentNode.host.hasAttribute( 'limit' ) ) {

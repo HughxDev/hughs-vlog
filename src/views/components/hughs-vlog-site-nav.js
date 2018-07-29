@@ -28,7 +28,7 @@ let HughsVlogSiteNav = class HughsVlogSiteNav extends HTMLElement {
             margin: 0 0.25rem;
             padding: .5rem;
             text-decoration: none;
-            font-weight: bold;
+            /*font-weight: bold;*/
           }
 
           :host([nite]) ::slotted(a) {
@@ -37,8 +37,10 @@ let HughsVlogSiteNav = class HughsVlogSiteNav extends HTMLElement {
           }
 
           ::slotted(a:hover),
-          ::slotted(a:focus) {
-            text-decoration: none;
+          ::slotted(a:active),
+          ::slotted(a:focus),
+          ::slotted(.router-link-active) {
+            text-decoration: underline;
           }
 
           ::slotted(a:first-of-type) {

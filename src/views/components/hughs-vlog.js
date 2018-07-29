@@ -50,7 +50,11 @@ let HughsVlog = class HughsVlog extends HTMLElement {
     `;
   }
 
-  connectedCallback() {}
+  connectedCallback() {
+    window.customElements.whenDefined( 'hughs-vlog' ).then( () => {
+      this.removeAttribute( 'hidden' );
+    } );
+  }
 }
 
 HughsVlog = HughsVlogElement( HughsVlog );

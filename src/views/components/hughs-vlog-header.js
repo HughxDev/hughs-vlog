@@ -32,19 +32,22 @@ let HughsVlogHeader = class HughsVlogHeader extends HTMLElement {
             color: inherit;
           }
 
-          /*
-            ::slotted(a:hover),
-            ::slotted(a:focus) {
-              text-decoration: underline;
-            }
-          */
+          ::slotted(.router-link-exact-active) {
+            text-decoration: none;
+          }
+
+          ::slotted(a:hover),
+          ::slotted(a:active),
+          ::slotted(a:focus) {
+            text-decoration: underline;
+          }
 
           ::slotted(.h) {
             margin: 0 auto;
           }
 
           ::slotted(p) {
-            margin: .5rem auto 1rem;
+            margin: .75rem auto 1.25rem;
           }
 
           ::slotted(.link-wrapper) {

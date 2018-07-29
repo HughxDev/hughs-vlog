@@ -1,7 +1,7 @@
 <template>
   <article>
     <header>
-      <h2 class="h h--2">About</h2>
+      <h2 class="title h h--2">About</h2>
     </header>
     <p>Hi, I’m Hugh. I started this video blog to document what it’s like to build a company, day by day, from the very beginning. I want to take this typically very private process and open it up to everyone. Imagine if you were able to watch Steve Jobs and Wozniak grow Apple from a garage project into the largest tech company in the world? I may not reach that level of success; I may fail spectacularly, but at least there will be a record of the attempt.</p>
     <p>For me, it’s self-improvement by way of radical transparency, and the public accountability that comes with that. For you: you get to my virtual co-founders. I’ll be listening to your feedback in the comments and chat room every step of the way. I also endeavor to make the series equal parts informative and entertaining—so whether you’re a fellow founder looking to compare notes, or just an Average Joe/Josephine killing time on your lunch break, there’s something in it for you.</p>
@@ -43,7 +43,7 @@
 
 <script>
   export default {
-    name: 'HughsVlogAbout',
+    name: 'About',
     props: {},
   }
 </script>
@@ -59,8 +59,8 @@
     text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
   }
 
-  .h.h--2 {
-    text-align: center;
+  .title {
+    text-align: var(--title-align);
   }
 
   .logo-container {

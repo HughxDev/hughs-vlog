@@ -30,6 +30,25 @@ let HughsVlog = class HughsVlog extends HTMLElement {
           }
 
           :host {
+            --sr-only: {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              padding: 0;
+              overflow: hidden;
+              clip: rect(0,0,0,0);
+              white-space: nowrap;
+              clip-path: inset(50%);
+              border: 0;
+            };
+          }
+
+          hughs-vlog-subscribe,
+          ::slotted(hughs-vlog-subscribe) {
+            @apply --sr-only;
+          }
+
+          :host {
             display: block;
             margin: 0 auto;
             max-width: 853px;

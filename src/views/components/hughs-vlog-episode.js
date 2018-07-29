@@ -67,7 +67,7 @@ class HughsVlogEpisode extends HTMLElement {
 
       // switch ( query ) {
       //   case 'latest':
-          // this.$.feed.setAttribute( 'limit', '1' );
+      this.$.feed.setAttribute( 'limit', '1' );
       feedSrc += '?limit=1';
         // break;
       // }

@@ -1,11 +1,11 @@
 <template>
-  <hughs-vlog-feed id="episodes" order="desc" src="http://localhost:3000/videos"></hughs-vlog-feed>
+  <hughs-vlog-episode id="latest-episode" published="latest"></hughs-vlog-episode>
 </template>
 
 <script>
   export default {
-    name: 'HughsVlogEpisodes',
-    props: {},
+    name: 'Homepage',
+    props: {}
   }
 </script>
 

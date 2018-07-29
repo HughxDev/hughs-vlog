@@ -17,23 +17,60 @@ let HughsVlogSiteNav = class HughsVlogSiteNav extends HTMLElement {
           :host {
             text-align: center;
             display: flex;
-            flex-direction: row;
-            margin: .5rem auto;
+            flex-direction: column;
+            margin: auto .5rem;
+          }
+
+          @media only screen and ( min-width: 32em ) {
+            :host {
+              flex-direction: row;
+              margin: .5rem auto;
+            }
+          }
+
+          :host([pills]) {
+            margin: 2rem auto;
+            width: 80%;
+            max-width: 39rem;
           }
 
           ::slotted(a) {
             flex: 1;
             background-color: black;
             color: white;
-            margin: 0 0.25rem;
+            margin: 0.25rem 0;
             padding: .5rem;
             text-decoration: none;
             /*font-weight: bold;*/
           }
 
+          @media only screen and ( min-width: 32em ) {
+            ::slotted(a) {
+              margin: 0 0.25rem;
+            }
+          }
+
           :host([nite]) ::slotted(a) {
             background-color: white;
             color: black;
+          }
+
+          :host([pills]) ::slotted(a) {
+            color: white;
+            transition: background-color 0.2s ease;
+            background-color: transparent;
+            border: 2px solid white;
+            border-radius: 30px;
+            text-decoration: none;
+          }
+
+          :host([pills]) ::slotted(a:hover),
+          :host([pills]) ::slotted(a:active),
+          :host([pills]) ::slotted(a:focus),
+          :host([pills]) ::slotted(.router-link-active) {
+            color: black;
+            background-color: white;
+            text-decoration: none;
           }
 
           ::slotted(a:hover),
@@ -43,12 +80,14 @@ let HughsVlogSiteNav = class HughsVlogSiteNav extends HTMLElement {
             text-decoration: underline;
           }
 
-          ::slotted(a:first-of-type) {
-            margin-left: 0;
-          }
+          @media only screen and ( min-width: 32em ) {
+            ::slotted(a:first-of-type) {
+              margin-left: 0;
+            }
 
-          ::slotted(a:last-of-type) {
-            margin-right: 0;
+            ::slotted(a:last-of-type) {
+              margin-right: 0;
+            }
           }
 
           ::slotted(.middle) {

@@ -6,22 +6,24 @@
         <img class="logomark" src="../assets/hughs-vlog-logo.svg" alt="Logo: White round glasses with TV color bars in both frames" />
       </router-link>
       <p>The daily life of a startup founder, programmer, and filmmaker.</p>
-      <hughs-vlog-site-nav nite="nite">
+      <hughs-vlog-site-nav nite="nite" pills="pills">
         <router-link to="/about" v-on:click.native="clearFocus">About</router-link>
         <router-link to="/episodes" v-on:click.native="clearFocus">Episodes</router-link>
         <!-- <a class="middle" href="javascript:void(0);">Companion Blog</a>  -->
-        <a href="javascript:void(0);">Contact</a>
+        <router-link to="/subscribe" v-on:click.native="clearFocus">Subscribe</router-link>
+        <router-link to="/contact" v-on:click.native="clearFocus">Contact</router-link>
       </hughs-vlog-site-nav>
-      <hughs-vlog-subscribe nite="nite"></hughs-vlog-subscribe>
     </hughs-vlog-header>
     <main>
-      <transition name="view-fade" mode="out-in">
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
-      </transition>
-      <hughs-vlog-playback-options v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-playback-options>
-      <hughs-vlog-episode-nav v-if="[ 'home', 'episodes' ].indexOf( $route.name ) > -1" nite="nite"></hughs-vlog-episode-nav>
+      <div id="top" class="wrapper">
+        <transition name="view-fade" mode="out-in">
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </transition>
+      </div>
+      <hughs-vlog-playback-options v-show="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-playback-options>
+      <hughs-vlog-episode-nav v-show="[ 'home', 'episodes' ].indexOf( $route.name ) > -1" nite="nite"></hughs-vlog-episode-nav>
     </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </hughs-vlog>
@@ -32,38 +34,43 @@
     window.FB.init( {
       "appId": "1117428231678998",
       "autoLogAppEvents": true,
-      "xfbml": false,
+      "xfbml": true,
       "version": "v2.10"
     } );
 
     window.FB.AppEvents.logPageView();
 
-    function renderFbLikeButtonWhenReady() {
-      // If subscribe section not in nested shadow DOM, such as with polyfill:
-      let hughsVlogSubscribe = document.querySelector( 'hughs-vlog-subscribe' );
-
-      // Subscribe section inaccessible; look for
-      if ( !hughsVlogSubscribe ) {
-        let hughsVlog = document.querySelector( 'hughs-vlog' );
-
-        if ( hughsVlog ) {
-          let hughsVlogHeader = ( hughsVlog.shadowRoot ? hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' ) : hughsVlog.querySelector( 'hughs-vlog-header' ) );
-
-          if ( hughsVlogHeader ) {
-            hughsVlogSubscribe = ( hughsVlogHeader.shadowRoot ? hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' ) : hughsVlogHeader.querySelector( 'hughs-vlog-subscribe' ) );
-          }
-        }
-      }
-
-      hughsVlogSubscribe.renderFbLikeButton();
-    }
+    // function renderFbLikeButtonWhenReady() {
+    //   // If subscribe section not in nested shadow DOM, such as with polyfill:
+    //   let hughsVlogSubscribe = document.querySelector( 'hughs-vlog-subscribe' );
+    //
+    //   // Subscribe section inaccessible; look for
+    //   if ( !hughsVlogSubscribe ) {
+    //     let hughsVlog = document.querySelector( 'hughs-vlog' );
+    //
+    //     if ( hughsVlog ) {
+    //       let hughsVlogHeader = ( hughsVlog.shadowRoot ? hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' ) : hughsVlog.querySelector( 'hughs-vlog-header' ) );
+    //
+    //       if ( hughsVlogHeader ) {
+    //         hughsVlogSubscribe = ( hughsVlogHeader.shadowRoot ? hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' ) : hughsVlogHeader.querySelector( 'hughs-vlog-subscribe' ) );
+    //       }
+    //     }
+    //   }
+    //
+    //   hughsVlogSubscribe.renderFbLikeButton();
+    // }
 
     function webComponentsReady() {
-      window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
+      // window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
       // window.customElements.whenDefined( 'hughs-vlog' ).then( revealSite );
 
       return import( './components/hughs-vlog.js' );
     }
+
+    // if ( 'ShadyCSS' in window ) {
+    //   console.log( 'window.ShadyCSS', window.ShadyCSS );
+    //   window.ShadyCSS.styleElement( window.document.documentElement );
+    // }
 
     if ( ( 'WebComponents' in window ) && ( 'waitFor' in window.WebComponents ) ) {
       // console.log( 'waitFor' );
@@ -89,9 +96,9 @@
   }( document, 'script', 'facebook-jssdk' ) );
 
   export default {
-    name: 'HughsVlogHomepage',
+    name: 'Site',
     props: {
-      msg: String
+      showSubscribe: false
     },
     methods: {
       goBack () {
@@ -114,6 +121,21 @@
     box-sizing: border-box;
   }
 
+  :root {
+    --title-align: center;
+    --sr-only: {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+      border: 0;
+    };
+  }
+
   html,
   body {
     margin: 0;
@@ -127,6 +149,7 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-color: black;
+    background-position: center;
     color: white;
     font-size: 1.25rem;
   }
@@ -141,6 +164,10 @@
     body {
       background-image: url( '../assets/boston-skyline-vhs.svg' );
     }
+  }
+
+  .sr-only {
+    @apply --sr-only;
   }
 
   .logo {
@@ -178,5 +205,9 @@
   }
   .view-fade-enter, .view-fade-leave-to {
     opacity: 0;
+  }
+
+  .wrapper {
+    min-height: 480px;
   }
 </style>

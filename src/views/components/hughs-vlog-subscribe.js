@@ -21,18 +21,20 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             display: block;
             background: #eee;
             background: white;
+            background: transparent;
             padding: 1rem;
             margin: 1rem auto;
           }
 
           :host([nite]) {
             color: white;
-            background: rgba(238, 238, 238, 0.25);
-            background: rgba(255, 255, 255, 0.25);
+            /*background: rgba(238, 238, 238, 0.25);*/
+            /*background: rgba(255, 255, 255, 0.25);*/
           }
 
-          .h {
+          .title {
             margin-top: 0;
+            text-align: var(--title-align);
           }
 
           dl {
@@ -58,10 +60,10 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             height: 100%;
           }*/
 
-          dt {
+          /*dt {
             /* @todo: sr-only */
             display: none;
-          }
+          }*/
 
           .subscribe-button-container {
             display: inline-block;
@@ -94,16 +96,12 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             border-right: 1px solid rgba(0,0,0,0.25);
           }
 
+          :host([nite]) .subscribe-button-container.subscribe-button-container--yt {
+            border-right: 1px solid rgba(255,255,255,0.75);
+          }
+
           .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            overflow: hidden;
-            clip: rect(0,0,0,0);
-            white-space: nowrap;
-            clip-path: inset(50%);
-            border: 0;
+            @apply --sr-only;
           }
 
           /*fb:like {
@@ -114,7 +112,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             @apply --fb-like;
           }*/
         </style>
-        <h2 class="h h--2">Subscribe</h2>
+        <h2 class="title h h--2 sr-only">Subscribe</h2>
         <dl>
           <dt class="sr-only">YouTube</dt>
           <dd class="subscribe-button-container subscribe-button-container--yt">
@@ -125,21 +123,22 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           <dt class="sr-only">Facebook</dt>
           <dd class="subscribe-button-container subscribe-button-container--fb">
             <div id="fb-button-container-render" class="subscribe-button-container__render">
-              <!-- layout="button_count" -->
-              <fb:like
-                href="https://www.facebook.com/HughsVlog/"
-                action="like"
-                width="116"
-                size="small"
-                show-faces="true"
-                share="false"
-                colorscheme="dark"
-                ></fb:like>
+              <iframe
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FHughsVlog&amp;tabs&amp;width=197&amp;height=70&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=false&amp;appId=1117428231678998"
+                width="197"
+                height="72"
+                style="border:none;overflow:hidden"
+                scrolling="no"
+                frameborder="0"
+                allowTransparency="true"
+                allow="encrypted-media"
+              ></iframe>
             </div>
           </dd>
           <!-- <dt>hugh.today</dt> -->
           <!-- <dd></dd> -->
         </dl>
+        <!-- <slot></slot> -->
       </template>
     `;
   }
@@ -158,7 +157,9 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
 
   renderFbLikeButton() {
     window.FB.XFBML.parse( ( this.shadowRoot || document ).getElementById( 'fb-button-container-render' ), () => {
-      this.$.fbButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+      if ( this.$.fbButtonContainerRender ) {
+        this.$.fbButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+      }
     } );
   }
 
@@ -178,15 +179,25 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
 
     window.gapi.ytsubscribe.render( container, options );
 
+    let i = 0;
+    let intervalTimeout = 0.125 /* minute(s) */ * ( 60 * 1000 );
     const checkIfYtSubscribeButtonIsRendered = window.setInterval( () => {
-      if ( this.$.ytButtonContainerRender.children.length ) {
-        // First and only child should be an iframe so we will trust that it is
-        this.$.ytButtonContainerRender.children[0].onload = () => {
-          this.$.ytButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
-        };
+      ++i;
+      if ( i <= intervalTimeout ) {
+        // console.log( 'Checking for YT button' );
+        if ( this.$.ytButtonContainerRender && this.$.ytButtonContainerRender.children.length ) {
+          // First and only child should be an iframe so we will trust that it is
+          this.$.ytButtonContainerRender.children[0].onload = () => {
+            this.$.ytButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+          };
 
-        // Clear the interval as soon as a child is appended;
-        // the onload gives us a true callback and obviates the need for it
+          // Clear the interval as soon as a child is appended;
+          // the onload gives us a true callback and obviates the need for it
+          // console.log( 'YT button rendered; interval cleared' );
+          window.clearInterval( checkIfYtSubscribeButtonIsRendered );
+        }
+      } else {
+        console.log( `YT button not rendered after ${intervalTimeout / 1000} seconds; interval cleared` );
         window.clearInterval( checkIfYtSubscribeButtonIsRendered );
       }
     }, 1 );
@@ -194,7 +205,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
 
   render() {
     this.renderYtSubscribeButton();
-    // this.renderFbLikeButton();
+    this.renderFbLikeButton();
   }
 }
 

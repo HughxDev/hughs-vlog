@@ -1,5 +1,6 @@
 "use strict";
 import HughsVlogElement from '../../lib/hughs-vlog-element.js';
+import injectSharedStyles from '../../lib/inject-shared-styles.js';
 
 let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
   static get is() {
@@ -7,7 +8,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
   }
 
   static get template() {
-    return `
+    return injectSharedStyles(`
       <template id="${HughsVlogSubscribe.is}">
         <style>
           /*@namespace "http://www.w3.org/1999/xhtml";*/
@@ -140,7 +141,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
         </dl>
         <!-- <slot></slot> -->
       </template>
-    `;
+    `);
   }
 
   static get youtubeChannelID() {

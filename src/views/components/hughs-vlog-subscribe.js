@@ -44,6 +44,9 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             margin-left: auto;
             margin-right: auto;
             display: flex;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
           }
 
           dd {

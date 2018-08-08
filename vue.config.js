@@ -12,9 +12,9 @@ module.exports = {
       .plugin( 'html' )
       .tap( args => {
         // console.log( process.env, process.env );
-        if ( process.env.NODE_ENV === 'development' ) {
-          args[0].template = './src/index.html';
-        }
+        // if ( process.env.NODE_ENV === 'development' ) {
+        args[0].template = './src/index.html';
+        // }
         return args;
       } )
     ;

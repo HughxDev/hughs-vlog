@@ -34,13 +34,13 @@
 <script>
   window.fbAsyncInit = function() {
     window.FB.init( {
-      "appId": "1117428231678998",
+      "appId": "424073558115664",
       "autoLogAppEvents": true,
       "xfbml": true,
-      "version": "v2.10"
+      "version": "v3.10"
     } );
 
-    window.FB.AppEvents.logPageView();
+    // window.FB.AppEvents.logPageView();
 
     // function renderFbLikeButtonWhenReady() {
     //   // If subscribe section not in nested shadow DOM, such as with polyfill:

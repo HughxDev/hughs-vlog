@@ -38,7 +38,7 @@ Thumbs.db
 
 # Repo-specific
 build/*
-public/*
+public/lib/*
 node_modules/*
 private/*
 fcgi-bin/*

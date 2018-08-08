@@ -12,8 +12,6 @@ const injectSharedStyles = function injectSharedStyles( css ) {
             border: 0;`
   );
 
-  console.log( 'css', css );
-
   return css;
 };
 

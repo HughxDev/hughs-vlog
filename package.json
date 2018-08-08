@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build; cp .htaccess.prod dist/.htaccess",
     "lint": "vue-cli-service lint",
     "postinstall": "node ./postinstall.js",
     "publish": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/"

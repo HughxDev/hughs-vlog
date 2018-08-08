@@ -54,3 +54,4 @@ polymer/
 preact/
 skatejs/
 src/lib/*
+dist/*

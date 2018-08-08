@@ -23,8 +23,8 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             background: #eee;
             background: white;
             background: transparent;
-            padding: 1rem;
-            margin: 1rem auto;
+            /*padding: 1rem;*/
+            /*margin: 1rem auto;*/
           }
 
           :host([nite]) {
@@ -35,6 +35,10 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
 
           .title {
             margin-top: 0;
+          }
+
+          .h.h--2,
+          .h.h--3 {
             text-align: var(--title-align);
           }
 
@@ -116,7 +120,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             @apply --fb-like;
           }*/
         </style>
-        <h2 class="title h h--2 sr-only">Subscribe</h2>
+        <h2 class="title sr-only">Subscribe</h2>
         <dl>
           <dt class="sr-only">YouTube</dt>
           <dd class="subscribe-button-container subscribe-button-container--yt">
@@ -139,6 +143,10 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
               ></iframe>
             </div>
           </dd>
+          <dt class="sr-only">Twitter</dt>
+          <dd class="subscribe-button-container subscribe-button-container--twttr">
+            <div id="twttr-button-container-render" class="subscribe-button-container__render"></div>
+          </dd>
           <!-- <dt>hugh.today</dt> -->
           <!-- <dd></dd> -->
         </dl>
@@ -155,6 +163,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
     this.setAttribute( 'role', 'complementary' );
     this.$.fbButtonContainerRender = this.$id( 'fb-button-container-render' );
     this.$.ytButtonContainerRender = this.$id( 'yt-button-container-render' );
+    this.$.twttrButtonContainerRender = this.$id( 'twttr-button-container-render' );
 
     this.render();
   }
@@ -207,9 +216,22 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
     }, 1 );
   }
 
+  renderTwitterFollowButton() {
+    window.twttr.widgets.createFollowButton(
+      'HughsVlog',
+      this.$.twttrButtonContainerRender,
+      {
+        size: 'large'
+      }
+    ).then( ( element ) => {
+      this.$.twttrButtonContainerRender.classList.add( 'subscribe-button-container__render--loaded' );
+    } );
+  }
+
   render() {
     this.renderYtSubscribeButton();
     this.renderFbLikeButton();
+    this.renderTwitterFollowButton();
   }
 }
 

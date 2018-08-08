@@ -3,7 +3,10 @@
     <hughs-vlog-header>
       <router-link class="logo link-wrapper" to="/" exact="exact" v-on:click.native="clearFocus">
         <h1 class="logotype h h--1">Hugh’s Vlog</h1>
-        <img class="logomark" src="../assets/hughs-vlog-logo.svg" alt="Logo: White round glasses with TV color bars in both frames" />
+        <picture class="logomark">
+          <source type="image/svg+xml" srcset="../assets/hughs-vlog-logo.svg" />
+          <img src="../assets/hughs-vlog-logo.png" width="190" height="70" srcset="../assets/hughs-vlog-logo.png 1x, ../assets/hughs-vlog-logo@2x.png 2x, ../assets/hughs-vlog-logo@3x.png 3x" alt="Logo: White round glasses with TV color bars in both frames" />
+        </picture>
       </router-link>
       <p>The daily life of a startup founder, programmer, and filmmaker.</p>
       <hughs-vlog-site-nav nite="nite" pills="pills">
@@ -28,7 +31,6 @@
     <hughs-vlog-footer></hughs-vlog-footer>
   </hughs-vlog>
 </template>
-
 <script>
   window.fbAsyncInit = function() {
     window.FB.init( {
@@ -94,6 +96,30 @@
 
     fjs.parentNode.insertBefore( js, fjs );
   }( document, 'script', 'facebook-jssdk' ) );
+
+  window.twttr = ( function ( d, s, id ) {
+    var
+      js,
+      fjs = d.getElementsByTagName(s)[0],
+      t = window.twttr || {}
+    ;
+
+    if ( d.getElementById( id ) ) {
+      return t;
+    }
+
+    js = d.createElement( s );
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore( js, fjs );
+
+    t._e = [];
+    t.ready = function ( f ) {
+      t._e.push( f );
+    };
+
+    return t;
+  }( document, "script", "twitter-wjs" ) );
 
   export default {
     name: 'Site',
@@ -181,6 +207,7 @@
   }
 
   .logomark {
+    display: block;
     width: 100%;
   }
 

@@ -38,7 +38,7 @@ class HughsVlogEpisode extends HTMLElement {
     const hvmlChild = this.$.feed._getFirstHvmlChild( this.children );
 
     if ( !hvmlChild ) {
-      var feedSrc = 'http://localhost:3000/videos';
+      var feedSrc = 'http://localhost:3000/feed/hvml/videos';
 
       // @number, @published, @recorded
       var query = null;

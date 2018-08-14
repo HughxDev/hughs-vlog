@@ -19,13 +19,14 @@ class HughsVlogEpisodeNav extends HTMLElement {
             display: flex;
             flex-direction: row;
             margin: .5rem auto;
+            flex-wrap: wrap;
           }
 
           a {
             flex: 1;
             background-color: black;
             color: white;
-            margin: 0 0.25rem;
+            margin: 0.25rem;
             padding: .5rem;
             text-decoration: none;
           }
@@ -38,6 +39,13 @@ class HughsVlogEpisodeNav extends HTMLElement {
           a:hover,
           a:focus {
             text-decoration: underline;
+          }
+
+          @media only screen and ( max-width: 32em ) {
+            a:first-of-type,
+            a:last-of-type {
+              min-width: 100%;
+            }
           }
 
           a:first-of-type {

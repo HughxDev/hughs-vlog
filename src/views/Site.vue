@@ -204,6 +204,7 @@
     margin-top: -.33333333em;
     margin-bottom: .33333333em;
     font-family: "Open Sans", "Noto Sans", "Noto Sans CJK JP", "Noto Sans JP", Roboto, "Droid Sans", "Helvetica Neue", sans-serif;
+    white-space: nowrap;
   }
 
   .logomark {

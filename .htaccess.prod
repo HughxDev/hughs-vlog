@@ -17,3 +17,9 @@ Redirect 302 /2016-09-24 https://www.youtube.com/watch?v=Y7FnUuJC3yE
 
 # Redirect 302 / https://hughguiney.com/vlog/
 # Redirect 302 / https://www.youtube.com/c/HughGuiney
+
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]

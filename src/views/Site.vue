@@ -137,7 +137,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-  @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
+  /* @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css); */
 
   * {
     box-sizing: border-box;
@@ -159,7 +159,7 @@
 
   body {
     background-image: url( '../assets/boston-skyline-vhs@0.25x.svg' );
-    font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    font-family: "Noto Sans", "Noto Sans CJK JP", "Noto Sans JP", Roboto, "Open Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -203,7 +203,7 @@
     font-size: 1.5331248641em;
     margin-top: -.33333333em;
     margin-bottom: .33333333em;
-    font-family: "Open Sans", "Noto Sans", "Noto Sans CJK", sans-serif;
+    font-family: "Open Sans", "Noto Sans", "Noto Sans CJK JP", "Noto Sans JP", Roboto, "Droid Sans", "Helvetica Neue", sans-serif;
   }
 
   .logomark {

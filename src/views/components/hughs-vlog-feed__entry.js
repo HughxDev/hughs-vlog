@@ -19,10 +19,18 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             display: inline-block;
             /*display: inline-flex;*/
             /*width: 360px;*/
-            width: 50%;
             position: relative;
-            margin: .25rem;
-            flex-basis: calc(50% - .5rem);
+            width: 100%;
+            margin: .25rem 0;
+            flex-basis: 100%;
+          }
+
+          @media only screen and ( min-width: 48em ) {
+            :host {
+              width: 50%;
+              margin: .25rem;
+              flex-basis: calc(50% - .5rem);
+            }
           }
 
           :host([large]) {

@@ -33,6 +33,7 @@ let HughsVlog = class HughsVlog extends HTMLElement {
             display: block;
             margin: 0 auto;
             max-width: 853px;
+            width: 90%;
             opacity: 1;
             transition: opacity ease-in 0.2s;
           }

@@ -27,6 +27,12 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
             flex-wrap: wrap;
           }
 
+          @media only screen and ( min-width: 48em ) {
+            :host {
+              margin: -.25rem;
+            }
+          }
+
           /*.hughs-vlog-feed-entry:first-of-type {
             width: 100%;
           }*/

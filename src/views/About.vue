@@ -37,8 +37,8 @@
         <figure class="logo-container logo-container--stock-photo figure--has-capton">
           <picture class="stock-photo-container">
             <!-- <source media="(min-width: 686.5px)" srcset="../assets/rawpixel-384899-unsplash--narrow.jpg" /> -->
-            <source media="(max-width: 495px)" srcset="../assets/rawpixel-384899-unsplash--small.jpg" />
-            <img class="stock-photo" src="../assets/rawpixel-384899-unsplash--narrow.jpg" alt="Bearded businessman talking to a listening businesswoman, both sitting down at a outdoor patio with a laptop open" />
+            <source media="(max-width: 495px)" srcset="../assets/rawpixel-384899-unsplash--small.jpg 1x, ../assets/rawpixel-384899-unsplash--small@2x.jpg 2x" />
+            <img class="stock-photo" src="../assets/rawpixel-384899-unsplash--narrow.jpg" srcset="../assets/rawpixel-384899-unsplash--narrow.jpg 1x, ../assets/rawpixel-384899-unsplash--narrow@2x.jpg 2x" alt="Bearded businessman talking to a listening businesswoman, both sitting down at a outdoor patio with a laptop open" />
           </picture>
           <figcaption>Photo by <a href="https://unsplash.com/photos/bMclPCvSHLo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">rawpixel</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></figcaption>
         </figure>
@@ -132,6 +132,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* filter: grayscale(100%) contrast(125%); */
   }
 
   .stock-photo {
@@ -142,6 +143,7 @@
     height: 100%; */
     display: block;
     max-width: 100%;
+    filter: grayscale(50%) contrast(125%);
   }
 
   figcaption {
@@ -156,6 +158,8 @@
     text-align: left;
     height: 41px;
     cursor: default;
+    position: relative;
+    z-index: 10;
   }
 
   figcaption > a {

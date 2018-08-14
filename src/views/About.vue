@@ -1,7 +1,7 @@
 <template>
   <article>
     <header>
-      <h2 class="title h h--2">About</h2>
+      <h2 class="sr-only">About</h2>
     </header>
     <p>Hi, I’m Hugh. I started this video blog to document what it’s like to build a company, day by day, from the very beginning. I want to take this typically very private process and open it up to everyone. Imagine if you were able to watch Steve Jobs and Wozniak grow Apple from a garage project into the largest tech company in the world? I may not reach that level of success; I may fail spectacularly, but at least there will be a record of the attempt.</p>
     <p>For me, it’s self-improvement by way of radical transparency, and the public accountability that comes with that. For you: you get to my virtual co-founders. I’ll be listening to your feedback in the comments and chat room every step of the way. I also endeavor to make the series equal parts informative and entertaining—so whether you’re a fellow founder looking to compare notes, or just an Average Joe/Josephine killing time on your lunch break, there’s something in it for you.</p>
@@ -10,7 +10,7 @@
     <section>
       <header>
         <h3 class="h h--3">The Company</h3>
-        <div class="logo-container">
+        <div class="logo-container logo-container--redblue">
           <img class="redblue-logo" src="../assets/redblue-logo.svg" width="256" height="256" alt="Logo: a flat pill icon composed of a red side and a blue side" />
         </div>
       </header>
@@ -22,9 +22,13 @@
     <section>
       <header>
         <h3 class="h h--3">Why do you need Patreon money?</h3>
+        <div class="logo-container logo-container--patreon">
+          <img class="patreon-logo" src="../assets/patreon-logo-wordmark-white.svg" alt="Logo: Patreon wordmark" />
+        </div>
       </header>
-      <p>I’ve been a professional web developer for over 10 years now. In that time, I’ve held a handful of “real jobs”, but my ADHD has made them a nightmare to deal with. I have an unpredictable sleep schedule, I lose interest in assignments quickly, and I have a hard time coloring inside the lines of management. They say entrepreneurs make terrible employees, and I feel that. As a result, I haven’t called any job home for more than a few months at a time. Which has made saving up a nest egg with which to fund this dream of mine something of a herculean task.</p>
-      <p>So right now, I find myself a walking Millennial stereotype: 30 years old, unemployed, and living off of Annie’s mac &amp; cheese at my mom’s house. Until I can afford a cheap apartment, the money will just be used to cover basic necessities, like buying more pasta. There will be the occasional business expense, like domain name renewal or website hosting fees, but nothing crazy. As the pot grows, though, I’ll be able to put more and more of it into the business, such as paying for a desk at a co-working space, or hiring a videographer so I can focus more on founding than filming. I intend to stick to Lean Startup principles throughout—I certainly won’t be springing for Aeron chairs from the get-go.</p>
+      <!-- <p>I’ve been a professional web developer for over 10 years now. In that time, I’ve held a handful of “real jobs”, but my ADHD has made them a nightmare to deal with. I have an unpredictable sleep schedule, I lose interest in assignments quickly, and I have a hard time coloring inside the lines of management. They say entrepreneurs make terrible employees, and I feel that. As a result, I haven’t called any job home for more than a few months at a time. Which has made saving up a nest egg with which to fund this dream of mine something of a herculean task.</p> -->
+      <!-- <p>So right now, I find myself a walking Millennial stereotype: 30 years old, unemployed, and living off of Annie’s mac &amp; cheese at my mom’s house. Until I can afford a cheap apartment, the money will just be used to cover basic necessities, like buying more pasta. There will be the occasional business expense, like domain name renewal or website hosting fees, but nothing crazy. As the pot grows, though, I’ll be able to put more and more of it into the business, such as paying for a desk at a co-working space, or hiring a videographer so I can focus more on founding than filming. I intend to stick to Lean Startup principles throughout—I certainly won’t be springing for Aeron chairs from the get-go.</p> -->
+      <p>Right now, I find myself a walking Millennial stereotype: 30 years old, unemployed, and living off of Annie’s mac &amp; cheese at my mom’s house. Until I can afford a cheap apartment, the money will just be used to cover basic necessities, like buying more pasta. There will be the occasional business expense, like domain name renewal or website hosting fees, but nothing crazy. As the pot grows, though, I’ll be able to put more and more of it into the business, such as paying for a desk at a co-working space, or hiring a videographer so I can focus more on founding than filming. I intend to stick to Lean Startup principles throughout—I certainly won’t be springing for <a href="https://en.wikipedia.org/wiki/Aeron_chair">Aeron chairs</a> from the get-go.</p>
     </section>
     <section>
       <header>
@@ -32,7 +36,7 @@
       </header>
       <p>Shows like <cite>Shark Tank</cite> make it seem like there’s only one way to fund a company: asking venture capitalists to write you a fat check in exchange for some equity in the business. This has advantages over a traditional bank loan, in that you can procure substantially larger investments, you don’t have to pay any of it back, and the investors act as mentors to the fledgling founder. With VC money in the bank, a company can afford to take bold risks early on, without having to worry about revenue forecasts until after they’ve become the next Facebook. Sounds nice, right?</p>
       <p>But there’s more to the story that doesn’t get talked about as much. First off, most VCs aren’t doling out their own money like Mark Cuban is. Much like founders, VCs raise their own capital from richer, meta-VCs called LPs (limited partners): the likes of insurance firms, investment banks, pension funds, and private billionaires. LPs entrust their money to VCs the same way one might entrust their 401(k) to a hedge fund manager, the idea being to pick companies that look like winners in order to maximize ROI for the fund; the VCs making their money in management fees. If a startup goes public or gets bought, the VCs and LPs both stand to make a killing.</p>
-      <p>The problem with this is that VCs ultimately serve their own investors, not the founders in whom they invest. LPs, despite being largely anonymous, can indirectly change the direction of a founder’s business in order to serve profits. VCs take 20–40% equity and a board seat, meaning that outside of day-to-day decisions, they call the shots. Including firing the founder from their own company if they don’t see exponential growth. A stabler, linear growth? Not good enough. After all, they’re looking for a minimum of 10× their money back (with an outside chance of 100×) in the span of 7-odd years in order to make the investment worthwhile. While they don’t want you to fail, it’s an acceptable loss if you run out of money and fold without becoming Facebook. Any given investee is only one asset in the fund’s diversified portfolio.</p>
+      <p>The problem with this is that VCs ultimately serve their own investors, not the founders in whom they invest. LPs, despite being largely anonymous, can indirectly change the direction of a founder’s business in order to serve profits. VCs take 20–40% equity and a board seat, meaning that outside of day-to-day decisions, they call the shots. Including firing the founder from their own company if they don’t see exponential growth.  Stable, linear growth? Not good enough. After all, they’re looking for a minimum of 10× their money back (with an outside chance of 100×) in the span of 7-odd years in order to make the investment worthwhile. While they don’t want you to fail, it’s an acceptable loss if you run out of money and fold without becoming Facebook. Any given investee is only one asset in the fund’s diversified portfolio.</p>
       <p>And even if I wanted to go down this route, it would still take 3–9 months or more of landing pitch meetings with VCs and getting rejected by most of them before I could walk away with a check. Pitching is effectively a full-time job, so I would need to <em>already have money to live off of</em>. Yet if I had money to live off of, I wouldn’t need to raise a round in the first place, since food and shelter are my only overhead costs right now.</p>
       <p>But the biggest reason I’m avoiding VC funding? I’m looking to build a different kind of company. One that serves the public good, rather than simply maximizing profits. By being funded by Viewers Like You rather than the 1%, my company’s interests will be aligned with the interests of my users. That is, the filmmakers and app developers who will craft the future of visual storytelling. And to make sure they’re always considered, I plan to incorporate RedBlue as a Public Benefit Corporation.</p>
     </section>
@@ -50,6 +54,18 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+    border: 0;
+  }
+
   article {
     font-size: 1.1rem;
     max-width: 39em;
@@ -64,8 +80,18 @@
   }
 
   .logo-container {
-    background-color: white;
+    display: flex;
+    justify-content: center;
     text-align: center;
+    height: 256px;
+  }
+
+  .logo-container.logo-container--redblue {
+    background-color: white;
+  }
+
+  .logo-container.logo-container--patreon {
+    background-color: #F96854;
   }
 
   /* .redblue-logo {

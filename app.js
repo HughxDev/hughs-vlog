@@ -55,7 +55,7 @@ express.static.mime.define({
 });
 
 app.use( '/', express.static( join( __dirname, '/src' ) ) );
-// app.use( '/node_modules', express.static( join( __dirname, '/node_modules' ) ) );
+app.use( '/node_modules', express.static( join( __dirname, '/node_modules' ) ) );
 app.use( '/lib', express.static( join( __dirname, '/src/lib' ) ) );
 
 // set
@@ -148,6 +148,17 @@ app.get( '/episodes', function getEpisodes( req, res ) {
   } );
 
   res.end();
+} );
+
+app.get( '/upload', function getUploadPage( req, res ) {
+  res.set( 'Content-Type', formats.html.contentType );
+  res.render( 'upload', {}, function render ( err, html ) {
+    if ( !err ) {
+      res.end( html );
+    } else {
+      console.log( err );
+    }
+  } );
 } );
 
 app.get( '*', function getHomepage( req, res ) {

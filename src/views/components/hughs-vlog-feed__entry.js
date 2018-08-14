@@ -21,13 +21,16 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             /*width: 360px;*/
             width: 50%;
             position: relative;
+            margin: .25rem;
+            flex-basis: calc(50% - .5rem);
           }
 
           :host([large]) {
-            display: block;
+            /*display: block;*/
             /*display: flex;*/
             /*width: 853px;*/
             width: 100%;
+            flex-basis: 100%;
           }
 
           .hughs-vlog-feed-entry__player {
@@ -387,7 +390,8 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   }
 
   getOembed( url ) {
-    const endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
+    // const endpoint = 'http://localhost:3000/oembed?url=' + encodeURIComponent( url );
+    const endpoint = process.env.VUE_APP_ROOT_API + '/oembed?url=' + encodeURIComponent( url );
     const oembedPromise = ( resolve, reject ) => {
       const xhr = new XMLHttpRequest();
       let oembedJSON;

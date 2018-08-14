@@ -1,6 +1,6 @@
 <template>
   <hughs-vlog hidden="hidden">
-    <hughs-vlog-header>
+    <hughs-vlog-header id="top">
       <router-link class="logo link-wrapper" to="/" exact="exact" v-on:click.native="clearFocus">
         <h1 class="logotype h h--1">Hugh’s Vlog</h1>
         <picture class="logomark">
@@ -17,16 +17,12 @@
         <router-link to="/contact" v-on:click.native="clearFocus">Contact</router-link>
       </hughs-vlog-site-nav>
     </hughs-vlog-header>
-    <main>
-      <div id="top" class="wrapper">
-        <transition name="view-fade" mode="out-in">
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
-        </transition>
-      </div>
-      <hughs-vlog-playback-options v-show="[ 'home', 'episodes' ].indexOf( $route.name ) > -1"></hughs-vlog-playback-options>
-      <hughs-vlog-episode-nav v-show="[ 'home', 'episodes' ].indexOf( $route.name ) > -1" nite="nite"></hughs-vlog-episode-nav>
+    <main id="content">
+      <transition name="view-fade" mode="out-in">
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
     </main>
     <hughs-vlog-footer></hughs-vlog-footer>
   </hughs-vlog>
@@ -156,6 +152,10 @@
     margin: 0;
     padding: 0;
   }
+
+  /* .h.h--3 {
+    font-weight: normal;
+  } */
 
   body {
     background-image: url( '../assets/boston-skyline-vhs@0.25x.svg' );

@@ -16,9 +16,23 @@ let HughsVlogFooter = class HughsVlogFooter extends HTMLElement {
 
           :host {
             text-align: center;
+            font-size: 0.95rem;
+          }
+
+          p a {
+            color: inherit;
+            transition: 0.125s color ease;
+          }
+
+          p:hover a {
+            color: hsl(310, 100%, 70%);
+          }
+
+          p:hover {
+            opacity: 1;
           }
         </style>
-        <p>© 2016–<span id="current-year"></span></p>
+        <p>© 2016–<span id="current-year"></span> <a href="https://hughguiney.com/" rel="me">Hugh Guiney</a></p>
       </template>
     `;
   }

@@ -22,13 +22,17 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
 
           :host {
             display: block;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
           }
 
-          .hughs-vlog-feed-entry:first-of-type {
+          /*.hughs-vlog-feed-entry:first-of-type {
             width: 100%;
-          }
+          }*/
         </style>
         <slot></slot>
+        <div id="episodes"></div>
       </template>
     `;
   }
@@ -336,7 +340,11 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
 
             entry.data = node;
 
-            this.shadowRoot.appendChild( entry );
+            // if ( i === 0 ) {
+              this.shadowRoot.appendChild( entry );
+            // } else {
+            //   this.$$( '#episodes' ).appendChild( entry );
+            // }
           }
         }
       break; // case 'desc'

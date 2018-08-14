@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <script src="lib/tus-js-client/dist/tus.min.js"></script>
+  </head>
+  <body>
+    <form method="post" action="http://api.hugh.today/upload">
+      <input id="file" type="file" name="file" multiple="" accept="video/*,.mkv,.hvml,.redblue,.tar.xz">
+    </form>
+    <script>
+      var input = document.getElementById('file');
+      input.addEventListener("change", function(e) {
+        // Get the selected file from the input element
+        var file = e.target.files[0];
+        var fileName = file.name;
+        var fileType;
+
+        if ( file.type === '' ) {
+          if ( fileName.match( /\.redblue$/ ) ) {
+            fileType = 'video/vnd.redblue+x-xz';
+          }
+        }
+
+        // Create a new tus upload
+        var upload = new tus.Upload(file, {
+            endpoint: "http://localhost:1080/uploads/",
+            retryDelays: [0, 1000, 3000, 5000],
+            metadata: {
+                filename: fileName,
+                filetype: fileType
+            },
+            onError: function(error) {
+                console.log("Failed because: " + error)
+            },
+            onProgress: function(bytesUploaded, bytesTotal) {
+                var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
+                console.log(bytesUploaded, bytesTotal, percentage + "%")
+            },
+            onSuccess: function() {
+                console.log("Download %s from %s", upload.file.name, upload.url)
+            }
+        })
+
+        // Start the upload
+        upload.start()
+      })
+    </script>
+  </body>
+</html>

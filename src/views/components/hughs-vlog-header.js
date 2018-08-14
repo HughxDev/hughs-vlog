@@ -27,9 +27,12 @@ let HughsVlogHeader = class HughsVlogHeader extends HTMLElement {
             margin: 1.5rem auto 2.5rem;
           }
 
-          ::slotted(a) {
+          ::slotted(a),
+          ::slotted(a:hover),
+          ::slotted(a:active),
+          ::slotted(a:focus) {
             text-decoration: none;
-            color: inherit;
+            color: inherit !important;
           }
 
           ::slotted(.router-link-exact-active) {

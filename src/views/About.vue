@@ -34,6 +34,14 @@
     <section>
       <header>
         <h3 class="h h--3"><!--Why Patreon? -->Why not pitch VCs like other startups?</h3>
+        <figure class="logo-container logo-container--stock-photo figure--has-capton">
+          <picture class="stock-photo-container">
+            <!-- <source media="(min-width: 686.5px)" srcset="../assets/rawpixel-384899-unsplash--narrow.jpg" /> -->
+            <source media="(max-width: 495px)" srcset="../assets/rawpixel-384899-unsplash--small.jpg" />
+            <img class="stock-photo" src="../assets/rawpixel-384899-unsplash--narrow.jpg" alt="Bearded businessman talking to a listening businesswoman, both sitting down at a outdoor patio with a laptop open" />
+          </picture>
+          <figcaption>Photo by <a href="https://unsplash.com/photos/bMclPCvSHLo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">rawpixel</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></figcaption>
+        </figure>
       </header>
       <p>Shows like <cite>Shark Tank</cite> make it seem like there’s only one way to fund a company: asking venture capitalists to write you a fat check in exchange for some equity in the business. This has advantages over a traditional bank loan, in that you can procure substantially larger investments, you don’t have to pay any of it back, and the investors act as mentors to the fledgling founder. With VC money in the bank, a company can afford to take bold risks early on, without having to worry about revenue forecasts until after they’ve become the next Facebook. Sounds nice, right?</p>
       <p>But there’s more to the story that doesn’t get talked about as much. First off, most VCs aren’t doling out their own money like Mark Cuban is. Much like founders, VCs raise their own capital from richer, meta-VCs called LPs (limited partners): the likes of insurance firms, investment banks, pension funds, and private billionaires. LPs entrust their money to VCs the same way one might entrust their 401(k) to a hedge fund manager, the idea being to pick companies that look like winners in order to maximize ROI for the fund; the VCs making their money in management fees. If a startup goes public or gets bought, the VCs and LPs both stand to make a killing.</p>
@@ -75,24 +83,103 @@
     text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
   }
 
+  .h {
+    margin: 1rem auto;
+  }
+
   .title {
     text-align: var(--title-align);
   }
 
   .logo-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     text-align: center;
-    height: 256px;
+    max-height: 256px;
+    margin: 1rem auto;
+    overflow: hidden;
   }
+
+  /* @media only screen and (max-width: 495px) {
+    .stock-photo {
+      margin-top: 4.4rem;
+    }
+  } */
 
   .logo-container.logo-container--redblue {
     background-color: white;
   }
 
-  .logo-container.logo-container--patreon {
+  /* .logo-container.logo-container--patreon {
     background-color: #F96854;
+  } */
+
+  .logo-container.logo-container--stock-photo {
+    /* position: relative; */
+    /* padding-bottom: 56.25%; */
+    /* padding-top: 25px; */
+    /* height: 0; */
+    max-height: 297px;
+    /* max-height: calc(256px + 41px); */
+
   }
+
+  .stock-photo-container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stock-photo {
+    /* position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; */
+    display: block;
+    max-width: 100%;
+  }
+
+  figcaption {
+    font-style: italic;
+    opacity: 0.5;
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
+    transition: 0.25s opacity ease, 0.125s background-color ease;
+    width: 100%;
+    margin-top: -41px;
+    /* margin-bottom: 0.5rem; */
+    text-align: left;
+    height: 41px;
+    cursor: default;
+  }
+
+  figcaption > a {
+    color: inherit;
+  }
+
+  figure:hover > figcaption,
+  figure:focus > figcaption {
+    opacity: 1;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  figure:hover > figcaption > a {
+    color: hsl(310, 100%, 70%);
+  }
+
+  /* figcaption:hover > a,
+  figcaption:focus > a {
+    color: hsl(310, 100%, 70%);
+  } */
+
+  /* figure.figure--has-capton {
+    margin-bottom: -1rem;
+  } */
 
   /* .redblue-logo {
     float: left;

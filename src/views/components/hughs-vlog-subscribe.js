@@ -204,7 +204,10 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             <dt class="sr-only">Flipboard</dt>
             <dd class="subscribe-button-container subscribe-button-container--flipboard">
               <div class="subscribe-button-container__render subscribe-button-container__render--loaded">
-                <a href="https://flipboard.com/@hughguiney?utm_campaign=tools&utm_medium=follow&action=follow">
+                <a
+                  data-href="https://flipboard.com/@hughguiney?utm_campaign=tools&utm_medium=follow&action=follow"
+                  href="javascript:void(0);"
+                >
                   <img src="/img/flipboard-logo.svg" height="56" alt="Flipboard" />
                 </a>
                 <!--<script src="https://cdn.flipboard.com/web/buttons/js/flbuttons.min.js" type="text/javascript"></script>-->
@@ -231,7 +234,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
               <div class="subscribe-button-container__render subscribe-button-container__render--loaded">
                 <a
                   title="Copy Feed URL to Clipboard"
-                  href="http://api.hugh.today/feed"
+                  href="http://api.hugh.today/feed/podcast"
                   onclick="alert('URL copied'); event.preventDefault();"
                   target="blank"
                 >

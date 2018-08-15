@@ -60,7 +60,8 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           .subscribe-button-container {
             padding-left: 1rem;
             padding-right: 1rem;
-            border-right: 1px solid rgba(0,0,0,0.25);
+            /*border-right: 1px solid rgba(0,0,0,0.25);*/
+            border-right: 1px solid transparent;
             height: 100% !important;
             min-height: 78px !important;
             display: flex;
@@ -107,7 +108,8 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           }
 
           :host([nite]) .subscribe-button-container {
-            border-color: rgba(255,255,255,0.75);
+            /*border-color: rgba(255,255,255,0.75);*/
+            border-color: transparent;
           }
 
           .subscribe-button-container:first-of-type {
@@ -145,7 +147,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             <dd class="subscribe-button-container subscribe-button-container--yt">
               <div id="yt-button-container-render" class="subscribe-button-container__render subscribe-button-container__render--loaded">
                 <!--<div class="g-ytsubscribe"></div>-->
-                <iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 174px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 48px;" tabindex="0" vspace="0" width="100%" id="I3_1534220345752" name="I3_1534220345752" src="https://www.youtube.com/subscribe_embed?usegapi=1&amp;channelid=UCGPCcxdykgp6hgvL0XE3yaA&amp;layout=full&amp;theme=dark&amp;origin=http%3A%2F%2Flocalhost%3A8080&amp;gsrc=3p&amp;jsh=m%3B%2F_%2Fscs%2Fapps-static%2F_%2Fjs%2Fk%3Doz.gapi.en_US.E7IKfRnB0v0.O%2Fam%3DwQ%2Frt%3Dj%2Fd%3D1%2Frs%3DAGLTcCOByCbQXAC-9aHy9Cd48zYIgEVgQw%2Fm%3D__features__#_methods=onPlusOne%2C_ready%2C_close%2C_open%2C_resizeMe%2C_renderstart%2Concircled%2Cdrefresh%2Cerefresh&amp;id=I3_1534220345752&amp;_gfid=I3_1534220345752&amp;parent=http%3A%2F%2Flocalhost%3A8080&amp;pfname=&amp;rpctoken=91374745" data-gapiattached="true" class="style-scope hughs-vlog-subscribe"></iframe>
+                <iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 174px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 48px;" tabindex="0" vspace="0" width="100%" id="I3_1534220345752" name="I3_1534220345752" src="https://www.youtube.com/subscribe_embed?usegapi=1&amp;channelid=UCGPCcxdykgp6hgvL0XE3yaA&amp;layout=full&amp;theme=dark&amp;origin=http%3A%2F%2Fhugh.today&amp;gsrc=3p&amp;jsh=m%3B%2F_%2Fscs%2Fapps-static%2F_%2Fjs%2Fk%3Doz.gapi.en_US.E7IKfRnB0v0.O%2Fam%3DwQ%2Frt%3Dj%2Fd%3D1%2Frs%3DAGLTcCOByCbQXAC-9aHy9Cd48zYIgEVgQw%2Fm%3D__features__#_methods=onPlusOne%2C_ready%2C_close%2C_open%2C_resizeMe%2C_renderstart%2Concircled%2Cdrefresh%2Cerefresh&amp;id=I3_1534220345752&amp;_gfid=I3_1534220345752&amp;parent=http%3A%2F%2Fhugh.today&amp;pfname=&amp;rpctoken=91374745" data-gapiattached="true" class="style-scope hughs-vlog-subscribe"></iframe>
               </div>
             </dd>
             <dt class="sr-only">Facebook</dt>

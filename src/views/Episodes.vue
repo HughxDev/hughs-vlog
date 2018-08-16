@@ -16,43 +16,32 @@
         </form>
       </details>
     </nav>
-    <hughs-vlog-feed id="episodes" order="desc">
+    <hughs-vlog-feed id="episodes" delegated="delegated">
       <template v-for="episode in filteredEpisodes">
-        <!-- @todo:
-          This is a rather convoluted algorithm for passing data:
-
-          1. We fetch XML (as a string) from the Hugh’s Vlog API.
-          2. The XML is parsed into a DOM tree.
-          3. The DOM tree is encoded as plain JSON.
-          4. The plain JSON is converted to a string.
-          5. The string is set as an attribute of the Web Component.
-          6. The Web Component converts the string back into JSON.
-          7. The JSON is converted back into a DOM tree.
-          8. The DOM tree is assigned as a property of the Web Component.
-          9. To populate the view, XPath is run against the DOM tree property.
-
-          The API should probably just return JSON-LD if requested.
-        -->
-        <hughs-vlog-feed__entry :key="getEpisodeNumber(episode)" :data="JSON.stringify( DOMtoJSON( episode ) )"></hughs-vlog-feed__entry>
+        <hughs-vlog-feed__entry :key="getEpisodeNumber(episode)" v-html="episode.outerHTML"></hughs-vlog-feed__entry>
       </template>
     </hughs-vlog-feed>
   </div>
 </template>
 
 <script>
+  import { legacyParseXML } from '../lib/dom.js';
+
   export default {
     name: 'Episodes',
     props: {},
     data: function () {
       return {
-        episodesEndpoint: ( 'http://api.hugh.today' || process.env.VUE_APP_ROOT_API ) + '/feed/hvml/videos',
+        episodesEndpoint: ( process.env.VUE_APP_ROOT_API ) + '/feed/hvml/videos',
         search: '',
         episodes: []
       }
     },
     created: function () {
       this.$http.get( this.episodesEndpoint ).then( ( data ) => {
-        this.episodes = this.parseXml( data.body ).documentElement.children;
+        data.body = data.body.replace( /<video([^>]*)>/gi, '<video$1 slot="hvml" hidden="hidden">' );
+        this.episodes = legacyParseXML( data.body ).documentElement.children;
+        // this.episodes = data.body;
         console.log( this.episodes );
       } );
     },
@@ -72,16 +61,14 @@
 
             switch ( child.nodeName.toLowerCase() ) {
               case 'title':
-                match = child.textContent.trim().match( search );
+                match = child.textContent.match( search );
+
                 // if ( match ) {
-                //   return true;
+                //   console.log( this.search );
+                //   console.log( child.nodeName, child.textContent.trim() );
+                //   console.log( [child.parentNode] );
+                //   console.log( '---' );
                 // }
-                if ( match ) {
-                  console.log( this.search );
-                  console.log( child.nodeName, child.textContent.trim() );
-                  console.log( [child.parentNode] );
-                  console.log( '---' );
-                }
 
                 return !!match;
               break;
@@ -107,71 +94,6 @@
           }
         }
       },
-      // Source: http://goessner.net/download/prj/jsonxml/
-      parseXml: function ( xml ) {
-        var dom = null;
-        if ( window.DOMParser ) {
-          try {
-            dom = ( new DOMParser() ).parseFromString( xml, 'text/xml' );
-          } catch ( e ) {
-            dom = null;
-          }
-        } else if ( window.ActiveXObject ) {
-          try {
-            dom = new ActiveXObject( 'Microsoft.XMLDOM' );
-            dom.async = false;
-
-            if ( !dom.loadXML( xml ) ) { // parse error ..
-              console.error( dom.parseError.reason + dom.parseError.srcText );
-            }
-          } catch ( e ) {
-            dom = null;
-          }
-        } else {
-          console.error( 'Cannot parse XML string.' );
-        }
-
-        return dom;
-      },
-      // https://gist.github.com/sstur/7379870
-      DOMtoJSON: function ( node ) {
-        node = ( node || this );
-        var obj = {
-          nodeType: node.nodeType
-        };
-
-        if ( node.tagName ) {
-          obj.tagName = node.tagName.toLowerCase();
-        } else if ( node.nodeName ) {
-          obj.nodeName = node.nodeName;
-        }
-
-        if ( node.nodeValue ) {
-          obj.nodeValue = node.nodeValue;
-        }
-
-        var attrs = node.attributes;
-        if ( attrs ) {
-          var length = attrs.length;
-          var arr = obj.attributes = new Array( length );
-          for ( var i = 0; i < length; i++ ) {
-            var attr = attrs[i];
-            arr[i] = [ attr.nodeName, attr.nodeValue ];
-          }
-        }
-
-        var childNodes = node.childNodes;
-        if ( childNodes ) {
-          length = childNodes.length;
-          arr = obj.childNodes = new Array( length );
-
-          for ( i = 0; i < length; i++ ) {
-            arr[i] = this.DOMtoJSON( childNodes[i] );
-          }
-        }
-
-        return obj;
-      }, //toJSON
     }
   }
 </script>

@@ -1,7 +1,7 @@
 "use strict";
 import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 import HVMLAwareElement from '../../lib/hvml-aware-element.js';
-import { parseHTML } from '../../lib/dom.js';
+import { parseHTML, XMLNS, JSONtoDOM } from '../../lib/dom.js';
 
 let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   static get is() {
@@ -12,6 +12,8 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     return `
       <template id="${HughsVlogFeedEntry.is}">
         <style>
+          @namespace hvml url(${XMLNS.hvml});
+
           * {
             box-sizing: border-box;
           }
@@ -147,8 +149,16 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
           dd {
             display: inline-block;
           }
-        </style>
 
+          ::slotted(hvml|video) {
+            display: none;
+          }
+
+          ::slotted(video[xmlns="${XMLNS.hvml}"]) {
+            display: none;
+          }
+        </style>
+        <slot id="hvml" name="hvml"></slot>
         <header>
           <hgroup data-layout="standalone">
             <h3 class="h h--3"><time id="recorded"></time>:</h3>
@@ -180,76 +190,35 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     this.limit = null;
   } // constructor
 
-  // https://gist.github.com/sstur/7379870
-  JSONtoDOM( obj ) {
-    if ( typeof obj === 'string' ) {
-      obj = JSON.parse( obj );
-    }
-
-    var node, nodeType = obj.nodeType;
-
-    switch ( nodeType ) {
-      case 1: //ELEMENT_NODE
-        node = document.createElement( obj.tagName );
-        var attributes = obj.attributes || [];
-
-        for ( var i = 0, len = attributes.length; i < len; i++ ) {
-          var attr = attributes[i];
-          node.setAttribute( attr[0], attr[1] );
-        }
-      break;
-
-      case 3: //TEXT_NODE
-        node = document.createTextNode( obj.nodeValue );
-      break;
-
-      case 8: //COMMENT_NODE
-        node = document.createComment( obj.nodeValue );
-      break;
-
-      case 9: //DOCUMENT_NODE
-        node = document.implementation.createDocument();
-      break;
-
-      case 10: //DOCUMENT_TYPE_NODE
-        node = document.implementation.createDocumentType( obj.nodeName );
-      break;
-
-      case 11: //DOCUMENT_FRAGMENT_NODE
-        node = document.createDocumentFragment();
-      break;
-
-      default:
-        return node;
-    }
-
-    if ( nodeType == 1 || nodeType == 11 ) {
-      var childNodes = obj.childNodes || [];
-      for ( i = 0, len = childNodes.length; i < len; i++ ) {
-        node.appendChild( this.JSONtoDOM( childNodes[i] ) );
-      }
-    }
-
-    return node;
-  } // JSONtoDOM
-
   connectedCallback() {
-    // console.log( 'this.data', this.data );
-    // if ( 'data' in this ) {
-    //   console.log( '[prop] this.data', this.data );
-    //   console.log( '[prop] typeof this.data', typeof this.data );
-    // }
+    this.setAttribute( 'role', 'article' );
+    this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
-    if ( this.hasAttribute( 'data' ) ) {
-      this.data = this.JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
+    this.$.hvmlSlot = this.$id( 'hvml' );
+
+    if ( 'data' in this ) {
+      // console.log( '[prop] this.data', this.data );
+      // console.log( '[prop] typeof this.data', typeof this.data );
+    } else if ( this.hasAttribute( 'data' ) ) {
+      this.data = JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
       this.removeAttribute( 'data' );
       // console.log( 'this.data', this.data );
       // console.log( 'typeof this.data', typeof this.data );
+    } else {
+      let assignedNodes = this.$.hvmlSlot.assignedNodes();
+      let hvmlChild = this._getFirstHvmlChild( assignedNodes );
+
+      // console.log( 'assignedNodes', assignedNodes );
+      // console.log( 'hvmlChild', hvmlChild );
+
+      if ( hvmlChild ) {
+        this.data = hvmlChild;
+      } else {
+        throw new Error( 'No data supplied to `hughs-vlog-feed__entry`' );
+      }
     }
 
     this.setAttribute( 'id', ( this.data.getAttributeNS( 'http://www.w3.org/XML/1998/namespace', 'id' ) || this.data.getAttribute( 'xml:id' ) ) );
-    this.setAttribute( 'role', 'article' );
-    this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
     if ( this.parentNode && this.parentNode.host ) {
       if ( this.parentNode.host.hasAttribute( 'limit' ) ) {
@@ -265,7 +234,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
       case 'data':
         // this.data = newValue;
         // console.log( newValue );
-        this.data = this.JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
+        this.data = JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
         this.removeAttribute( 'data' );
       break;
     }

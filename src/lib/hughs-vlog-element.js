@@ -10,7 +10,11 @@ const HughsVlogElement = ( superClass ) => {
       // console.log( 'superClass.template', superClass.template );
       // console.log( 'this.$template', this.$template );
       if ( window.hasOwnProperty( 'ShadyCSS' ) ) {
+        // let templateAlreadyPrepared = window.document.querySelector( 'style[scope="hughs-vlog-feed__entry"]' );
+
+        // if ( !templateAlreadyPrepared ) {
         window.ShadyCSS.prepareTemplate( this.$template, superClass.is );
+        // }
       }
     }
 
@@ -36,6 +40,20 @@ const HughsVlogElement = ( superClass ) => {
       // presence of it. So all custom elements should include a
       // connectedCallback definition even if it’s empty.
       super.connectedCallback();
+    }
+
+    _isTemplateChild( nodeName ) {
+      switch ( nodeName ) {
+        case '#text':
+        case 'slot':
+        case 'style':
+        case 'script':
+        case 'template':
+          return true;
+        // break;
+      }
+
+      return false;
     }
   }
 };

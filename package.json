@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build; cp .htaccess.prod dist/.htaccess; cp -r src/lib/ dist/",
+    "build": "vue-cli-service build; cp .htaccess.prod dist/.htaccess; cp -r src/lib/ dist/lib/",
     "lint": "vue-cli-service lint",
     "postinstall": "node ./postinstall.js",
     "publish": "rm -rf public/*; cp -r src/* public/; cp src/.htaccess public/"
@@ -55,6 +55,7 @@
     "node-http-proxy": "^0.2.3",
     "tus-js-client": "^1.5.1",
     "vue": "^2.5.16",
+    "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1"
   },
   "_lib": [

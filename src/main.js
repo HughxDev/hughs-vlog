@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueResource from 'vue-resource';
 // import App from './App.vue';
 
 import Site from './views/Site';
@@ -17,6 +18,7 @@ Vue.config.ignoredElements = [
 // 0. If using a module system (e.g. via vue-cli), import Vue and VueRouter
 // and then call `Vue.use(VueRouter)`.
 Vue.use( VueRouter );
+Vue.use( VueResource );
 
 // 1. Define route components.
 // These can be imported from other files

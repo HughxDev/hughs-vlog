@@ -1,5 +1,6 @@
 "use strict";
 import HughsVlogElement from '../../lib/hughs-vlog-element.js';
+import HVMLAwareElement from '../../lib/hvml-aware-element.js';
 import { parseHTML } from '../../lib/dom.js';
 
 let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
@@ -179,7 +180,73 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     this.limit = null;
   } // constructor
 
+  // https://gist.github.com/sstur/7379870
+  JSONtoDOM( obj ) {
+    if ( typeof obj === 'string' ) {
+      obj = JSON.parse( obj );
+    }
+
+    var node, nodeType = obj.nodeType;
+
+    switch ( nodeType ) {
+      case 1: //ELEMENT_NODE
+        node = document.createElement( obj.tagName );
+        var attributes = obj.attributes || [];
+
+        for ( var i = 0, len = attributes.length; i < len; i++ ) {
+          var attr = attributes[i];
+          node.setAttribute( attr[0], attr[1] );
+        }
+      break;
+
+      case 3: //TEXT_NODE
+        node = document.createTextNode( obj.nodeValue );
+      break;
+
+      case 8: //COMMENT_NODE
+        node = document.createComment( obj.nodeValue );
+      break;
+
+      case 9: //DOCUMENT_NODE
+        node = document.implementation.createDocument();
+      break;
+
+      case 10: //DOCUMENT_TYPE_NODE
+        node = document.implementation.createDocumentType( obj.nodeName );
+      break;
+
+      case 11: //DOCUMENT_FRAGMENT_NODE
+        node = document.createDocumentFragment();
+      break;
+
+      default:
+        return node;
+    }
+
+    if ( nodeType == 1 || nodeType == 11 ) {
+      var childNodes = obj.childNodes || [];
+      for ( i = 0, len = childNodes.length; i < len; i++ ) {
+        node.appendChild( this.JSONtoDOM( childNodes[i] ) );
+      }
+    }
+
+    return node;
+  } // JSONtoDOM
+
   connectedCallback() {
+    // console.log( 'this.data', this.data );
+    // if ( 'data' in this ) {
+    //   console.log( '[prop] this.data', this.data );
+    //   console.log( '[prop] typeof this.data', typeof this.data );
+    // }
+
+    if ( this.hasAttribute( 'data' ) ) {
+      this.data = this.JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
+      this.removeAttribute( 'data' );
+      // console.log( 'this.data', this.data );
+      // console.log( 'typeof this.data', typeof this.data );
+    }
+
     this.setAttribute( 'id', ( this.data.getAttributeNS( 'http://www.w3.org/XML/1998/namespace', 'id' ) || this.data.getAttribute( 'xml:id' ) ) );
     this.setAttribute( 'role', 'article' );
     this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
@@ -193,21 +260,38 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     this.render();
   }
 
-  select( xpath, data ) {
-    data = ( data || this.data );
-
-    if ( this.parentNode && this.parentNode.host ) {
-      try {
-        return this.parentNode.host.select( xpath, data );
-      } catch ( error ) {
-        console.info( error );
-        return false;
-      }
+  attributeChangedCallback( attribute, oldValue, newValue ) {
+    switch ( attribute ) {
+      case 'data':
+        // this.data = newValue;
+        // console.log( newValue );
+        this.data = this.JSONtoDOM( JSON.parse( this.getAttribute( 'data' ) ) );
+        this.removeAttribute( 'data' );
+      break;
     }
-
-    // @todo: throw?
-    return false;
   }
+
+  // select( xpath, data ) {
+  //   data = ( data || this.data );
+  //
+  //   console.log( 'xpath', xpath );
+  //   console.log( 'data', data );
+  //
+  //   if ( this.parentNode && this.parentNode.shadowRoot && this.parentNode.shadowRoot.host ) {
+  //     try {
+  //       return this.parentNode.shadowRoot.host.select( xpath, data );
+  //     } catch ( error ) {
+  //       console.info( error );
+  //       return false;
+  //     }
+  //   // possible race condition:
+  //   } else {
+  //     console.log( 'No parentNode?', [this.parentNode.shadowRoot.host] );
+  //   }
+  //
+  //   // @todo: throw?
+  //   return false;
+  // }
 
   getText( response ) {
     if ( response.length && response[0] && ( 'textContent' in response[0] ) ) {
@@ -453,7 +537,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   }
 }
 
-HughsVlogFeedEntry = HughsVlogElement( HughsVlogFeedEntry );
+HughsVlogFeedEntry = HVMLAwareElement( HughsVlogElement( HughsVlogFeedEntry ) );
 
 window.customElements.define( HughsVlogFeedEntry.is, HughsVlogFeedEntry );
 

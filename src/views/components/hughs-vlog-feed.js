@@ -1,5 +1,6 @@
 "use strict";
 import HughsVlogElement from '../../lib/hughs-vlog-element.js';
+import HVMLAwareElement from '../../lib/hvml-aware-element.js';
 import { XMLNS } from '../../lib/dom.js';
 
 import /*HughsVlogFeedEntry from*/ './hughs-vlog-feed__entry.js';
@@ -37,8 +38,8 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
             width: 100%;
           }*/
         </style>
+        <!--<h2>Episodes</h2>-->
         <slot></slot>
-        <div id="episodes"></div>
       </template>
     `;
   }
@@ -122,7 +123,7 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
         let child = children[i];
         let nodeName = child.nodeName.toLowerCase();
 
-        if ( !this._isTemplateChild( nodeName ) ) {
+        if ( !this._isTemplateChild( nodeName ) /*&& ( nodeName !== 'h2' )*/ ) {
           // console.log( `Removing ${nodeName}`, child )
           this.shadowRoot.removeChild( child );
         } else {
@@ -381,126 +382,12 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
     } // switch
   } // _appendEntries
 
-  select( xpath, refNode, xpathType ) {
-    var evaluator = new XPathEvaluator();
-      if ( !xpath ) {
-        throw 'No XPath provided';
-      }
-
-      if ( !refNode ) {
-        throw 'No reference node provided';
-      }
-
-      switch ( refNode.nodeType ) {
-        case Node.ELEMENT_NODE: // 1
-          // console.log( 'Element node' );
-        break;
-
-        case Node.TEXT_NODE: // 3
-        case Node.PROCESSING_INSTRUCTION_NODE: // 7
-        case Node.COMMENT_NODE: // 8
-        break;
-
-        case Node.DOCUMENT_NODE: // 9
-          // console.log( 'Document node' );
-        break;
-
-        case Node.DOCUMENT_TYPE_NODE: // 10
-        case Node.DOCUMENT_FRAGMENT_NODE: // 11
-        break;
-      }
-
-      var result;
-      var nodes = [];
-      var node;
-      var i = 0;
-      // var snapshotLength;
-      var defaultNS;
-
-      // console.log( 'refNode', refNode );
-
-      // Automatic Namespace Resolution:
-      // XMLNSResolver = this.evaluator.createNSResolver( this.hvml.documentElement );
-
-      // Custom Namespace Resolution:
-      if ( ( 'hasAttribute' in refNode ) && refNode.hasAttribute( 'xmlns' ) ) {
-        defaultNS = refNode.getAttribute( 'xmlns' );
-      } else if ( ( 'documentElement' in refNode ) && refNode.documentElement.hasAttribute( 'xmlns' ) ) {
-        defaultNS = refNode.documentElement.getAttribute( 'xmlns' );
-      } else {
-        // defaultNS = XMLNS.hvml;
-        defaultNS = XMLNS.xhtml;
-        // console.log( 'fallback' );
-      }
-
-      // console.log( 'defaultNS', defaultNS );
-
-      function nsResolver( prefix ) {
-        return ( XMLNS[prefix] || defaultNS );
-        // return XMLNS.xhtml;
-      }
-
-      // xpathType = xpathType ||  XPathResult.ORDERED_NODE_ITERATOR_TYPE;
-      // Better performance (https://www.nczonline.net/blog/2009/03/17/xpath-in-javascript-part-1/)
-      xpathType = xpathType || XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
-
-      result = evaluator.evaluate(
-        xpath,
-        // '//xhtml:hvml',
-        refNode,
-        nsResolver,
-        // XMLNS.xhtml,
-        // null,
-        xpathType,
-        null
-      );
-
-      // console.log( 'result', result );
-
-      if ( result ) {
-        switch ( xpathType ) {
-          case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
-            // console.log( 'ordered node iterator' );
-            node = result.iterateNext();
-            nodes.push( node );
-
-            while( node ) {
-              node = result.iterateNext();
-              nodes.push( node );
-            }
-          break;
-
-          // eslint-disable-next-line
-          case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
-            let snapshotLength = result.snapshotLength;
-            // console.log( 'ordered node snapshot' );
-
-            if ( !snapshotLength ) {
-              throw `XPath expression \`${xpath}\` didn’t match any nodes in ${refNode.nodeName.toLowerCase()}`;
-            }
-
-            for ( ; i < snapshotLength; ++i ) {
-              nodes.push( result.snapshotItem(i) );
-            }
-          break;
-
-          default:
-            // console.log( 'default' );
-        }
-      }
-      // else {
-      //   console.log( 'Falsey result: ', result );
-      // }
-
-      return nodes;
-  }
-
   isLoaded() {
     return ( !this.loading && ( this.hvml !== null ) );
   }
 }
 
-HughsVlogFeed = HughsVlogElement( HughsVlogFeed );
+HughsVlogFeed = HVMLAwareElement( HughsVlogElement( HughsVlogFeed ) );
 
 window.customElements.define( HughsVlogFeed.is, HughsVlogFeed );
 

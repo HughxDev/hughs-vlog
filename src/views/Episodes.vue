@@ -54,6 +54,7 @@
           for ( let i = 0; i < children.length; ++i ) {
             let child = children[i];
             let match;
+            let lookedIn = [];
 
             if ( this.search.trim() === '' ) {
               return true;
@@ -62,23 +63,19 @@
             switch ( child.nodeName.toLowerCase() ) {
               case 'title':
                 match = child.textContent.match( search );
-
-                // if ( match ) {
-                //   console.log( this.search );
-                //   console.log( child.nodeName, child.textContent.trim() );
-                //   console.log( [child.parentNode] );
-                //   console.log( '---' );
-                // }
-
-                return !!match;
+                lookedIn.push( 'title' );
+                if ( match || ( lookedIn.indexOf( 'description' ) > -1 ) ) {
+                  return !!match;
+                }
               break;
 
-              // case 'description':
-              //   match = child.textContent.trim().match( search );
-              //   console.log( child.nodeName, child.textContent.trim() );
-              //   console.log( 'match: ', match );
-              //   return !!match;
-              // break;
+              case 'description':
+                match = child.textContent.match( search );
+                lookedIn.push( 'description' );
+                if ( match || ( lookedIn.indexOf( 'title' ) > -1 ) ) {
+                  return !!match;
+                }
+              break;
             }
           }
         } );

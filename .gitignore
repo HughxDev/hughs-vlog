@@ -52,5 +52,6 @@ deployment-config.json
 polymer/
 preact/
 skatejs/
-src/lib/*
+src/lib/**/*
+!src/lib/*.js
 dist/*

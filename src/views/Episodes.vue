@@ -9,13 +9,13 @@
           <dl>
             <dt>
               <label for="date" v-bind:aria-label="getAccessibleLabel()">
-                <input class="label__item" type="radio" v-model="searchAxis" name="searchAxis" value="date" />&nbsp;<select class="inline-select label__item" v-model="dateType">
+                <input class="label__item" type="radio" v-model="searchAxis" name="searchAxis" value="date" />&nbsp;<select id="date-type" name="dateType" class="inline-select label__item" v-model="dateType" @change="onDateTypeChange">
                   <option selected="selected" value="recordedDate">Recorded</option>
                   <option value="publishedDate">Published</option>
                 </select>&nbsp;<span class="label__item">Date</span>
               </label>
             </dt>
-            <dd><input id="date" v-model="date" name="date" type="date" @focus="searchAxis = 'date'" /></dd>
+            <dd><input id="date" ref="date" v-model="date" name="date" type="date" @focus="searchAxis = 'date'" /></dd>
             <dt>
               <label for="terms">
                 <input type="radio" v-model="searchAxis" name="searchAxis" value="terms" />&nbsp;<span class="label__text">Terms</span>
@@ -140,6 +140,9 @@
             return 'Published Date';
           break;
         }
+      },
+      "onDateTypeChange": function onDateTypeChange( event ) {
+        this.$refs.date.focus();
       }
     }
   }

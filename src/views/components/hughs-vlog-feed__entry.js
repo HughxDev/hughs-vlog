@@ -96,21 +96,22 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             line-height: 1;
           }
 
+          .h.title {
+            line-height: 1.25;
+          }
+
           .h {
-            margin: 0 auto;
+            margin-top: 0;
+            margin-bottom: 0;
             line-height: 1.75;
           }
 
-          .h.h--2 {
-            font-size: 1.5rem;
-          }
-
-          .h.h--3 {
+          .h.h--entry-time {
             font-size: 1.17rem;
           }
 
-          .title {
-            line-height: 1.25;
+          .h.h--entry-title {
+            font-size: 1.5rem;
           }
 
           a {
@@ -161,13 +162,13 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         <slot id="hvml" name="hvml"></slot>
         <header>
           <hgroup data-layout="standalone">
-            <h3 class="h h--3"><time id="recorded"></time>:</h3>
-            <h2 id="title" class="h h--2 title"></h2>
+            <h3 class="h h--entry-time"><time id="recorded"></time>:</h3>
+            <h2 id="title" class="h h--entry-title title"></h2>
           </hgroup>
           <a data-layout="list" class="flex-container play-video" href="javascript:void(0);">
             <hgroup class="flex-item">
-              <h3 class="h h--3"><time id="recorded"></time>:</h3>
-              <h2 id="title" class="h h--2 title"></h2>
+              <h3 class="h h--entry-time"><time id="recorded"></time>:</h3>
+              <h2 id="title" class="h h--entry-title title"></h2>
             </hgroup>
           </a>
           <dl data-layout="standalone">

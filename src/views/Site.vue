@@ -2,7 +2,7 @@
   <hughs-vlog hidden="hidden">
     <hughs-vlog-header id="top">
       <router-link class="logo link-wrapper" to="/" exact="exact" v-on:click.native="clearFocus">
-        <h1 class="logotype h h--1">Hugh’s Vlog</h1>
+        <h1 class="logotype">Hugh’s Vlog</h1>
         <picture class="logomark">
           <source type="image/svg+xml" srcset="../assets/hughs-vlog-logo.svg" />
           <img src="../assets/hughs-vlog-logo.png" width="190" height="70" srcset="../assets/hughs-vlog-logo.png 1x, ../assets/hughs-vlog-logo@2x.png 2x, ../assets/hughs-vlog-logo@3x.png 3x" alt="Logo: White round glasses with TV color bars in both frames" />
@@ -156,6 +156,20 @@
   /* .h.h--3 {
     font-weight: normal;
   } */
+
+  .h {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .h.h--2 {
+    font-size: 1.875rem; /* 1.5em; */
+  }
+
+  .h.h--3 {
+    font-size: 1.4625rem; /* 1.17em; */
+    margin-bottom: .75rem;
+  }
 
   body {
     background-image: url( '../assets/boston-skyline-vhs@0.25x.svg' );

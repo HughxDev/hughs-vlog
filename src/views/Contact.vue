@@ -34,18 +34,13 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped="scoped">
+  @import 'helpers';
+
   .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    white-space: nowrap;
-    clip-path: inset(50%);
-    border: 0;
+    @include sr-only();
   }
+
   .input-copy__input {
     text-align: right;
     padding: .5rem;
@@ -57,6 +52,7 @@
     border-bottom-left-radius: 3rem;
     border: 1px solid hsla(0, 0%, 0%, 0);
   }
+
   .input-copy__button {
     padding: 0.5rem;
     height: 48px;
@@ -71,15 +67,15 @@
     text-align: left;
     line-height: 0;
   }
-  .h.h--3 {
-    margin-bottom: .75rem;
-  }
+
   div {
     text-align: center;
   }
+
   input {
     font-size: 1.5rem;
   }
+
   dl {
     text-align: left;
     max-width: 39rem;
@@ -90,18 +86,22 @@
     text-align: right;
     vertical-align: baseline;
   }
+
   dl.inline > dt::after {
     content: '\00a0\00a0';
   }
+
   dl.inline > dt,
   dl.inline > dd {
     width: 50%;
     margin-bottom: 1rem;
     display: inline-block;
   }
+
   dl.inline > dd {
     margin-left: 0;
   }
+
   dl.inline > dd:after {
     content: "\A";
     white-space: pre;

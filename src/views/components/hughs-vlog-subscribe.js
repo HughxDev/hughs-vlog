@@ -33,11 +33,6 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             margin-top: 0;
           }
 
-          .h.h--2,
-          .h.h--3 {
-            text-align: var(--title-align);
-          }
-
           .via {
             min-height: 56px;
             width: 100%;
@@ -131,7 +126,12 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
             font-style: italic;
           }
 
-          .h + .nb {
+          .h.h--subscribe {
+            text-align: var(--title-align);
+            /*margin-bottom: 0;*/
+          }
+
+          .h.h--subscribe + .nb {
             margin-top: -1rem;
           }
 
@@ -141,7 +141,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
         </style>
         <h2 class="title sr-only">Subscribe</h2>
         <section id="via-social-network">
-          <h3 class="h h--3">via Social Network</h3>
+          <h3 class="h h--subscribe">via Social Network</h3>
           <dl class="via via--social-network">
             <dt class="sr-only">YouTube</dt>
             <dd class="subscribe-button-container subscribe-button-container--yt">
@@ -176,7 +176,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           </dl>
         </section>
         <section id="via-podcast-app">
-          <h3 class="h h--3">via Podcast App</h3>
+          <h3 class="h h--subscribe">via Podcast App</h3>
           <p class="nb">Note: These link to a video podcast feed.</p>
           <dl class="via via--podcast-app">
             <dt class="sr-only">Apple Podcasts (iTunes)</dt>
@@ -201,7 +201,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
           </dl>
         </section>
         <section id="via-feed-reader">
-          <h3 class="h h--3">via Feed Reader</h3>
+          <h3 class="h h--subscribe">via Feed Reader</h3>
           <dl class="via via--feed-reader">
             <dt class="sr-only">Flipboard</dt>
             <dd class="subscribe-button-container subscribe-button-container--flipboard">

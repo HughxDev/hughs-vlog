@@ -1,23 +1,21 @@
 <template>
   <!-- <hughs-vlog-feed id="episodes" order="desc" v-bind:src="episodesEndpoint"></hughs-vlog-feed> -->
   <div>
+    <h2 class="sr-only">Episodes</h2>
     <nav>
       <details open="open">
-        <summary><h2 class="h h--2 h--summary">Search</h2></summary>
+        <summary><h3 class="h h--3 h--summary">Search</h3></summary>
         <form>
           <dl>
             <dt>
-              <label for="recorded-date">
-                <input type="radio" v-model="searchAxis" name="searchAxis" value="recordedDate" />&nbsp;<span class="label__text">Recorded Date</span>
+              <label for="date" v-bind:aria-label="getAccessibleLabel()">
+                <input class="label__item" type="radio" v-model="searchAxis" name="searchAxis" value="date" />&nbsp;<select class="inline-select label__item" v-model="dateType">
+                  <option selected="selected" value="recordedDate">Recorded</option>
+                  <option value="publishedDate">Published</option>
+                </select>&nbsp;<span class="label__item">Date</span>
               </label>
             </dt>
-            <dd><input id="recorded-date" v-model="recordedDate" name="recordedDate" type="date" @focus="searchAxis = 'recordedDate'" /></dd>
-            <dt>
-              <label for="published-date">
-                <input type="radio" v-model="searchAxis" name="searchAxis" value="publishedDate" />&nbsp;<span class="label__text">Published Date</span>
-              </label>
-            </dt>
-            <dd><input id="published-date" v-model="publishedDate" name="publishedDate" type="date" @focus="searchAxis = 'publishedDate'" /></dd>
+            <dd><input id="date" v-model="date" name="date" type="date" @focus="searchAxis = 'date'" /></dd>
             <dt>
               <label for="terms">
                 <input type="radio" v-model="searchAxis" name="searchAxis" value="terms" />&nbsp;<span class="label__text">Terms</span>
@@ -47,12 +45,12 @@
         "episodesEndpoint": ( process.env.VUE_APP_ROOT_API ) + '/feed/hvml/videos',
         "terms": "",
         "episodes": [],
-        "recordedDate": "",
-        "publishedDate": "",
+        "dateType": "recordedDate",
+        "date": "",
         "searchAxis": ""
       }
     },
-    created: function () {
+    "created": function created() {
       this.$http.get( this.episodesEndpoint ).then( ( data ) => {
         data.body = data.body.replace( /<video([^>]*)>/gi, '<video$1 slot="hvml" hidden="hidden">' );
         this.episodes = legacyParseXML( data.body ).documentElement.children;
@@ -60,10 +58,11 @@
         console.log( this.episodes );
       } );
     },
-    computed: {
-      filteredEpisodes: function () {
+    "computed": {
+      "filteredEpisodes": function filteredEpisodes() {
         return this.episodes.filter( ( episode ) => {
           const query = this[this.searchAxis];
+          console.log( 'query', query );
           const search = new RegExp( query, 'i' );
           const children = Array.from( episode.children );
 
@@ -72,28 +71,29 @@
             let match;
             let lookedIn = [];
             let nodeName = child.nodeName.toLowerCase();
+            // console.log( 'query', query );
 
             if ( !!!query || ( query.trim() === '' ) ) {
               return true;
             }
 
             switch ( this.searchAxis ) {
-              case 'recordedDate':
-                switch ( nodeName ) {
-                  case 'recorded':
-                    match = child.textContent.match( search );
-                    return !!match;
+              case 'date':
+                switch ( this.dateType ) {
+                  case 'recordedDate':
+                    if ( nodeName === 'recorded' ) {
+                      match = child.textContent.match( search );
+                      return !!match;
+                    } // switch nodeName
                   break;
-                }
-              break;
 
-              case 'publishedDate':
-                switch ( nodeName ) {
-                  case 'published':
-                    match = child.textContent.match( search );
-                    return !!match;
+                  case 'publishedDate':
+                    if ( nodeName === 'published' ) {
+                      match = child.textContent.match( search );
+                      return !!match;
+                    }
                   break;
-                }
+                } // switch dateType
               break;
 
               case 'terms':
@@ -120,8 +120,8 @@
         } );
       }
     },
-    methods: {
-      getEpisodeNumber: function ( episode ) {
+    "methods": {
+      "getEpisodeNumber": function getEpisodeNumber( episode ) {
         const children = Array.from( episode.children );
         for (var i = 0; i < children.length; i++) {
           let child = children[i];
@@ -130,12 +130,33 @@
           }
         }
       },
+      "getAccessibleLabel": function getAccessibleLabel() {
+        switch ( this.dateType ) {
+          case 'recordedDate':
+            return 'Recorded Date';
+          break;
+
+          case 'publishedDate':
+            return 'Published Date';
+          break;
+        }
+      }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped="scoped">
+  @import 'helpers';
+
+  .sr-only {
+    @include sr-only();
+  }
+
+  details {
+    margin-bottom: 1rem;
+  }
+
   summary {
     cursor: default;
     -webkit-user-select: none; /* Chrome/Safari */
@@ -143,13 +164,19 @@
     -ms-user-select: none; /* IE10+ */
 
     /* Rules below not implemented in browsers yet */
-    -o-user-select: none;
+    /* -o-user-select: none; */
     user-select: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .h.h--summary {
     display: inline;
     display: inline-block;
+    vertical-align: middle;
     margin: 0;
   }
 
@@ -177,8 +204,11 @@
     font-size: 1.1rem;
   }
 
-  [type="radio"],
-  [type="radio"] + .label__text {
+  .inline-select {
+    height: 24px;
+  }
+
+  .label__item {
     display: inline-block;
     vertical-align: middle;
   }

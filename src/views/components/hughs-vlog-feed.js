@@ -23,6 +23,11 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
 
           :host {
             display: block;
+            /*overflow: hidden;*/
+          }
+
+          /*:host {
+            display: block;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
@@ -32,7 +37,7 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
             :host {
               margin: -.25rem;
             }
-          }
+          }*/
 
           /*.hughs-vlog-feed-entry:first-of-type {
             width: 100%;

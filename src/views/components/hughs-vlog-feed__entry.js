@@ -18,33 +18,33 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             box-sizing: border-box;
           }
 
-          :host {
+          /*:host {
             display: inline-block;
-            /*display: inline-flex;*/
-            /*width: 360px;*/
+            /*display: inline-flex;*
+            /*width: 360px;*
             position: relative;
             width: 100%;
             margin: .25rem 0;
             flex-basis: 100%;
-          }
+          }*/
 
-          @media only screen and ( min-width: 48em ) {
+          /*@media only screen and ( min-width: 48em ) {
             :host {
               width: 50%;
               margin: .25rem;
               flex-basis: calc(50% - .5rem);
             }
-          }
+          }*/
 
-          :host([large]) {
-            /*display: block;*/
-            /*display: flex;*/
-            /*width: 853px;*/
+          /*:host([large]) {
+            /*display: block;*
+            /*display: flex;*
+            /*width: 853px;*
             width: 100%;
             flex-basis: 100%;
-          }
+          }*/
 
-          .hughs-vlog-feed-entry__player {
+          .player {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
@@ -52,11 +52,11 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             max-width: 100%;
           }
 
-          .hughs-vlog-feed-entry__player > iframe,
-          .hughs-vlog-feed-entry__player > object,
-          .hughs-vlog-feed-entry__player > embed,
-          .hughs-vlog-feed-entry__player > img,
-          .hughs-vlog-feed-entry__player > svg {
+          .player > iframe,
+          .player > object,
+          .player > embed,
+          .player > img,
+          .player > svg {
             position: absolute;
             top: 0;
             left: 0;
@@ -158,27 +158,40 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
           ::slotted(video[xmlns="${XMLNS.hvml}"]) {
             display: none;
           }
+
+          :host,
+          .player,
+          .poster {
+            border-radius: inherit;
+          }
+
+          .title,
+          .recorded,
+          .published {
+            color: rgb(255,255,0);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+          }
         </style>
         <slot id="hvml" name="hvml"></slot>
         <header>
           <hgroup data-layout="standalone">
-            <h3 class="h h--entry-time"><time id="recorded"></time>:</h3>
+            <h3 class="h h--entry-time recorded"><time id="recorded"></time>:</h3>
             <h2 id="title" class="h h--entry-title title"></h2>
           </hgroup>
           <a data-layout="list" class="flex-container play-video" href="javascript:void(0);">
             <hgroup class="flex-item">
-              <h3 class="h h--entry-time"><time id="recorded"></time>:</h3>
+              <h3 class="h h--entry-time recorded"><time id="recorded"></time>:</h3>
               <h2 id="title" class="h h--entry-title title"></h2>
             </hgroup>
           </a>
           <dl data-layout="standalone">
             <dt>Published</dt>
-            <dd><time id="published"></time></dd>
+            <dd class="published"><time id="published"></time></dd>
           </dl>
         </header>
         <!-- <h2></h2> -->
-        <div id="player" class="hughs-vlog-feed-entry__player">
-          <img src="http://via.placeholder.com/640x360" />
+        <div id="player" class="player">
+          <img id="img" class="poster" src="http://via.placeholder.com/640x360" />
         </div>
       </template>
     `;
@@ -193,7 +206,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
 
   connectedCallback() {
     this.setAttribute( 'role', 'article' );
-    this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
+    // this.setAttribute( 'class', 'hughs-vlog-feed-entry' );
 
     this.$.hvmlSlot = this.$id( 'hvml' );
 
@@ -387,7 +400,13 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         this.setTitle();
       } );
     } else {
-      this.$$( '#title' ).textContent = this.getText( this.select( 'hvml:title' ) );
+      try {
+        this.$id( 'img' ).setAttribute( 'src', this.select( 'hvml:presentation/hvml:poster' )[0].getAttribute( 'xlink:href') );
+      } catch (e) {
+        console.error( e );
+      }
+
+      this.$id( 'title' ).textContent = this.getText( this.select( 'hvml:title' ) );
     }
   }
 

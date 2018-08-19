@@ -122,7 +122,7 @@ const HVMLAwareElement = ( superClass ) => {
               // console.log( 'ordered node snapshot' );
 
               if ( !snapshotLength ) {
-                throw `XPath expression \`${xpath}\` didn’t match any nodes in \`${refNode.nodeName.toLowerCase()}\``;
+                throw `XPath expression \`${xpath}\` didn’t match any nodes in \`${refNode.nodeName.toLowerCase()}#${refNode.getAttribute( 'xml:id' ) || refNode.getAttribute( 'id' )}\``;
               }
 
               for ( ; i < snapshotLength; ++i ) {

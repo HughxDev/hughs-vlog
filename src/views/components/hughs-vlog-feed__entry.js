@@ -1,7 +1,7 @@
 "use strict";
 import HughsVlogElement from '../../lib/hughs-vlog-element.js';
 import HVMLAwareElement from '../../lib/hvml-aware-element.js';
-import { parseHTML, XMLNS, JSONtoDOM } from '../../lib/dom.js';
+import { parseHTML, XMLNS, JSONtoDOM, Srcset } from '../../lib/dom.js';
 
 let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
   static get is() {
@@ -223,6 +223,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
 
     this.oembed = null;
     this.limit = null;
+    // this.posters = this.getPosters();
   } // constructor
 
   connectedCallback() {
@@ -469,69 +470,6 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     return postersArray;
   }
 
-  /*
-    `excludedHeights` is necessary because the YouTube API returns some
-    thumbnail heights with letterboxing and some without, which screws up
-    aspect ratios. While we could unsqueeze the thumbnails with heights >100%
-    in CSS, we would have to check which thumbnail is currently being rendered,
-    defeating the point of the browser handling srcset for us.
-
-    Alternatively, these images could be dynamically cropped.
-  */
-  getSrcset(
-    posters = this.getPosters(),
-    minimumWidth = 0,
-    minimumHeight = 0,
-    excludedHeights = {
-      "youtube": [ 90, 360, 480 ],
-      "vimeo": [ 720, 1080 ]
-    },
-    excludedFormats = [ "webp", "png" ]
-  ) {
-    posters = posters.filter( function ( src ) {
-      let isYouTubePoster = !!src['xlink:href'].match( /^https?:\/\/i\.ytimg\.com/i );
-      let isVimeoPoster = !!src['xlink:href'].match( /^https?:\/\/i\.vimeocdn\.com/i );
-      let meetsMinimumDimensions = ( ( src.width >= minimumWidth ) && ( src.height >= minimumHeight ) );
-
-      let hasExcludedYouTubeHeight = (
-        isYouTubePoster
-        && excludedHeights.youtube
-        && ( excludedHeights.youtube.length > 0 )
-        && ( excludedHeights.youtube.indexOf( src.height ) !== -1 )
-      );
-
-      let hasExcludedVimeoHeight = (
-        isVimeoPoster
-        && excludedHeights.vimeo
-        && ( excludedHeights.vimeo.length > 0 )
-        && ( excludedHeights.vimeo.indexOf( src.height ) !== -1 )
-      );
-
-      let isExcludedFormat = excludedFormats.reduce( function ( accumulator, format ) {
-        const thumbnailUrlRegex = new RegExp( `\.${format}(\\?[^=]+=[^=]+(&[^=]+=[^=]+)*)?$`, 'i' );
-        const matches = !!src['xlink:href'].match( thumbnailUrlRegex );
-
-        return ( accumulator || matches );
-      }, false );
-
-      let passesCriteria = ( !isExcludedFormat && !hasExcludedYouTubeHeight && !hasExcludedVimeoHeight && meetsMinimumDimensions );
-
-      return passesCriteria;
-    } );
-
-    return posters.sort( function sortSrcsetByWidthAscending( a, b ) {
-      return a.width - b.width;
-    } ).reduce( function ( srcset, src, index ) {
-      srcset += `${src['xlink:href'].replace( /[?&]{1}r=pad\b/, '' )} ${src.width}w`;
-
-      if ( index !== ( posters.length - 1 ) ) {
-        srcset += ', ';
-      }
-
-      return srcset;
-    }, '' );
-  }
-
   renderThumbnailOrPlayer() {
     const playable = ( this.parentNode && this.parentNode.host && this.parentNode.host.hasAttribute( 'playable' ) );
 
@@ -547,9 +485,10 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
       try {
         let $img = this.$id( 'img' );
         let posters = this.getPosters( 'descending' );
+        let srcset = new Srcset( posters );
 
-        $img.setAttribute( 'src', posters[posters.length - 2]['xlink:href'] );
-        $img.setAttribute( 'srcset', this.getSrcset( posters ) );
+        $img.setAttribute( 'src', srcset.toObject()[0]['xlink:href'] );
+        $img.setAttribute( 'srcset', srcset.toString() );
       } catch (e) {
         console.info( e );
       }

@@ -181,3 +181,99 @@ const JSONtoDOM = function JSONtoDOM( obj ) {
 }; // JSONtoDOM
 
 export { JSONtoDOM };
+
+const Srcset = class HughsVlogSrcset {
+  constructor( posters ) {
+    this._srcset = this.toObject( posters );
+    this._srcsetString = null;
+  }
+
+  /*
+    `excludedHeights` is necessary because:
+      • The YouTube API returns some
+        thumbnail heights with letterboxing and some without, which screws up
+        aspect ratios. While we could unsqueeze the thumbnails with heights >100%
+        in CSS, we would have to check which thumbnail is currently being rendered,
+        defeating the point of the browser handling srcset for us.
+      • Vimeo gives us some of the same widths as YouTube, and duplicate entries
+        for the same srcset descriptor is illegal in HTML.
+    Alternatively, these images could be dynamically cropped.
+  */
+  toObject(
+    posters,
+    minimumWidth = 0,
+    minimumHeight = 0,
+    excludedHeights = {
+      "youtube": [ 90, 360, 480, 1080 ],
+      "vimeo": [ 75, 150, 720, 1080 ]
+    },
+    excludedFormats = [ "webp", "png" ]
+  ) {
+    // Caching: If the posters parameter is missing, and we already have a
+    // saved srcset property from running the constructor, return early
+    if ( !posters && this._srcset && ( this._srcset.length > 0 ) ) {
+      return this._srcset;
+    }
+
+    posters = posters
+      .filter( function ( src ) {
+        let isYouTubePoster = !!src['xlink:href'].match( /^https?:\/\/i\.ytimg\.com/i );
+        let isVimeoPoster = !!src['xlink:href'].match( /^https?:\/\/i\.vimeocdn\.com/i );
+        let meetsMinimumDimensions = ( ( src.width >= minimumWidth ) && ( src.height >= minimumHeight ) );
+
+        let hasExcludedYouTubeHeight = (
+          isYouTubePoster
+          && excludedHeights.youtube
+          && ( excludedHeights.youtube.length > 0 )
+          && ( excludedHeights.youtube.indexOf( src.height ) !== -1 )
+        );
+
+        let hasExcludedVimeoHeight = (
+          isVimeoPoster
+          && excludedHeights.vimeo
+          && ( excludedHeights.vimeo.length > 0 )
+          && ( excludedHeights.vimeo.indexOf( src.height ) !== -1 )
+        );
+
+        let isExcludedFormat = excludedFormats.reduce( function ( accumulator, format ) {
+          const thumbnailUrlRegex = new RegExp( `\.${format}(\\?[^=]+=[^=]+(&[^=]+=[^=]+)*)?$`, 'i' );
+          const matches = !!src['xlink:href'].match( thumbnailUrlRegex );
+
+          return ( accumulator || matches );
+        }, false );
+
+        let passesCriteria = ( !isExcludedFormat && !hasExcludedYouTubeHeight && !hasExcludedVimeoHeight && meetsMinimumDimensions );
+
+        return passesCriteria;
+      } )
+      .map( function removeVimeoPaddingParameters( src ) {
+        src['xlink:href'] = src['xlink:href'].replace( /[?&]{1}r=pad\b/, '' );
+        return src;
+      } )
+    ;
+
+    posters.sort( function sortSrcsetByWidthAscending( a, b ) {
+      return a.width - b.width;
+    } );
+
+    return posters;
+  } // toObject
+
+  toString() {
+    if ( !this._srcsetString ) {
+      this._srcsetString = this._srcset.reduce( ( srcset, src, index ) => {
+        srcset += `${src['xlink:href']} ${src.width}w`;
+
+        if ( index !== ( this._srcset.length - 1 ) ) {
+          srcset += ', ';
+        }
+
+        return srcset;
+      }, '' );
+    }
+
+    return this._srcsetString;
+  }
+};
+
+export { Srcset };

@@ -20,29 +20,24 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
 
           :host {
             display: inline-block;
-            display: inline-flex;
-            background-color: black;
             width: 100%;
             width: calc(100% - .5rem);
             margin: .25rem;
             flex-basis: calc(100% - .5rem);
           }
 
+          :host:not([large]) {
+            display: inline-flex;
+            background-color: black;
+          }
+
           @media only screen and ( min-width: 48em ) {
-            :host {
+            :host:not([large]) {
               width: calc(50% - .5rem);
               /*margin: .25rem;*/
               flex-basis: calc(50% - .5rem);
             }
           }
-
-          /*:host([large]) {
-            /*display: block;*
-            /*display: flex;*
-            /*width: 853px;*
-            width: 100%;
-            flex-basis: 100%;
-          }*/
 
           .player {
             position: relative;

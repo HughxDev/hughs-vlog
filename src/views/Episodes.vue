@@ -185,10 +185,11 @@
         var delay = el.dataset.index * 150;
         setTimeout( function () {
           el.style.top = 0;
+          el.style.left = 0;
         }, delay );
         setTimeout( function () {
-          el.style.left = 0;
-        }, ( delay / 16 ) );
+          el.style.opacity = 0;
+        }, ( delay * 2 ) );
       },
       // afterLeave: function ( el, done ) {
       //   // el.style.removeProperty( 'left' );
@@ -244,31 +245,31 @@
     // top: 0;
     // left: 0;
     // width: 50%;
-    width: calc(50% - .5rem);
-    margin: .25rem;
-    flex-basis: calc(50% - .5rem);
+    // width: calc(50% - .5rem);
+    // margin: .25rem;
+    // flex-basis: calc(50% - .5rem);
     // height: 14.7131rem;
 
     &-move {
       transition: all 4800ms ease-in-out 400ms; /* development */
-      transition: all 1200ms ease-in-out 100ms;
+      transition: all 600ms ease-in-out 50ms;
     }
 
     &-enter-active {
       transition: all 2400ms ease-out; /* development */
-      transition: all 800ms ease-out;
+      transition: all 400ms ease-out;
     }
 
     &-leave-active {
       transition: all 1600ms ease-in; /* development */
-      transition: all 400ms ease-in;
+      transition: all 200ms ease-in;
       position: absolute;
       z-index: 0;
     }
 
     &-enter,
     &-leave-to {
-      opacity: 0;
+      // opacity: 0;
     }
 
     &-enter {

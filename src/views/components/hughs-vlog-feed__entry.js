@@ -18,23 +18,23 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             box-sizing: border-box;
           }
 
-          /*:host {
+          :host {
             display: inline-block;
-            /*display: inline-flex;*
-            /*width: 360px;*
-            position: relative;
+            display: inline-flex;
+            background-color: black;
             width: 100%;
-            margin: .25rem 0;
-            flex-basis: 100%;
-          }*/
+            width: calc(100% - .5rem);
+            margin: .25rem;
+            flex-basis: calc(100% - .5rem);
+          }
 
-          /*@media only screen and ( min-width: 48em ) {
+          @media only screen and ( min-width: 48em ) {
             :host {
-              width: 50%;
-              margin: .25rem;
+              width: calc(50% - .5rem);
+              /*margin: .25rem;*/
               flex-basis: calc(50% - .5rem);
             }
-          }*/
+          }
 
           /*:host([large]) {
             /*display: block;*
@@ -77,6 +77,14 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             color: white;
           }
 
+          .flex-container.flex-container--bottom {
+            align-items: flex-end;
+            background-image: linear-gradient(hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 50%, hsla(0, 0%, 0%, 0.5) 100%);
+          }
+
+          font-size: 1rem;
+          line-height: 1;
+
           /*:host([playable]) .flex-container {
             position: static;
             display: block;
@@ -107,11 +115,17 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
           }
 
           .h.h--entry-time {
-            font-size: 1.17rem;
+            /*font-size: 1.17rem;*/
+            font-size: 1rem;
           }
 
+          /*.flex-container.flex-container--bottom .h.h--entry-time {
+            font-size: 1rem;
+            line-height: 1;
+          }*/
+
           .h.h--entry-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
           }
 
           a {
@@ -125,13 +139,20 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
 
           .flex-item {
             /*width: 39em;*/
-            max-width: 90%;
+            width: 100%;
+            /*max-width: 100%;*/
             margin-left: auto;
             margin-right: auto;
+            padding: 1rem .5rem;
           }
 
           .play-video {
             pointer-events: none;
+            /*background-color: rgba(0, 0, 0, 0.25);*/
+            /*text-shadow: 0 0 50px black, 0 0 50px black, 0 0 50px black;*/
+            /*box-shadow: 1px 1px 0 black;*/
+            /*text-shadow: 2px 2px 0 rgba(0,0,0,1);*/
+            text-shadow: 0.1rem 0.1rem 0 rgba(0,0,0,1);
           }
 
           dl {
@@ -168,8 +189,8 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
           .title,
           .recorded,
           .published {
-            color: rgb(255,255,0);
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+            /*color: rgb(255,255,0);*/
+            /*text-shadow: 2px 2px 0 rgba(0,0,0,0.5);*/
           }
         </style>
         <slot id="hvml" name="hvml"></slot>
@@ -178,7 +199,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
             <h3 class="h h--entry-time recorded"><time id="recorded"></time>:</h3>
             <h2 id="title" class="h h--entry-title title"></h2>
           </hgroup>
-          <a data-layout="list" class="flex-container play-video" href="javascript:void(0);">
+          <a data-layout="list" class="flex-container flex-container--bottom play-video" href="javascript:void(0);">
             <hgroup class="flex-item">
               <h3 class="h h--entry-time recorded"><time id="recorded"></time>:</h3>
               <h2 id="title" class="h h--entry-title title"></h2>
@@ -388,6 +409,129 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
     return recorded;
   }
 
+  getPosters( sortOrder ) {
+    const posters = this.select( 'hvml:presentation//hvml:poster' );
+    let postersArray = [];
+
+    if ( posters ) {
+      // NodeList to Array
+      for ( let i = posters.length; i--; postersArray.unshift( posters[i].attributes ) );
+
+      postersArray = postersArray
+        .map( function nodeListToAttributesObject( namedNodeMap, index, array ) {
+          let nodeArray = [];
+          // NamedNodeMap (attribute list) to Array
+          for ( let i = namedNodeMap.length; i--; nodeArray.unshift( namedNodeMap[i] ) );
+
+          return nodeArray
+            .map( function attributesToArrayOfObjects( node, index ) {
+              let keyValuePair = {};
+              keyValuePair[node.nodeName] = node.nodeValue;
+              return keyValuePair;
+            } )
+            .reduce( function arrayOfObjectsToSingleObject( accumulator, keyValuePair ) {
+              let key = Object.keys( keyValuePair )[0];
+              let value = keyValuePair[key];
+
+              switch ( key ) {
+                case 'width':
+                case 'height':
+                  accumulator[key] = parseInt( value, 10 );
+                break;
+
+                default:
+                  accumulator[key] = value;
+              }
+
+              return accumulator;
+            }, {} )
+          ;
+        } ) // map -> nodeListToAttributesObject
+      ; // postersArray
+
+      switch ( sortOrder ) {
+        case 'ascending':
+        case 'asc':
+          postersArray.sort( function ( posterA, posterB ) {
+            return ( posterA.height - posterB.height );
+          } );
+        break;
+
+        case 'descending':
+        case 'desc':
+        default:
+          postersArray.sort( function ( posterA, posterB ) {
+            return ( posterB.height - posterA.height );
+          } );
+      }
+    }
+
+    return postersArray;
+  }
+
+  /*
+    `excludedHeights` is necessary because the YouTube API returns some
+    thumbnail heights with letterboxing and some without, which screws up
+    aspect ratios. While we could unsqueeze the thumbnails with heights >100%
+    in CSS, we would have to check which thumbnail is currently being rendered,
+    defeating the point of the browser handling srcset for us.
+
+    Alternatively, these images could be dynamically cropped.
+  */
+  getSrcset(
+    posters = this.getPosters(),
+    minimumWidth = 0,
+    minimumHeight = 0,
+    excludedHeights = {
+      "youtube": [ 90, 360, 480 ],
+      "vimeo": [ 720, 1080 ]
+    },
+    excludedFormats = [ "webp", "png" ]
+  ) {
+    posters = posters.filter( function ( src ) {
+      let isYouTubePoster = !!src['xlink:href'].match( /^https?:\/\/i\.ytimg\.com/i );
+      let isVimeoPoster = !!src['xlink:href'].match( /^https?:\/\/i\.vimeocdn\.com/i );
+      let meetsMinimumDimensions = ( ( src.width >= minimumWidth ) && ( src.height >= minimumHeight ) );
+
+      let hasExcludedYouTubeHeight = (
+        isYouTubePoster
+        && excludedHeights.youtube
+        && ( excludedHeights.youtube.length > 0 )
+        && ( excludedHeights.youtube.indexOf( src.height ) !== -1 )
+      );
+
+      let hasExcludedVimeoHeight = (
+        isVimeoPoster
+        && excludedHeights.vimeo
+        && ( excludedHeights.vimeo.length > 0 )
+        && ( excludedHeights.vimeo.indexOf( src.height ) !== -1 )
+      );
+
+      let isExcludedFormat = excludedFormats.reduce( function ( accumulator, format ) {
+        const thumbnailUrlRegex = new RegExp( `\.${format}(\\?[^=]+=[^=]+(&[^=]+=[^=]+)*)?$`, 'i' );
+        const matches = !!src['xlink:href'].match( thumbnailUrlRegex );
+
+        return ( accumulator || matches );
+      }, false );
+
+      let passesCriteria = ( !isExcludedFormat && !hasExcludedYouTubeHeight && !hasExcludedVimeoHeight && meetsMinimumDimensions );
+
+      return passesCriteria;
+    } );
+
+    return posters.sort( function sortSrcsetByWidthAscending( a, b ) {
+      return a.width - b.width;
+    } ).reduce( function ( srcset, src, index ) {
+      srcset += `${src['xlink:href'].replace( /[?&]{1}r=pad\b/, '' )} ${src.width}w`;
+
+      if ( index !== ( posters.length - 1 ) ) {
+        srcset += ', ';
+      }
+
+      return srcset;
+    }, '' );
+  }
+
   renderThumbnailOrPlayer() {
     const playable = ( this.parentNode && this.parentNode.host && this.parentNode.host.hasAttribute( 'playable' ) );
 
@@ -401,9 +545,13 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
       } );
     } else {
       try {
-        this.$id( 'img' ).setAttribute( 'src', this.select( 'hvml:presentation/hvml:poster' )[0].getAttribute( 'xlink:href') );
+        let $img = this.$id( 'img' );
+        let posters = this.getPosters( 'descending' );
+
+        $img.setAttribute( 'src', posters[posters.length - 2]['xlink:href'] );
+        $img.setAttribute( 'srcset', this.getSrcset( posters ) );
       } catch (e) {
-        console.error( e );
+        console.info( e );
       }
 
       this.$id( 'title' ).textContent = this.getText( this.select( 'hvml:title' ) );

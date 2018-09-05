@@ -32,7 +32,7 @@ let HughsVlogFooter = class HughsVlogFooter extends HTMLElement {
             opacity: 1;
           }
         </style>
-        <p>© 2016–<span id="current-year"></span> <a href="https://hughguiney.com/" rel="me">Hugh Guiney</a></p>
+        <p>© 2016–<span id="current-year"></span> <a href="https://hughguiney.com/" rel="me" aria-label="Hugh Guyknee">Hugh Guiney</a></p>
       </template>
     `;
   }

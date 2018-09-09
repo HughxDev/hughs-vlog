@@ -6,16 +6,41 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="/favicon.ico">
     <script src="lib/tus-js-client/dist/tus.min.js"></script>
+    <style>
+      .row {
+        margin-bottom: 1.5rem;
+      }
+    </style>
   </head>
   <body>
-    <form method="post" action="http://api.hugh.today/upload">
-      <input id="file" type="file" name="file" multiple="" accept="video/*,.mkv,.hvml,.redblue,.tar.xz">
+    <form id="form" method="post" action="http://api.hugh.today/upload">
+      <div class="row">
+        <input id="file" type="file" name="file" multiple="" accept="video/*,.mkv,.hvml,.redblue,.tar.xz">
+      </div>
+      <div class="row">
+        <div>
+          <label>
+            <input name="youtube" type="checkbox" value="1" checked="checked" /> YouTube
+          </label>
+          <progress id="progress" value="0" max="100"></progress>
+        </div>
+        <div>
+          <label><input name="facebook" type="checkbox" value="1" disabled="disabled" /> Facebook</label>
+        </div>
+        <div>
+          <label><input name="vimeo" type="checkbox" value="1" disabled="disabled" /> Vimeo</label>
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit">Upload</button>
+      </div>
     </form>
     <script>
-      var input = document.getElementById('file');
-      input.addEventListener("change", function(e) {
+      var form = document.getElementById( 'form' );
+      form.addEventListener( 'submit', function( event ) {
         // Get the selected file from the input element
-        var file = e.target.files[0];
+        var fields = event.target.elements;
+        var file = fields['file'].files[0];
         var fileName = file.name;
         var fileType;
 
@@ -26,29 +51,67 @@
           }
         }
 
+        var metadata = {
+          "filename": fileName,
+          "filetype": fileType,
+          "youtube": fields['youtube'].checked,
+          "facebook": fields['facebook'].checked,
+          "vimeo": fields['vimeo'].checked
+        };
+
+        console.log( 'metadata', metadata );
+
         // Create a new tus upload
-        var upload = new tus.Upload(file, {
-            endpoint: "http://localhost:1080/uploads/",
-            retryDelays: [0, 1000, 3000, 5000],
-            metadata: {
-                filename: fileName,
-                filetype: fileType
-            },
-            onError: function(error) {
-                console.log("Failed because: " + error)
-            },
-            onProgress: function(bytesUploaded, bytesTotal) {
-                var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
-                console.log(bytesUploaded, bytesTotal, percentage + "%")
-            },
-            onSuccess: function() {
-                console.log("Download %s from %s", upload.file.name, upload.url)
-            }
-        })
+        var upload = new tus.Upload( file, {
+          "endpoint": "http://localhost:1080/uploads",
+          "retryDelays": [ 0, 1000, 3000, 5000 ],
+          "metadata": metadata,
+          "onError": function ( error ) {
+            console.log( 'Failed because: ' + error )
+          },
+          "onProgress": function ( bytesUploaded, bytesTotal ) {
+            var percentage = ( bytesUploaded / bytesTotal * 100 ).toFixed( 2 )
+            console.log( bytesUploaded, bytesTotal, percentage + "%" );
+          },
+          "onSuccess": function () {
+            console.log( "Download %s from %s", upload.file.name, upload.url.replace( '/uploads', '' ) );
+
+            var progressRequest = new Request( upload.url.replace( '/uploads/files', '/progress' ) );
+            fetch( progressRequest ).then( function ( response ) {
+              console.log( 'response', response );
+              const reader = response.body.getReader();
+              let charsReceived = 0;
+              let progress = document.getElementById('progress');
+              let result; // = new Uint8Array();
+
+              reader.read().then( function processText( { done, value } ) {
+                // Result objects contain two properties:
+                // done  - true if the stream has already given you all its data.
+                // value - some data. Always undefined when done is true.
+                if ( done ) {
+                  progress.value = 100;
+                  return;
+                }
+
+                const chunk = parseFloat( JSON.parse( ( new TextDecoder( 'utf-8' ).decode( value ) ).split( 'data: ' )[1] ).progress ).toFixed( 2 );
+                progress.value = chunk;
+
+                // Read some more, and call this function again
+                return reader.read().then( processText );
+              } );
+            } )
+            // .then( function ( response ) {
+            //   var objectURL = URL.createObjectURL(response);
+            //   myImage.src = objectURL;
+            // } );
+          }
+        } );
 
         // Start the upload
-        upload.start()
-      })
+        upload.start();
+
+        event.preventDefault();
+      } )
     </script>
   </body>
 </html>

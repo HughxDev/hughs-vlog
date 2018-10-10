@@ -236,7 +236,7 @@ let HughsVlogSubscribe = class HughsVlogSubscribe extends HTMLElement {
               <div class="subscribe-button-container__render subscribe-button-container__render--loaded">
                 <a
                   title="Copy Feed URL to Clipboard"
-                  href="http://api.hugh.today/feed/podcast"
+                  href="https://api.hugh.today/feed/podcast"
                   onclick="alert('URL copied'); event.preventDefault();"
                   target="blank"
                 >

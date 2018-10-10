@@ -207,7 +207,7 @@ let HughsVlogFeedEntry = class HughsVlogFeedEntry extends HTMLElement {
         </header>
         <!-- <h2></h2> -->
         <div id="player" class="player">
-          <img id="img" class="poster" src="http://via.placeholder.com/640x360" />
+          <img id="img" class="poster" src="https://via.placeholder.com/640x360" />
         </div>
       </template>
     `;

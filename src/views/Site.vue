@@ -120,7 +120,7 @@
   export default {
     name: 'Site',
     props: {
-      showSubscribe: false
+      showSubscribe: Boolean
     },
     methods: {
       goBack () {

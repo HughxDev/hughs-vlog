@@ -38,7 +38,7 @@ Thumbs.db
 
 # Repo-specific
 build/*
-public/*
+public/lib/*
 node_modules/*
 private/*
 fcgi-bin/*
@@ -47,6 +47,11 @@ logs/*
 .screenrc
 sftp-config.json
 deployment-config.json
-.htaccess.prod
 .gitignore.prod
 .htaccess
+polymer/
+preact/
+skatejs/
+src/lib/**/*
+!src/lib/*.js
+dist/*

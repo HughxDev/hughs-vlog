@@ -1,0 +1,14 @@
+{
+  "customElements": [
+    "hughs-vlog",
+    "hughs-vlog-episode",
+    "hughs-vlog-episode-nav",
+    "hughs-vlog-feed",
+    "hughs-vlog-feed__entry",
+    "hughs-vlog-footer",
+    "hughs-vlog-header",
+    "hughs-vlog-playback-options",
+    "hughs-vlog-site-nav",
+    "hughs-vlog-subscribe"
+  ]
+}

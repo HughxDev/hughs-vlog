@@ -14,12 +14,12 @@ const join = path.join;
 
 const formats = {
   "html": {
-    "contentType": "application/xhtml+xml",
-    // "contentType": "text/html",
+    // "contentType": "application/xhtml+xml; charset=UTF-8",
+    "contentType": "text/html; charset=UTF-8",
     "extensions": [ "html", "xhtml" ]
   },
   "hvml": {
-    "contentType": "application/hvml+xml",
+    "contentType": "application/hvml+xml; charset=UTF-8",
     "extensions": [ "hvml", "ovml" ]
   }
 };
@@ -51,8 +51,11 @@ app.use( function contentType( req, res, next ) {
 express.static.mime.define({
   'application/xhtml+xml': [ 'html' ],
   'application/hvml+xml': [ 'hvml' ],
+  'application/javascript': [ 'js' ]
 });
 
+app.use( '/', express.static( join( __dirname, '/src' ) ) );
+app.use( '/node_modules', express.static( join( __dirname, '/node_modules' ) ) );
 app.use( '/lib', express.static( join( __dirname, '/src/lib' ) ) );
 
 // set
@@ -65,17 +68,22 @@ app.listen( app.get( 'port' ), function listen() {
 } );
 
 // Routes
-app.get( '/components/:component', function getComponent( req, res ) {
-  var locals = {};
-  // switch ( req.params.component ) {
-  //   case 'hughs-vlog':
-  //     locals.episode = 'latest';
-  //   break;
-  // }
 
-  res.set( 'Content-Type', formats.html.contentType );
-  res.render( 'components/' + req.params.component.replace( /\.html$/, '' ), locals );
-} );
+// Components - EJS (for HTML Imports)
+// app.get( '/components/:component', function getComponent( req, res ) {
+//   var locals = {};
+//   // switch ( req.params.component ) {
+//   //   case 'hughs-vlog':
+//   //     locals.episode = 'latest';
+//   //   break;
+//   // }
+//
+//   res.set( 'Content-Type', formats.html.contentType );
+//   res.render( 'components/' + req.params.component.replace( /\.html$/, '' ), locals );
+// } );
+
+// Components - JS (for ES Modules)
+app.use( '/components', express.static( join( __dirname, '/src/views/components' ) ) );
 
 // Permalinks
 // /year/month/day
@@ -89,7 +97,13 @@ app.get( '/:year([0-9]{4,})(\/|-):month(0[1-9]|1[0-2])(\/|-):day(0[1-9]|1[0-9]|2
   } )
   .then( function foundVideos( hvml ) {
     // Strip namespace to test for cases where it’s missing:
-    hvml = hvml.replace( ' xmlns="http://vocab.nospoon.tv/ovml#"', ' puppy="dog"' );
+    hvml = hvml
+      // .replace( ' xmlns="http://vocab.nospoon.tv/ovml#"', '' )
+      // .replace( /<([^<>\s]+)(.*)>/g, '<hvml:$1$2>' )
+      // .replace( /<\/([^<>\s]+)>/g, '</hvml:$1>' )
+      .replace( /<(hvml[^<>]*)>/, '<$1 hidden="hidden">' )
+    ;
+
     res.set( 'Content-Type', formats.html.contentType );
     // .replace( '<hvml', '<hvml slot="hvml"' )
     res.render( 'index',
@@ -128,11 +142,23 @@ app.get( '/episodes', function getEpisodes( req, res ) {
   res.render( 'index', { page: 'episode', published: null, inline: null }, function render( err, html ) {
     if ( !err ) {
       res.write( html );
+    } else {
+      console.log( err );
     }
-    console.log( err );
   } );
 
   res.end();
+} );
+
+app.get( '/upload', function getUploadPage( req, res ) {
+  res.set( 'Content-Type', formats.html.contentType );
+  res.render( 'upload', {}, function render ( err, html ) {
+    if ( !err ) {
+      res.end( html );
+    } else {
+      console.log( err );
+    }
+  } );
 } );
 
 app.get( '*', function getHomepage( req, res ) {
@@ -141,8 +167,9 @@ app.get( '*', function getHomepage( req, res ) {
   res.render( 'index', { page: 'episode', published: 'latest', inline: null }, function render( err, html ) {
     if ( !err ) {
       res.write( html );
+    } else {
+      console.log( err );
     }
-    console.log( err );
   } );
 
   res.end();

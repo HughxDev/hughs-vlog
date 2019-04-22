@@ -1,12 +1,8 @@
-<% include head.xml %>
+<% include head.html %>
     <title>Hugh’s Vlog</title>
-    <!-- Load polyfills; note that "loader" will load these async -->
-    <!-- <script src="lib/webcomponentsjs/webcomponents-loader.js"></script> -->
-    <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-
-    <!-- Load a custom element definition via HTMLImports -->
-    <link rel="import" href="components/hughs-vlog.html" />
+    <script>window.ShadyDOM = { "force": true };</script>
+    <script src="lib/webcomponentsjs/webcomponents-loader.js" defer="defer"></script>
+    <script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
     <style>
       @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
 
@@ -21,13 +17,13 @@
       }
 
       body {
-        font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+        font-family: "Noto Sans", "Noto Sans CJK JP", "Noto Sans JP", Roboto, "Open Sans", "Droid Sans", "Helvetica Neue", sans-serif;
       }
     </style>
   </head>
   <body>
     <div id="fb-root"></div>
-    <script>//<![CDATA[
+    <script type="module">//<![CDATA[
       window.fbAsyncInit = function() {
         FB.init( {
           "appId": "1117428231678998",
@@ -38,17 +34,29 @@
 
         FB.AppEvents.logPageView();
 
-        window.customElements.whenDefined( 'hughs-vlog' ).then( function hughsVlogDefined() {
-          window.customElements.whenDefined( 'hughs-vlog-header' ).then( function hughsVlogHeaderDefined() {
-            window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( function hughsVlogSubscribeDefined() {
-              let hughsVlog = document.querySelector( 'hughs-vlog' );
-              let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
-              let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
+        // console.log( 'wtf' );
 
-              hughsVlogSubscribe.renderFbLikeButton();
-            } );
-          } );
-        } )
+        function renderFbLikeButtonWhenReady() {
+          let hughsVlog = document.querySelector( 'hughs-vlog' );
+          let hughsVlogHeader = hughsVlog.shadowRoot.querySelector( 'hughs-vlog-header' )
+          let hughsVlogSubscribe = hughsVlogHeader.shadowRoot.querySelector( 'hughs-vlog-subscribe' );
+
+          hughsVlogSubscribe.renderFbLikeButton();
+        }
+
+        function webComponentsReady() {
+          window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
+
+          return import( '/views/components/hughs-vlog.js' );
+        }
+
+        if ( WebComponents && 'waitFor' in WebComponents ) {
+          // console.log( 'waitFor' );
+          WebComponents.waitFor( webComponentsReady );
+        } else {
+          // console.log( 'no waitFor' );
+          webComponentsReady();
+        }
       };
 
       ( function loadFacebookSDK( d, s, id ) {
@@ -67,10 +75,11 @@
     //]]></script>
     <hughs-vlog>
       <!-- @number, @published, @recorded -->
-      <%- include(page, {published: published, inline: inline}) %>
+      <!-- <%- include(page, {published: published, inline: inline}) %> -->
       <!-- <hughs-vlog-latest-episode></hughs-vlog-latest-episode> -->
       <!-- <hughs-vlog-episode></hughs-vlog-episode> -->
       <!-- <hughs-vlog-feed src="http://localhost:3000/videos"></hughs-vlog-feed> -->
     </hughs-vlog>
+    <!-- <div id="app"></div> -->
   </body>
 </html>

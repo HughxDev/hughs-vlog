@@ -1,7 +1,11 @@
 <% if ( inline ) { %>
+      <!-- <hughs-vlog-feed> -->
       <hughs-vlog-episode><%- inline %></hughs-vlog-episode>
+      <!-- </hughs-vlog-feed> -->
 <% } else if ( published ) { %>
+      <!-- <hughs-vlog-feed> -->
       <hughs-vlog-episode published="<%= published %>"></hughs-vlog-episode>
+      <!-- </hughs-vlog-feed> -->
 <% } else { %>
       <hughs-vlog-feed order="desc" src="http://localhost:3000/videos"></hughs-vlog-feed>
 <% } %>

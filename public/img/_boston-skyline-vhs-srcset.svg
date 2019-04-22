@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  version="1.1"
+  width="1920"
+  height="1080"
+  viewBox="0 0 1920 1080"
+>
+  <foreignObject width="1920" height="1080">
+    <img
+      xmlns="http://www.w3.org/1999/xhtml"
+      src="boston-skyline-vhs.jpg"
+      width="1920"
+      height="1080"
+      srcset="boston-skyline-vhs.jpg 1920w, boston-skyline-vhs@0.5x.jpg 960w, boston-skyline-vhs@0.25x.jpg 480w"
+      alt="Pitch dark, VHS-style Boston skyline"
+    />
+  </foreignObject>
+</svg>

@@ -1,3 +1,8 @@
+// https://www.phusionpassenger.com/library/indepth/nodejs/reverse_port_binding.html
+if (typeof(PhusionPassenger) !== 'undefined') {
+  PhusionPassenger.configure({ autoInstall: false });
+}
+
 const express = require( 'express' );
 const app = express();
 const router = express.Router();
@@ -63,9 +68,13 @@ app.set( 'port', process.env.PORT || 80 );
 app.set( 'view engine', 'ejs' );
 app.set( 'views', join( __dirname, '/src/views' ) );
 
-app.listen( app.get( 'port' ), function listen() {
-  console.log( 'Express up and listening on port ' + app.get( 'port' ) );
-} );
+if (typeof(PhusionPassenger) !== 'undefined') {
+  app.listen( 'passenger' );
+} else {
+  app.listen( app.get( 'port' ), function listen() {
+    console.log( 'Express up and listening on port ' + app.get( 'port' ) );
+  } );
+}
 
 // Routes
 

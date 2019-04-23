@@ -68,11 +68,13 @@
         data.body = data.body.replace( /<video([^>]*)>/gi, '<video$1 slot="hvml" hidden="hidden">' );
         this.episodes = legacyParseXML( data.body ).documentElement.children;
         // this.episodes = data.body;
-        console.log( this.episodes );
+        console.log( 'created::this.episodes', this.episodes );
       } );
     },
     "computed": {
       "filteredEpisodes": function filteredEpisodes() {
+        console.log( 'filteredEpisodes::this.episodes', this.episodes );
+
         return this.episodes.filter( ( episode ) => {
           const query = this[this.searchAxis];
           const search = new RegExp( query, 'i' );

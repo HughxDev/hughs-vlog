@@ -45,7 +45,11 @@
         }
 
         function webComponentsReady() {
-          window.customElements.whenDefined( 'hughs-vlog-subscribe' ).then( renderFbLikeButtonWhenReady );
+          Promise.all( [
+            window.customElements.whenDefined( 'hughs-vlog' ),
+            window.customElements.whenDefined( 'hughs-vlog-header' ),
+            window.customElements.whenDefined( 'hughs-vlog-subscribe' ),
+          ] ).then( renderFbLikeButtonWhenReady );
 
           return import( '/views/components/hughs-vlog.js' );
         }

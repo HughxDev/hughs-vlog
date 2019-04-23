@@ -127,6 +127,10 @@ let HughsVlogFeed = class HughsVlogFeed extends HTMLElement {
     var entry;
     var node;
 
+    while ( this.shadowRoot.firstChild ) {
+      this.shadowRoot.removeChild( this.shadowRoot.firstChild );
+    }
+
     switch ( this.order ) {
       case 'desc':
         for ( i = 0; i < nodes.length; i++ ) {

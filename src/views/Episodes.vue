@@ -66,7 +66,7 @@
     "created": function created() {
       this.$http.get( this.episodesEndpoint ).then( ( data ) => {
         data.body = data.body.replace( /<video([^>]*)>/gi, '<video$1 slot="hvml" hidden="hidden">' );
-        this.episodes = legacyParseXML( data.body ).documentElement.children;
+        this.episodes = Array.from( legacyParseXML( data.body ).documentElement.children );
         // this.episodes = data.body;
         console.log( 'created::this.episodes', this.episodes );
       } );
